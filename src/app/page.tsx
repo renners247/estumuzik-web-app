@@ -38,7 +38,7 @@ const page = () => {
 	return (
 		<Applayout className='px-2 lg:px-0 mt-4 lg:mt-16'>
 			<MainDiscoverView />
-			<AppMenu />
+			{/* <AppMenu /> */}
 		</Applayout>
 	);
 };
