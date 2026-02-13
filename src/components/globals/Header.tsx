@@ -2,6 +2,7 @@
 
 import { RiSearchLine, RiLogoutBoxLine } from "react-icons/ri";
 import { Avatar } from "@heroui/react";
+import { signOut } from "../utils/data";
 
 const Header = () => {
 	return (
@@ -54,7 +55,10 @@ const Header = () => {
 					</div>
 				</div>
 
-				<button className='text-gray-400 hover:text-white transition-colors p-2'>
+				<button
+					onClick={() => signOut()}
+					className='text-gray-400 hover:text-white transition-colors p-2'
+				>
 					<RiLogoutBoxLine size={24} />
 				</button>
 			</div>
