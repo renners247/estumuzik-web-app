@@ -72,7 +72,10 @@ const MainDiscoverView = () => {
 	return (
 		<div className='space-y-2 bg-transparent'>
 			{/* Section Header with Navigation */}
-			<div className='flex items-center justify-end px-2'>
+			<div className='flex items-center justify-between px-2'>
+				<h2 className='text-2xl font-bold text-white tracking-tight'>
+					Trending Episodes
+				</h2>
 				<div className='flex items-center gap-4'>
 					{/* Scroll Arrows */}
 					<div className='hidden md:flex items-center gap-2 mr-2'>
