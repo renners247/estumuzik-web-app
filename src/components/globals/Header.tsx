@@ -1,92 +1,65 @@
 "use client";
-import { useState } from "react";
-import Picture from "../picture/Index";
-// import { NaijaDreamsLogoMobile } from "../utils/function";
 
-import { usePathname } from "next/navigation";
-
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination, Autoplay } from "swiper/modules";
-
-// Import Swiper styles
-import "swiper/css";
-import "swiper/css/pagination";
-
-const ActionButton: React.FC<{ icon: React.ReactNode; hasDot?: boolean }> = ({
-  icon,
-  hasDot,
-}) => (
-  <button className="relative p-2.5 rounded-xl bg-gray_1-300 text-gray-400 hover:bg-gray_1-400 hover:text-white transition-all">
-    <span className="text-xl">{icon}</span>
-    {hasDot && (
-      <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 border-2 border-gray_1-300 rounded-full"></span>
-    )}
-  </button>
-);
+import { RiSearchLine, RiLogoutBoxLine } from "react-icons/ri";
+import { Avatar } from "@heroui/react";
 
 const Header = () => {
-  const pathname = usePathname();
+	return (
+		<div className='w-full flex flex-col lg:flex-row lg:items-center justify-between px-4 py-4 lg:px-6 lg:py-5 bg-transparent gap-5 lg:gap-0'>
+			{/* Top Container: Discover Title + Profile (Profile moves to top right on mobile) */}
+			<div className='flex items-center justify-between lg:justify-start lg:flex-col lg:items-start lg:gap-6 w-full lg:w-auto'>
+				<h1 className='text-xl lg:text-2xl font-bold text-white tracking-tight'>
+					Discover
+				</h1>
 
-  return (
-    <>
-      <div className="flex items-center justify-between w-full lg:hidden pt-6">
-        {/* <NaijaDreamsLogoMobile /> */}
-        <div className="flex gap-2">
-          <button className="w-16 py-2 lg:py-3 bg-primary-100 hover:bg-primary-100/90 text-black font-medium rounded-md lg:rounded-xl transition-all text-xs lg:text-sm active:scale-95 shadow-lg shadow-green-900/20">
-            Register
-          </button>
-          <button className="w-16 py-2 lg:py-3 border border-primary-100 text-primary-100 hover:bg-primary-100/10 font-medium rounded-md lg:rounded-xl transition-all text-xs lg:text-sm active:scale-95">
-            Log in
-          </button>
-        </div>
-        <div className="flex items-center justify-between px-2 gap-2">
-          <ActionButton
-            icon={
-              <Picture
-                src={""}
-                alt=""
-                className="w-auto h-auto shrink-0"
-              />
-            }
-          />
-          <ActionButton
-            icon={
-              <Picture
-                src={""}
-                alt=""
-                className="w-auto h-auto shrink-0"
-              />
-            }
-          />
-        </div>
-      </div>
-      <Picture
-        src={""}
-        alt=""
-        className="w-auto h-auto hidden lg:block"
-      />
-      <div className="lg:hidden">
-        <Swiper
-          modules={[Pagination, Autoplay]}
-          slidesPerView={1}
-          pagination={{ clickable: true }}
-          autoplay={{ delay: 3000 }}
-          className="w-full"
-          spaceBetween={0}
-        >
-          {["1", "2", "3"].map((index) => (
-            <SwiperSlide key={index} className="pb-4">
-              <Picture
-                src={""}
-                alt={`Banner ${index}`}
-                className="w-full h-auto px-2 py-6"
-              />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </div>
-    </>
-  );
+				{/* Mobile-only Profile & Logout (hidden on Desktop because they are in the right section) */}
+				<div className='flex lg:hidden items-center gap-3'>
+					<div className='p-[2px] rounded-full border-2 border-[#E8D4A2]'>
+						<Avatar
+							src='https://i.pravatar.cc/150?u=a042581f4e29026024d'
+							className='w-8 h-8'
+						/>
+					</div>
+					<button className='text-gray-400 p-1'>
+						<RiLogoutBoxLine size={20} />
+					</button>
+				</div>
+			</div>
+
+			{/* Search Bar: Stacks below title on mobile, centered/left-aligned on desktop */}
+			<div className='w-full max-w-xl lg:ml-12'>
+				<div className='relative w-full lg:max-w-md group'>
+					<input
+						type='text'
+						placeholder='Search keyword or name'
+						className='w-full bg-[#111111] text-gray-300 text-sm py-3 px-5 lg:py-3.5 lg:px-6 rounded-full 
+                     outline-none border border-transparent focus:border-[#FFCC00]/50 
+                     transition-all duration-300 placeholder:text-gray-500'
+					/>
+					<div className='absolute right-5 top-1/2 -translate-y-1/2 text-gray-400'>
+						<RiSearchLine size={18} className='lg:size-5' />
+					</div>
+				</div>
+			</div>
+
+			{/* Desktop-only Profile & Logout (hidden on Mobile) */}
+			<div className='hidden lg:flex items-center gap-5'>
+				<div className='relative cursor-pointer hover:scale-105 transition-transform'>
+					<div className='p-[2px] rounded-full border-2 border-[#E8D4A2]'>
+						<Avatar
+							src='https://i.pravatar.cc/150?u=a042581f4e29026024d'
+							className='w-10 h-10 text-large'
+							isBordered={false}
+						/>
+					</div>
+				</div>
+
+				<button className='text-gray-400 hover:text-white transition-colors p-2'>
+					<RiLogoutBoxLine size={24} />
+				</button>
+			</div>
+		</div>
+	);
 };
 
 export default Header;
