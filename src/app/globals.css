@@ -44,13 +44,13 @@
 
   /* Handle */
   ::-webkit-scrollbar-thumb {
-    background: #008000;
+    background: #FFE385;
     border-radius: 2px;
     z-index: 51;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #90ee90;
+    background: #FFE385;
     z-index: 51;
   }
 

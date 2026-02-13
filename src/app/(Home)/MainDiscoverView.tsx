@@ -110,7 +110,7 @@ const MainDiscoverView = () => {
 				{allEpisodes.map((episode: any, index: number) => (
 					<div
 						key={episode?.id || index}
-						className='shrink-0 w-[280px] lg:w-[320px]'
+						className='shrink-0 w-[240px] lg:w-[280px]'
 					>
 						<PodcastCard
 							key={episode.id}

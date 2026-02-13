@@ -10,6 +10,15 @@ export const trendingEpisodes = async (
   perPage: number = 15,
 ) => axios.get(`${API_URL}/episodes/trending?page=${page}&per_page=${perPage}`);
 
+export const getUser = async () => axios.get(`${API_URL}/users`);
+
+export const updateUser = async (data: any) =>
+  axios.patch(`${API_URL}/users`, data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
 export const categories = async () => axios.get(`${API_URL}/categories`);
 
 export const subCategories = async (

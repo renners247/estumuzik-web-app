@@ -55,7 +55,7 @@ const PodcastCard = ({ data, index, allEpisodes }: PodcastProps) => {
 	};
 
 	return (
-		<div className='relative w-full max-w-[340px] bg-mtn-dark-gradient rounded-[32px] overflow-hidden shadow-2xl group transition-all duration-300 hover:scale-[1.02] border border-white/5'>
+		<div className='relative w-full max-w-[340px] bg-mtn-dark-gradient rounded-2xl overflow-hidden shadow-2xl group transition-all duration-300 hover:scale-[1.02] border border-white/5'>
 			{/* 1. Background Image Overlay */}
 			<div className='absolute top-0 left-0 w-full h-3/5 opacity-50 z-0'>
 				<Picture
@@ -67,19 +67,6 @@ const PodcastCard = ({ data, index, allEpisodes }: PodcastProps) => {
 			</div>
 
 			<div className='relative z-10 p-5 flex flex-col'>
-				{/* Brand Header */}
-				<div className='flex justify-center items-center mb-4 pt-2 opacity-80'>
-					<div className='flex flex-col items-center'>
-						<div className='flex gap-[2px]'>
-							<div className='w-3 h-8 bg-gray-300 -skew-x-12'></div>
-							<div className='w-3 h-8 bg-gray-300 -skew-x-12'></div>
-						</div>
-					</div>
-					<div className='ml-3 text-white text-[10px] font-bold leading-tight uppercase tracking-tighter'>
-						{data.podcast.author || "Change Africa"} <br /> Podcast
-					</div>
-				</div>
-
 				{/* 3. Overlapping Thumbnail with Play/Pause Button */}
 				<div className='relative size-32 mx-auto lg:mx-0 mb-6 mt-4 shadow-2xl'>
 					<Picture
@@ -112,7 +99,7 @@ const PodcastCard = ({ data, index, allEpisodes }: PodcastProps) => {
 				</div>
 
 				{/* 4. Text Content Section */}
-				<div className='flex flex-col gap-1.5 mb-5'>
+				<div className='flex flex-col gap-1.5 mb-2'>
 					<span className='text-gray-400 text-xs font-semibold uppercase tracking-wider'>
 						{category}
 					</span>
