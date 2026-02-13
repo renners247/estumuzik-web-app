@@ -10,6 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import LoadingBar, { LoadingBarRef } from "react-top-loading-bar";
 import { HeroUIProvider } from "@heroui/react";
 import axios from "axios";
+import MusicPlayer from "@/components/MusicPlayer";
 
 _redux.setupAxios(axios, store);
 export const loadingBarRef = React.createRef<LoadingBarRef | null>();
@@ -43,7 +44,9 @@ export default function ReduxProvider({
 			/>
 			<QueryClientProvider client={queryClient}>
 				<ToastContainer position='top-right' hideProgressBar />
-				<Provider store={store}>{children}</Provider>
+				<Provider store={store}>
+					{children} <MusicPlayer />
+				</Provider>
 			</QueryClientProvider>
 		</HeroUIProvider>
 	);

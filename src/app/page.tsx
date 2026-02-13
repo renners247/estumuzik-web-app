@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import Applayout from "@/components/globals/Applayout";
 import { SEODATA, websiteUrl } from "../components/utils/seoConstants";
 import AppMenu from "./(Home)/AppMenu";
+import MainDiscoverView from "./(Home)/MainDiscoverView";
 
 const { description, keywords, title, url } = SEODATA.default;
 export const metadata: Metadata = {
@@ -36,7 +37,7 @@ export const metadata: Metadata = {
 const page = () => {
 	return (
 		<Applayout className='px-2 lg:px-0 mt-4 lg:mt-16'>
-			<></>
+			<MainDiscoverView />
 			<AppMenu />
 		</Applayout>
 	);

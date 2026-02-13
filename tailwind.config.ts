@@ -16,6 +16,8 @@ const config: Config = {
 					"conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
 				// MTN Branded Gradients
 				"mtn-gradient": "linear-gradient(133deg, #FFCC00 0%, #E6B800 100%)",
+				"mtn-dark-gradient":
+					"linear-gradient(to bottom, #524400, #062c1b, #0a1a12)",
 				"estu-dark-gradient":
 					"linear-gradient(128.08deg, #121212 0%, #212121 100%)",
 				"timebox-gradient":

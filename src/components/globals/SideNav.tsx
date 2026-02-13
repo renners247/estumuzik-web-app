@@ -84,7 +84,7 @@ const Sidebar = () => {
 				{/* Logo Section */}
 
 				{/* Navigation Items */}
-				<div className='pl-4 mb-3'>
+				<div className='pl-4 mb-10 mt-1'>
 					<EstuMuzikLogo />
 				</div>
 				<nav className='flex-1'>
