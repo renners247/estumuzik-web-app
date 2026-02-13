@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import { useAppDispatch, useAppSelector } from "../Hooks";
-import { playPause, setActiveSong } from "../Redux/playerTwo";
+import { playPause, setActiveSong } from "../Redux/playerOne";
 import { setIsEpisodeRegistered } from "../Redux/ToggleModal";
 import { RotatingLines } from "react-loader-spinner";
 import { BsFillPauseFill } from "react-icons/bs";
@@ -8,8 +8,8 @@ import { IoPlayOutline } from "react-icons/io5";
 
 interface ImagePlayButtonProps {
 	title: string;
-	episode: PodcastEpisode;
-	EpisodePodcastsData: PodcastEpisode[];
+	episode: any;
+	EpisodePodcastsData: any[];
 	index: number;
 	children?: ReactNode;
 }
@@ -29,7 +29,7 @@ const ImagePlayButton = ({
 		isActive,
 		isPlaying,
 		isLoading,
-	} = useAppSelector((state) => state.playerTwo);
+	} = useAppSelector((state) => state.playerOne);
 
 	const handlePauseClick = () => {
 		dispatch(playPause(false));

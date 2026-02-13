@@ -1,15 +1,14 @@
 import { ButtonHTMLAttributes, ReactNode } from "react";
 import { FaRegCirclePause, FaRegCirclePlay } from "react-icons/fa6";
 import { useAppDispatch, useAppSelector } from "../Hooks";
-import { playPause, setActiveSong } from "../Redux/playerTwo";
+import { playPause, setActiveSong } from "../Redux/playerOne";
 import { useQuery } from "react-query";
-import { APICall } from "@/utils/extras";
-import { getEpisodePodcasts } from "@/api/Auth";
 import { setIsEpisodeRegistered, setIsSoftRefresh } from "../Redux/ToggleModal";
 import { RotatingLines } from "react-loader-spinner";
+import { APICall } from "../utils/extra";
 
 interface PlayButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-	episode: PodcastEpisode;
+	episode: any;
 	children?: ReactNode;
 	className?: string;
 }
@@ -22,26 +21,26 @@ const PlayButton: React.FC<PlayButtonProps> = ({
 }) => {
 	const dispatch = useAppDispatch();
 
-	const { data: EpisodePodcastsData, isLoading: episodeDataIsLoading } =
-		useQuery(
-			["episodePodcast", episode?.podcast_id],
-			async () => {
-				if (episode?.podcast_id) {
-					const response = await APICall(getEpisodePodcasts, [
-						episode?.podcast_id,
-					]);
-					return response.data;
-				}
-			},
-			{
-				staleTime: Infinity,
-				keepPreviousData: true,
-				notifyOnChangeProps: "tracked",
-			},
-		);
+	// const { data: EpisodePodcastsData, isLoading: episodeDataIsLoading } =
+	// 	useQuery(
+	// 		["episodePodcast", episode?.podcast_id],
+	// 		async () => {
+	// 			if (episode?.podcast_id) {
+	// 				const response = await APICall(getEpisodePodcasts, [
+	// 					episode?.podcast_id,
+	// 				]);
+	// 				return response.data;
+	// 			}
+	// 		},
+	// 		{
+	// 			staleTime: Infinity,
+	// 			keepPreviousData: true,
+	// 			notifyOnChangeProps: "tracked",
+	// 		},
+	// 	);
 
 	const { isPlaying, activeSong, isLoading } = useAppSelector(
-		(state) => state.playerTwo,
+		(state) => state.playerOne,
 	);
 
 	const handlePauseClick = () => {
@@ -50,7 +49,7 @@ const PlayButton: React.FC<PlayButtonProps> = ({
 	const index = episode?.id;
 
 	const handlePlayClick = () => {
-		dispatch(setActiveSong({ episode, EpisodePodcastsData, index }));
+		// dispatch(setActiveSong({ episode, EpisodePodcastsData, index }));
 		dispatch(setIsEpisodeRegistered(false));
 		dispatch(playPause(true));
 		dispatch(setIsSoftRefresh());

@@ -38,7 +38,7 @@ export default function ReduxProvider({
 	return (
 		<HeroUIProvider>
 			<LoadingBar
-				color='#00C27A'
+				color='#FFC71F'
 				ref={loadingBarRef as React.RefObject<LoadingBarRef>}
 				height={5}
 			/>
