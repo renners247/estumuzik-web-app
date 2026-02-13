@@ -1,0 +1,68 @@
+.inner-sidebar-scroll {
+	overflow-y: auto;
+}
+
+.inner-x-scroll {
+	overflow-x: auto;
+}
+
+.inner-x-scroll-2 {
+	overflow-x: auto;
+}
+
+.inner-sidebar-scroll::-webkit-scrollbar {
+	width: 4px;
+}
+
+.inner-x-scroll::-webkit-scrollbar {
+	width: 8px;
+	height: 6px;
+}
+
+.inner-x-scroll-2::-webkit-scrollbar {
+	width: 4px;
+	height: 6px;
+}
+
+.inner-sidebar-scroll::-webkit-scrollbar-thumb {
+	background: green;
+	border-radius: 1px;
+}
+
+.inner-x-scroll::-webkit-scrollbar-thumb {
+	background: #008000;
+	border-radius: 1px;
+}
+
+.inner-x-scroll-2::-webkit-scrollbar-thumb {
+	background: green;
+	border-radius: 1px;
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.inner-x-scroll-2::-webkit-scrollbar-thumb:hover {
+	background: green; /* Full color */
+	transform: scaleX(1.1); /* Slightly wider on hover */
+	box-shadow: 0 0 8px rgba(44, 109, 220, 0.4); /* Glow effect */
+}
+
+/* .inner-sidebar-scroll::-webkit-scrollbar-track {
+	background: #e2e2e2;
+} */
+
+.inner-sidebar-scroll::-webkit-scrollbar-track:hover {
+	background: transparent;
+	transition: 0.9s ease-in-out;
+	z-index: 50;
+}
+.inner-x-scroll::-webkit-scrollbar-track:hover {
+	background: transparent;
+	transition: 0.9s ease-in-out;
+	z-index: 50;
+}
+
+.inner-x-scroll-2::-webkit-scrollbar-track:hover {
+	background: transparent;
+	transition: 0.9s ease-in-out;
+	z-index: 50;
+}

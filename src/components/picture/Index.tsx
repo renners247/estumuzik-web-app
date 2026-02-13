@@ -1,0 +1,87 @@
+"use client";
+import Image, { StaticImageData } from "next/image";
+import { useEffect, useState } from "react";
+import { MdNearbyError } from "react-icons/md";
+import { isValidImage } from "../utils/function";
+
+interface PictureProps {
+	alt: string;
+	src: string | StaticImageData;
+	width?: number;
+	height?: number;
+	loading?: "lazy" | "eager" | undefined;
+	sizes?: string;
+	className?: string;
+	priority?: boolean;
+	validate?: boolean;
+	layout?: "fill" | "fixed" | "intrinsic" | "responsive";
+	style?: React.CSSProperties;
+}
+
+const Picture = ({
+	src,
+	alt,
+	width,
+	height,
+	loading = "lazy",
+	sizes,
+	layout,
+	priority,
+	validate,
+	className,
+	style,
+}: PictureProps) => {
+	const [isValid, setIsValid] = useState<boolean>(true);
+
+	useEffect(() => {
+		if (typeof src === "string") {
+			const checkImage = async () => {
+				const valid = await isValidImage(src);
+				setIsValid(valid);
+			};
+			checkImage();
+		}
+	}, [src]);
+
+	return (
+		<>
+			{isValid && typeof src === "string" ? (
+				<Image
+					src={src}
+					alt={alt || "image"}
+					width={width || 1800}
+					height={height || 1800}
+					sizes={sizes || "100vw"}
+					loading={loading}
+					quality={100}
+					priority={false}
+					layout={layout}
+					className={className || ""}
+					style={style}
+				/>
+			) : typeof src !== "string" ? (
+				<Image
+					src={src}
+					alt={alt || "image"}
+					width={width || 1800}
+					height={height || 1800}
+					sizes={sizes || "100vw"}
+					loading={loading}
+					quality={100}
+					priority={false}
+					layout={layout}
+					className={className || ""}
+				/>
+			) : (
+				validate && (
+					<div className='flex flex-col gap-1 items-center justify-center w-fit'>
+						<MdNearbyError className='text-red-600 text-lg' />
+						<h5 className='text-xs capitalize'>Invalid Image</h5>
+					</div>
+				)
+			)}
+		</>
+	);
+};
+
+export default Picture;
