@@ -2,6 +2,7 @@
 import { Metadata } from "next";
 import Applayout from "@/components/globals/Applayout";
 import { SEODATA, websiteUrl } from "../components/utils/seoConstants";
+import AppMenu from "./(Home)/AppMenu";
 
 const { description, keywords, title, url } = SEODATA.default;
 export const metadata: Metadata = {
@@ -32,23 +33,11 @@ export const metadata: Metadata = {
 	},
 };
 
-// Structured data for rich snippets
-const structuredData = {
-	"@context": "https://schema.org",
-	"@type": "WebSite",
-	name: "Naija Dreams Website",
-	description: SEODATA.default.description,
-	url: websiteUrl,
-	potentialAction: {
-		"@type": "SearchAction",
-		target: `${websiteUrl}/search?q={search_term_string}`,
-		"query-input": "required name=search_term_string",
-	},
-};
 const page = () => {
 	return (
 		<Applayout className='px-2 lg:px-0 mt-4 lg:mt-16'>
 			<></>
+			<AppMenu />
 		</Applayout>
 	);
 };

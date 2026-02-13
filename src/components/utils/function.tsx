@@ -12,6 +12,7 @@ import { TfiReload } from "react-icons/tfi";
 // } from "../../../public";
 import { FaChevronLeft } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import { logoImage } from "../../../public";
 
 export const isValidImage = (url: string): Promise<boolean> => {
 	return new Promise((resolve) => {
@@ -421,17 +422,13 @@ interface LendoVerifyLogoProps {
 //   );
 // };
 
-// export const NaijaDreamsLogo = () => {
-// 	return (
-// 		<Link href='/'>
-// 			<Picture
-// 				src={naijaDreamsLogo}
-// 				alt='naijadreams logo'
-// 				className='w-auto h-auto'
-// 			/>
-// 		</Link>
-// 	);
-// };
+export const EstuMuzikLogo = () => {
+	return (
+		<Link href='/'>
+			<Picture src={logoImage} alt='logo image' className='w-16 rounded-sm' />
+		</Link>
+	);
+};
 
 // export const PlayResponsiblyImage = () => {
 // 	return (
