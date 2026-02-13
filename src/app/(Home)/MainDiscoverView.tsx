@@ -1,77 +1,106 @@
 "use client";
 import PodcastCard from "@/components/Cards/_components/PodcastCard";
+import { trendingEpisodes } from "@/components/utils/endpoints";
 import { APICall } from "@/components/utils/extra";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useQuery } from "react-query";
 
-const PODCAST_DATA = [
-	{
-		category: "Change Africa Podcast",
-		title: "Caleb Maru: Navigating Afric...",
-		description:
-			"In this episode of the Change Africa Podcast, we host Tarek Mouganie, the multifaceted founder and CEO of Affinity Africa.",
-		coverImage:
-			"https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=500",
-		thumbnail:
-			"https://images.unsplash.com/photo-1590602847861-f357a9332bbc?q=80&w=200",
-		isLiked: false,
-	},
-	{
-		category: "Living African",
-		title: "Caleb Maru: Navigating Afric...",
-		description:
-			"In this episode of the Change Africa Podcast, we host Tarek Mouganie, the multifaceted founder and CEO of Affinity Africa.",
-		coverImage:
-			"https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=500",
-		thumbnail:
-			"https://images.unsplash.com/photo-1514525253361-bee8718a34a1?q=80&w=200",
-		isLiked: true, // This one will show the green heart
-	},
-	{
-		category: "I Said What I Said",
-		title: "Caleb Maru: Navigating Afric...",
-		description:
-			"In this episode of the Change Africa Podcast, we host Tarek Mouganie, the multifaceted founder and CEO of Affinity Africa.",
-		coverImage:
-			"https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=500",
-		thumbnail:
-			"https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=200",
-		isLiked: false,
-	},
-	{
-		category: "Finance For Hippies",
-		title: "Caleb Maru: Navigating Afric...",
-		description:
-			"In this episode of the Change Africa Podcast, we host Tarek Mouganie, the multifaceted founder and CEO of Affinity Africa.",
-		coverImage:
-			"https://images.unsplash.com/photo-1516280440614-37939bbacd81?q=80&w=500",
-		thumbnail:
-			"https://images.unsplash.com/photo-1459749411177-042180ce673c?q=80&w=200",
-		isLiked: false,
-	},
-];
+// Create a Skeleton loader for a better UX
+const PodcastSkeleton = () => (
+	<div className='w-full max-w-[340px] h-[450px] bg-white/5 animate-pulse rounded-[32px]' />
+);
 
 const MainDiscoverView = () => {
-	//       const { data: coursesData, isLoading: coursesDataIsLoading } = useQuery(
-	//     ["most-viewed-courses", 1, 20],
-	//     async () => {
-	//       const response = await APICall(getMostViewedCourses, [1, 20]);
-	//       return response?.data?.data?.data || [];
-	//     },
-	//     {
-	//       staleTime: Infinity,
-	//       refetchOnWindowFocus: true,
-	//       cacheTime: 0,
-	//     }
-	//   );
+	const [perPage, setPerPage] = useState(15);
+	const [currentPage, setCurrentPage] = useState(1);
 
-	//   const CoursesData: ViewedPopularCourse[] = coursesData || [];
+	const { data: trendingEpisodeData, isLoading } = useQuery(
+		["trending-episode", currentPage, perPage],
+		async () => {
+			const response = await APICall(
+				trendingEpisodes,
+				[currentPage, perPage],
+				false,
+				false,
+			);
+			return response.data;
+		},
+		{
+			staleTime: Infinity,
+			keepPreviousData: true,
+			refetchOnWindowFocus: true,
+		},
+	);
+
+	// Extracting data safely
+	const episodes = trendingEpisodeData?.data?.data?.data || [];
+	const total = trendingEpisodeData?.data?.data?.total || 0;
+	const observerTarget = useRef(null);
+
+	// Intersection Observer for Infinite Scroll
+	useEffect(() => {
+		const observer = new IntersectionObserver(
+			(entries) => {
+				// If the last element is visible and we aren't already loading
+				if (
+					entries[0].isIntersecting &&
+					!isLoading &&
+					episodes.length < total
+				) {
+					setCurrentPage((prev: number) => prev + 1);
+				}
+			},
+			{ threshold: 0.1, rootMargin: "200px" }, // Trigger 200px before reaching the end
+		);
+
+		if (observerTarget.current) {
+			observer.observe(observerTarget.current);
+		}
+
+		return () => observer.disconnect();
+	}, [episodes?.length, total, isLoading, setCurrentPage]);
+
 	return (
-		<div className='p-6'>
-			<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
-				{PODCAST_DATA.map((podcast, index) => (
-					<PodcastCard key={index} data={podcast} />
+		<div className='p-6 space-y-6 bg-transparent'>
+			{/* Horizontal Grid Container */}
+			<div className='flex overflow-x-auto gap-6 pb-8 px-2 no-scrollbar scroll-smooth'>
+				{/* Data Display */}
+				{episodes.map((episode: any, index: number) => (
+					<div
+						key={episode?.id || index}
+						className='shrink-0 w-[280px] lg:w-[320px]'
+					>
+						<PodcastCard data={episode} />
+					</div>
 				))}
+
+				{/* Loading / Skeleton State (Horizontal) */}
+				{isLoading &&
+					Array.from({ length: 4 }).map((_, i) => (
+						<div key={i} className='shrink-0 w-[280px] lg:w-[320px]'>
+							<PodcastSkeleton />
+						</div>
+					))}
+
+				{/* Infinite Scroll Trigger (Invisible element at the end) */}
+				<div
+					ref={observerTarget}
+					className='shrink-0 w-10 h-full flex items-center justify-center'
+				>
+					{isLoading && (
+						<div className='animate-spin rounded-full h-6 w-6 border-b-2 border-primary-500'></div>
+					)}
+				</div>
+
+				{/* Empty State */}
+				{!isLoading && episodes.length === 0 && (
+					<div className='w-full flex flex-col items-center justify-center py-20 text-center bg-white/5 rounded-[32px] border border-dashed border-white/10'>
+						<h3 className='text-xl font-bold text-white mb-2'>
+							No Episodes Available
+						</h3>
+						<p className='text-gray-400'>Check back later for new content.</p>
+					</div>
+				)}
 			</div>
 		</div>
 	);
