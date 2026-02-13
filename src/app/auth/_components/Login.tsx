@@ -17,6 +17,7 @@ import GlobalLoader from "@/components/reusables/GlobalLoader";
 
 interface FormValues {
   phone_number: string;
+  password?: string; // Optional if only phone login is used
 }
 
 const LoginForm: React.FC = () => {
@@ -26,6 +27,7 @@ const LoginForm: React.FC = () => {
 
   const initialValues: FormValues = {
     phone_number: "",
+    password: "Development@101", // Default password if backend requires it
   };
 
   const loginMutation = useMutation(
