@@ -115,7 +115,7 @@ const TextInput = ({
 		<div className='flex flex-col gap-1'>
 			{label && (
 				<label
-					className={`flex items-center gap-2 text-xs sm:text-sm font-medium text-black-100 ${labelClassName}`}
+					className={`flex items-center gap-2 text-xs sm:text-sm font-medium text-white ${labelClassName}`}
 					htmlFor={id}
 				>
 					{label}{" "}
@@ -131,7 +131,7 @@ const TextInput = ({
 			<div className='relative'>
 				{/* Left Icons - Fixed alignment */}
 				{showUserIcon && (
-					<HiOutlineUser className='text-bg-700/70 text-sm sm:text-base' />
+					<HiOutlineUser color="white" className='text-white text-sm sm:text-base' />
 				)}
 
 				{showEmailIcon && (
