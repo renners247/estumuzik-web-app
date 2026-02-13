@@ -13,7 +13,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import ReduxProvider from "./redux-provider";
 import { Metadata, Viewport } from "next";
 import { SEODATA } from "@/components/utils/seoConstants";
-import { Jost, Manrope, Space_Grotesk } from "next/font/google";
+import { Jost, Nunito } from "next/font/google";
 
 const jost = Jost({
 	subsets: ["latin-ext"],
@@ -21,15 +21,9 @@ const jost = Jost({
 	style: ["normal"],
 });
 
-const manrope = Manrope({
+const nunito = Nunito({
 	subsets: ["latin-ext"],
 	weight: ["200", "300", "400", "500", "700", "800"],
-	style: ["normal"],
-});
-
-const space_grotesk = Space_Grotesk({
-	subsets: ["latin-ext"],
-	weight: ["300", "400", "500", "700"],
 	style: ["normal"],
 });
 
@@ -95,7 +89,7 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang='en'>
-			<body className={`bg-bg-100 ${manrope.className}`}>
+			<body className={`bg-bg-100 ${nunito.className}`}>
 				<ReduxProvider>{children}</ReduxProvider>
 			</body>
 		</html>
