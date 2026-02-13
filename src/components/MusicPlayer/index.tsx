@@ -597,14 +597,18 @@ const MusicPlayer: React.FC = () => {
 
 									<TooltipWrapper content='Forward 30' position='top'>
 										<MdOutlineForward30
-											color='#fff'
-											size={20}
-											onClick={fastForward30Secs}
-											className={`${
-												activeSong && activeSong?.duration - appTime < 30
-													? "cursor-not-allowed"
-													: "cursor-pointer"
-											} h-5 w-5`}
+											size={24} // Slightly larger for better touch/click target
+											onClick={
+												activeSong && activeSong?.duration - appTime >= 30
+													? fastForward30Secs
+													: undefined
+											}
+											className={`transition-all duration-200 
+        ${
+					activeSong && activeSong?.duration - appTime < 30
+						? "text-gray-600 cursor-not-allowed opacity-50"
+						: "text-white hover:text-[#FFCC00] cursor-pointer hover:scale-110 active:scale-95"
+				}`}
 										/>
 									</TooltipWrapper>
 									<TooltipWrapper content='Shuffle' position='top'>
