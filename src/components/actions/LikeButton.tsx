@@ -14,7 +14,7 @@ import Cookies from "js-cookie";
 import { AUTH_TOKEN_KEY } from "../utils/data";
 
 interface LikeButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-	episodeId: number;
+	episodeId?: number;
 	like_count?: number;
 	color?: string;
 }
@@ -180,7 +180,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({
 	// );
 
 	// const isLiked =  likedEpisodes ? likedEpisodes[episodeId] : false
-	const handleLikeEpisodeClick = async (episodeId: number) => {
+	const handleLikeEpisodeClick = async (episodeId?: number) => {
 		if (user) {
 			// Animation state change
 			setIsAnimationVisible(true);

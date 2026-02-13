@@ -14,7 +14,7 @@ import Cookies from "js-cookie";
 import { AUTH_TOKEN_KEY } from "../utils/data";
 
 interface QueueButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-	episodeId: number;
+	episodeId?: number;
 	color?: string;
 }
 
@@ -96,7 +96,7 @@ const QueueButton: React.FC<QueueButtonProps> = ({
 		}
 	};
 
-	const handleQueue = async (episodeId: number) => {
+	const handleQueue = async (episodeId?: number) => {
 		// const isQueued = queuedEpisodes ? queuedEpisodes[episodeId] : false;
 
 		if (user) {
