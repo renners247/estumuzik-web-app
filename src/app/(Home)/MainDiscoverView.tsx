@@ -112,7 +112,12 @@ const MainDiscoverView = () => {
 						key={episode?.id || index}
 						className='shrink-0 w-[280px] lg:w-[320px]'
 					>
-						<PodcastCard data={episode} />
+						<PodcastCard
+							key={episode.id}
+							data={episode}
+							index={index}
+							allEpisodes={allEpisodes}
+						/>
 					</div>
 				))}
 

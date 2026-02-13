@@ -174,7 +174,7 @@ const MusicPlayer: React.FC = () => {
 	// );
 
 	// I want to use this functionality to register an episode as played when the track time is 15%. I only want to register an episode as played once the when another track is played register it again as play also when a track is replayed register it as another play
-	const handleRegisterPlay = async (episodeId: number | string) => {
+	const handleRegisterPlay = async (episodeId?: number) => {
 		try {
 			// await registerPlayMutation.mutateAsync(episodeId);
 		} catch (error: any) {}
@@ -427,7 +427,9 @@ const MusicPlayer: React.FC = () => {
 								value={volume}
 								min='0'
 								max='1'
-								onChange={(newVolume) => dispatch(setVolume(newVolume))}
+								onChange={(e) =>
+									dispatch(setVolume(parseFloat(e.target.value)))
+								}
 								isMinimized={isMinimizedPlayer}
 							/>
 						</div>
@@ -452,18 +454,22 @@ const MusicPlayer: React.FC = () => {
 									</span>
 									<div className='flex-1 flex w-full item-center'>
 										<CustomRangeInput
+											// Logic: Pass the calculated percentage (0-100)
 											sliderValue={(appTime / duration) * 100}
+											// Handlers
 											onChange={onScrub}
 											onAfterChange={onScrubEnd}
+											// Limits: Since sliderValue is 0-100, maxValue must be 100
 											minValue={0}
-											maxValue={
-												activeSong?.duration ? activeSong?.duration : 100
-											}
-											backgroundColor={"#344054"}
-											sliderColor={"#FFF"}
-											circleColor={"#FF6A00"}
+											maxValue={100}
+											// --- MTN BRAND STYLING ---
+											backgroundColor='#2D2D2D' // Deep charcoal background for the track
+											sliderColor='#FFCC00' // Iconic MTN Yellow for the progress fill
+											circleColor='#FFCC00' // Iconic MTN Yellow for the seeker dot
+											// Dimensions
 											width='w-full'
-											height='h-1.5'
+											height='h-1' // Sleeker thin bar (standard for music apps)
+											circleRefTop='50%' // Centers the circle vertically perfectly
 										/>
 									</div>
 									<span className='w-7'>
@@ -505,13 +511,7 @@ const MusicPlayer: React.FC = () => {
 												WebkitLineClamp: 2,
 											}}
 										>
-											{/* <marquee
-                        behavior="scroll"
-                        direction="left"
-                        scrollamount="5"
-                      > */}
 											{activeSong?.title}
-											{/* </marquee> */}
 										</Link>
 									</div>
 								</div>
@@ -629,7 +629,6 @@ const MusicPlayer: React.FC = () => {
 										</TooltipWrapper>
 
 										<LikeButton episodeId={activeSong?.id} />
-										{/* {View} */}
 
 										<QueueButton episodeId={activeSong?.id} />
 
@@ -653,17 +652,21 @@ const MusicPlayer: React.FC = () => {
 									</div>
 									<div className='ml-2'>
 										<CustomRangeVolume
-											sliderValue={volume * 100}
+											// Logic
+											sliderValue={volume * 100} // Volume (0.0 - 1.0) to Percentage (0 - 100)
 											onChange={onScrubVolume}
 											onAfterChange={onScrubEnd}
 											minValue={0}
 											maxValue={100}
-											backgroundColor={"#344054"}
-											sliderColor={"#FFF"}
-											circleColor={"#FF6A00"}
-											setVolume={(newVolume) => dispatch(setVolume(newVolume))}
-											width='w-[4rem]'
-											height='h-[3px]'
+											// Logic for the icon click (toggle mute)
+											setVolume={(val) => dispatch(setVolume(val))}
+											// MTN Branding
+											backgroundColor='#333333' // Dark track
+											sliderColor='#FFCC00' // MTN Yellow fill
+											circleColor='#FFCC00' // MTN Yellow dot
+											// Custom Dimensions provided by you
+											width='w-[4.5rem]' // Slightly wider for easier desktop use
+											height='h-[3px]' // Perfect balance between sleek and clickable
 										/>
 									</div>
 								</div>
@@ -687,17 +690,22 @@ const MusicPlayer: React.FC = () => {
 								</span>
 								<div className='flex-1 flex w-full item-center'>
 									<CustomRangeInput
+										// Logic: Pass the calculated percentage (0-100)
 										sliderValue={(appTime / duration) * 100}
+										// Handlers
 										onChange={onScrub}
 										onAfterChange={onScrubEnd}
+										// Limits: Since sliderValue is 0-100, maxValue must be 100
 										minValue={0}
-										maxValue={activeSong?.duration ? activeSong?.duration : 100}
-										backgroundColor={"#344054"}
-										sliderColor={"#FFF"}
-										circleColor={"#FF6A00"}
+										maxValue={100}
+										// --- MTN BRAND STYLING ---
+										backgroundColor='#2D2D2D' // Deep charcoal background for the track
+										sliderColor='#FFCC00' // Iconic MTN Yellow for the progress fill
+										circleColor='#FFCC00' // Iconic MTN Yellow for the seeker dot
+										// Dimensions
 										width='w-full'
-										height='h-1'
-										circleRefTop='0.14rem'
+										height='h-1' // Sleeker thin bar (standard for music apps)
+										circleRefTop='50%' // Centers the circle vertically perfectly
 									/>
 								</div>
 								<span className='w-7 flex items-center'>
@@ -817,7 +825,9 @@ const MusicPlayer: React.FC = () => {
 									value={volume}
 									min='0'
 									max='1'
-									onChange={(newVolume) => dispatch(setVolume(newVolume))}
+									onChange={(e) =>
+										dispatch(setVolume(parseFloat(e.target.value)))
+									}
 									isMinimized={!isMinimizedPlayer}
 								/>
 							</div>
