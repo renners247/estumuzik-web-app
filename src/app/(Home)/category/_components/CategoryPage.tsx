@@ -1,49 +1,53 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
 import { RiSearchLine } from "react-icons/ri";
 
-import {
-  arts,
-  business,
-  comedy,
-  education,
-  healthFitness,
-  music,
-} from "../../../../../public";
 import Picture from "@/components/picture/Index";
+import { APICall } from "@/components/utils/extra";
+import { categories } from "@/components/utils/endpoints";
+import { useQuery } from "react-query";
+import { Skeleton } from "@heroui/react";
 
-interface Category {
-  id: string;
+interface ApiSubCategory {
   name: string;
-  image: StaticImageData;
+  image_url: string;
 }
 
-const categories: Category[] = [
-  { id: "arts", name: "ARTS", image: arts },
-  { id: "business", name: "BUSINESS", image: business },
-  { id: "education", name: "EDUCATION", image: education },
-  { id: "comedy", name: "COMEDY", image: comedy },
-  { id: "health-fitness", name: "HEALTH & FITNESS", image: healthFitness },
-  { id: "music", name: "MUSIC", image: music },
-];
+interface ApiCategory {
+  name: string;
+  categories: ApiSubCategory[];
+  images: string[];
+}
 
 const CategoryPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
+  const { data: categoriesData, isLoading: categoriesIsLoading } = useQuery(
+    ["categories"],
+    async () => {
+      const response = await APICall(categories, false, false);
+      return response?.data?.data;
+    },
+    {
+      // staleTime: 30 * 1000, // Removed to allow refetch on mount/focus
+      // refetchOnWindowFocus: false,
+    },
+  );
+
+  const apiCategories: ApiCategory[] = categoriesData?.data || [];
+
   const filteredCategories = useMemo(() => {
-    if (!searchQuery.trim()) return categories;
-    return categories.filter((cat) =>
+    if (!searchQuery.trim()) return apiCategories;
+    return apiCategories.filter((cat) =>
       cat.name.toLowerCase().includes(searchQuery.toLowerCase()),
     );
-  }, [searchQuery]);
+  }, [searchQuery, apiCategories]);
 
   return (
     <section className="px-3 sm:px-4 lg:px-6 mt-2 lg:mt-6">
       <div className="w-full max-w-7xl mx-auto">
-        {/* Search Bar */}
         <div className="w-full max-w-md mb-6 lg:mb-8">
           <div className="relative w-full group">
             <input
@@ -61,43 +65,66 @@ const CategoryPage = () => {
           </div>
         </div>
 
+        {/* Loading State */}
+        {categoriesIsLoading && (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-5 pb-24 sm:pb-8">
+            {Array.from({ length: 10 }).map((_, i) => (
+              <Skeleton
+                key={i}
+                className="aspect-square rounded-xl bg-gray-800"
+              />
+            ))}
+          </div>
+        )}
+
         {/* Category Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-5 pb-24 sm:pb-8">
-          {filteredCategories.map((category) => (
-            <Link
-              key={category.id}
-              href={`/category/${category.id}`}
-              className="group rounded-xl overflow-hidden bg-[#1A1A1A] cursor-pointer 
-                       transition-transform duration-300 hover:scale-[1.03] 
-                       focus:outline-none focus:ring-2 focus:ring-[#FFCC00]/50">
-              {/* Image Container */}
-              <div className="relative aspect-square w-full overflow-hidden">
-                <Picture
-                  src={category.image}
-                  alt={category.name}
-                  className="object-cover h-full w-full transition-transform duration-500 group-hover:scale-110"
-                />
-              </div>
+        {!categoriesIsLoading && (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-5 pb-24 sm:pb-8">
+            {filteredCategories.map((category, index) => {
+              // Use the first image from the 'images' array, fallback to null/placeholder if empty
+              const categoryImage =
+                category.images && category.images.length > 0 ?
+                  category.images[0]
+                : "";
 
-              {/* Category Label Footer */}
-              <div className="w-full px-3 py-2.5 sm:px-4 sm:py-3 text-left bg-[#1A1A1A]">
-                <span className="text-white text-xs sm:text-sm font-bold tracking-wide">
-                  {category.name}
-                </span>
-              </div>
-            </Link>
-          ))}
+              return (
+                <Link
+                  key={index}
+                  // Generate an ID from name (e.g. "ARTS" -> "arts") since API might not provide ID
+                  href={`/category/${category.name.toLowerCase()}`}
+                  className="group rounded-xl overflow-hidden bg-[#1A1A1A] cursor-pointer 
+                          transition-transform duration-300 hover:scale-[1.03] 
+                          focus:outline-none focus:ring-2 focus:ring-[#FFCC00]/50">
+                  {/* Image Container */}
+                  <div className="relative aspect-square w-full overflow-hidden">
+                    <Picture
+                      src={categoryImage}
+                      alt={category.name}
+                      className="object-cover h-full w-full transition-transform duration-500 group-hover:scale-110"
+                    />
+                  </div>
 
-          {/* Empty State */}
-          {filteredCategories.length === 0 && (
-            <div className="col-span-full flex flex-col items-center justify-center py-16 text-gray-500">
-              <RiSearchLine size={48} className="mb-4 opacity-40" />
-              <p className="text-sm">
-                No categories found for &quot;{searchQuery}&quot;
-              </p>
-            </div>
-          )}
-        </div>
+                  {/* Category Label Footer */}
+                  <div className="w-full px-3 py-2.5 sm:px-4 sm:py-3 text-left bg-[#1A1A1A]">
+                    <span className="text-white text-xs sm:text-sm font-bold tracking-wide">
+                      {category.name}
+                    </span>
+                  </div>
+                </Link>
+              );
+            })}
+
+            {/* Empty State */}
+            {filteredCategories.length === 0 && (
+              <div className="col-span-full flex flex-col items-center justify-center py-16 text-gray-500">
+                <RiSearchLine size={48} className="mb-4 opacity-40" />
+                <p className="text-sm">
+                  No categories found for &quot;{searchQuery}&quot;
+                </p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </section>
   );
