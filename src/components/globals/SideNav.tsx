@@ -61,7 +61,7 @@ const Sidebar = () => {
 			icon: <MdOutlinePodcasts />, // Matches the broadcast icon in UI
 		},
 		{
-			href: "/categories",
+			href: "/category",
 			label: "Categories",
 			icon: <MdOutlineGridView />, // Matches the grid icon in UI
 		},
