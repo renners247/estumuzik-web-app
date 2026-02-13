@@ -14,51 +14,50 @@ const config: Config = {
 				"gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
 				"gradient-conic":
 					"conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-				"gradient-linear":
-					"linear-brown-gradient(133deg, #2B3221 9.11%, rgba(242, 242, 242, 0.00) 298.89%)",
-				"deep-blue-gradient":
-					"linear-gradient(128.08deg, rgba(2, 3, 8, 0.9) 34.62%, rgba(1, 32, 130, 0.9) 71.83%, rgba(0, 44, 179, 0.9) 99.89%)",
-				"green-gradient":
-					"linear-gradient(128.08deg, rgba(0, 194, 122, 0.9) 0%, rgba(0, 150, 100, 0.85) 50%, rgba(0, 100, 70, 0.9) 100%)",
-				"lemon-gradient": "linear-gradient(90deg, #118858 0%, #8EFACE 100%)",
+				// MTN Branded Gradients
+				"mtn-gradient": "linear-gradient(133deg, #FFCC00 0%, #E6B800 100%)",
+				"estu-dark-gradient":
+					"linear-gradient(128.08deg, #121212 0%, #212121 100%)",
 				"timebox-gradient":
-					"linear-gradient(180deg, rgba(127, 224, 111, 0.25) 0%, rgba(216, 221, 215, 0.25) 100%)",
-				"deep-green-gradient":
-					"linear-gradient(128.08deg, rgba(0, 80, 50, 0.95) 20%, rgba(0, 194, 122, 0.85) 70%, rgba(0, 150, 100, 0.9) 100%)",
+					"linear-gradient(180deg, rgba(255, 204, 0, 0.15) 0%, rgba(18, 18, 18, 0.05) 100%)",
 			},
 
 			colors: {
-				// Add your custom colors here
+				// MTN Primary Brand Colors
 				primary: {
-					50: "#E6F9F0",
-					100: "#00C27A",
-					200: "#81E045",
-					300: "#377D0B",
-					400: "#00753B",
-					500: "#B9D081",
-					600: "#00421C",
-					700: "#002911",
-					800: "#000F05",
-					900: "#000000",
+					50: "#FFFBEB",
+					100: "#FFF1B8",
+					200: "#FFE385",
+					300: "#FFD552",
+					400: "#FFC71F",
+					500: "#FFCC00", // The official MTN Yellow
+					600: "#D4AA00",
+					700: "#A88800",
+					800: "#7D6600",
+					900: "#524400",
+					DEFAULT: "#FFCC00",
 				},
+				// Estu Muzik Accent/Dark Theme
 				secondary: {
-					100: "#F5A3A3",
-					200: "#beff8b"
+					100: "#F5F5F5",
+					200: "#E5E5E5",
+					500: "#1A1A1A",
+					DEFAULT: "#1A1A1A",
 				},
 				status: {
-					100: "#248418", //active
-					200: "#DC400C", //blacklisted
-					300: "#636464", //unverified
-					400: "#BED6FF", //processing
-					500: "#EEDCA7", //rejected
-					600: "#FFBC8F", //blocked
-					700: "#B9F8B5", //successful
+					100: "#248418", // active
+					200: "#DC400C", // blacklisted
+					300: "#636464", // unverified
+					400: "#BED6FF", // processing
+					500: "#EEDCA7", // rejected
+					600: "#FFBC8F", // blocked
+					700: "#B9F8B5", // successful
 				},
 				black: {
 					100: "#000000",
 					200: "#101928",
 					300: "#0C1929",
-					400: "#121212",
+					400: "#121212", // Dark background for music apps
 					500: "#212121",
 					600: "#141414",
 				},
@@ -68,28 +67,12 @@ const config: Config = {
 					300: "#3E3E3E",
 					400: "#7A6D6D",
 				},
-				green_1: {
-					100: "#0F973D",
-					200: "#10B981",
-				},
-				red_1: {
-					100: "#D42620",
-				},
-				blue_1: {
-					100: "#0097D1",
-					200: "#038FC1",
-				},
 				gray_1: {
 					100: "#F2F2F2",
-					200: "#535353"
+					200: "#535353",
 				},
-				card_gradient: {
-					100: "#065f46",
-					200: "#047857",
-					300: "#022c22",
-				}
-
-				// Add more colors as needed
+				// Specific color for the 'MUZIK' section
+				muzik_accent: "#FFCC00",
 			},
 			fontSize: {
 				xxs: "10px",
@@ -98,6 +81,28 @@ const config: Config = {
 		},
 	},
 	darkMode: "class",
-	plugins: [heroui()],
+	plugins: [
+		heroui({
+			themes: {
+				light: {
+					colors: {
+						primary: {
+							DEFAULT: "#FFCC00",
+							foreground: "#000000",
+						},
+					},
+				},
+				dark: {
+					colors: {
+						primary: {
+							DEFAULT: "#FFCC00",
+							foreground: "#000000",
+						},
+						background: "#121212",
+					},
+				},
+			},
+		}),
+	],
 };
 export default config;
