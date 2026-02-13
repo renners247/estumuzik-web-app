@@ -16,7 +16,7 @@ const TrendingEpisodeCard = () => {
           className="object-cover"
         />
         <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-          <div className="w-10 h-10 rounded-full border-2 border-white bg-green_1-100 flex items-center justify-center transform group-hover:scale-110 transition-transform">
+          <div className="w-10 h-10 rounded-full border-2 border-white bg-primary-500 flex items-center justify-center transform group-hover:scale-110 transition-transform">
             <FaPlay className="text-white ml-1 text-sm " />
           </div>
         </div>
