@@ -69,7 +69,10 @@ const CategoryPage = () => {
         {categoriesIsLoading && (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-5 pb-24 sm:pb-8">
             {Array.from({ length: 10 }).map((_, i) => (
-              <Skeleton key={i} className="aspect-square rounded-xl" />
+              <Skeleton
+                key={i}
+                className="aspect-square rounded-xl bg-gray-800"
+              />
             ))}
           </div>
         )}
