@@ -41,3 +41,6 @@ export const getLatestEpisodes = async () =>
 
 export const getHandPicked = async (amount: number) =>
   axios.get(`${API_URL}/podcasts/handpicked?amount=${amount}`);
+
+export const getFavorites = async () =>
+  axios.get(`${API_URL}/episodes/favourites`);
