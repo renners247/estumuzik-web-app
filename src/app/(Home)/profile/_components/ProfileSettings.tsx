@@ -15,7 +15,8 @@ import { ImSpinner2 } from "react-icons/im";
 interface ProfileFormValues {
   first_name: string;
   last_name: string;
-  username: string;
+  // username: string;
+  phone_number: string;
   email: string;
   profile_picture?: File | null;
 }
@@ -23,7 +24,8 @@ interface ProfileFormValues {
 const ProfileSchema = Yup.object().shape({
   first_name: Yup.string().required("First name is required"),
   last_name: Yup.string().required("Last name is required"),
-  username: Yup.string().required("Username is required"),
+  // username: Yup.string().required("Username is required"),
+  phone_number: Yup.string().required("Phone number is required"),
   email: Yup.string()
     .email("Invalid email address")
     .required("Email is required"),
@@ -42,7 +44,7 @@ const ProfileSettings = () => {
     ["profile"],
     async () => {
       const response = await APICall(getUser);
-      return response?.data;
+      return response?.data?.data;
     },
     {
       staleTime: Infinity,
@@ -63,10 +65,11 @@ const ProfileSettings = () => {
   );
 
   const initialValues: ProfileFormValues = {
-    first_name: profileData?.user?.first_name || "",
-    last_name: profileData?.user?.last_name || "",
-    username: profileData?.user?.username || "",
-    email: profileData?.user?.email || "",
+    first_name: profileData?.data?.user?.first_name || "",
+    last_name: profileData?.data?.user?.last_name || "",
+    // username: profileData?.user?.username || "",
+    phone_number: profileData?.data?.user?.phone_number || "",
+    email: profileData?.data?.user?.email || "",
     profile_picture: null,
   };
 
@@ -78,7 +81,8 @@ const ProfileSettings = () => {
       const submissionData: ProfileFormValues = {
         first_name: values.first_name,
         last_name: values.last_name,
-        username: values.username,
+        // username: values.username,
+        phone_number: `+${values.phone_number}`,
         email: values.email,
         profile_picture: values.profile_picture,
       };
@@ -95,14 +99,13 @@ const ProfileSettings = () => {
   };
 
   return (
-    <div className="px-2 sm:px-4 pt-28 pb-5 w-full md:w-[805px] items-start max-w-[950px] overflow-y-auto">
+    <div className="px-2 sm:px-4 pb-5 w-full md:w-[805px] items-start max-w-[950px] overflow-y-auto">
       <h1 className="text-xl sm:text-2xl lg:text-3xl text-center sm:text-start font-bold leading-[1.9rem] text-white mb-4 sm:mb-7">
         Profile
       </h1>
       <div className="border border-amber-50 pt-6 pb-8 sm:py-8 px-2 sm:px-5 rounded-lg">
         <FormikProvider value={formik}>
           <Form onSubmit={formik.handleSubmit} className="">
-            
             <div className="space-y-5 mt-3 sm:mt-6">
               <div className="flex flex-col items-center gap-2">
                 <label className="block text-white text-sm font-medium mb-1">
@@ -122,9 +125,9 @@ const ProfileSettings = () => {
                       />
                     ) : (
                       <span className="text-white/80 text-3xl font-bold select-none">
-                        {formik.values.username &&
-                        formik.values.username.trim().length > 0
-                          ? formik.values.username
+                        {formik.values.first_name &&
+                        formik.values.first_name.trim().length > 0
+                          ? formik.values.first_name
                               .trim()
                               .split(" ")
                               .map((word) => word[0]?.toUpperCase())
@@ -210,18 +213,23 @@ const ProfileSettings = () => {
                   readonly={profileData?.data?.last_name !== null}
                 />
                 <TextInput
-                  id="username"
-                  label="Username"
+                  id="phone_number"
+                  label="Phone Number"
                   type="text"
-                  value={formik.values.username}
+                  value={
+                    formik.values.phone_number
+                      ? `+${formik.values.phone_number}`
+                      : ""
+                  }
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   className={`w-full pl-10 pr-2.5 py-3 text-xs md:text-base border border-white focus:border-transparent bg-transparent rounded-md outline-none text-white placeholder:text-gray-400 ${
-                    formik.touched.username && formik.errors.username
+                    formik.touched.phone_number && formik.errors.phone_number
                       ? "border-red-500"
                       : "border-black-300"
                   }`}
                   placeholder=""
+                  readonly={profileData?.data?.phone_number !== null}
                 />
                 <TextInput
                   id="email"

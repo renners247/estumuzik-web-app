@@ -1,8 +1,7 @@
 import React from "react";
-import { RiLoader2Line } from "react-icons/ri";
-// import { naijaDreamsLogoSmall } from "../../../public";
-// import { AfihanLogo, AfihanShortLogo } from "../../../public";
 import Picture from "../picture/Index";
+import { RiLoader2Line } from "react-icons/ri";
+import { logoImage } from "../../../public";
 
 interface GlobalLoaderProps {
   classname?: string;
@@ -42,8 +41,7 @@ const GlobalLoader = ({
             <div className="absolute w-20 h-20 rounded-full border-t-2 border-primary-100 animate-[spin_1.5s_linear_infinite_reverse]"></div>
 
             <Picture
-              // src={naijaDreamsLogoSmall}
-              src={""}
+              src={logoImage}
               alt="loading-image"
               priority
               className="w-[25px] lg:w-[30px] relative z-10 animate-pulse"

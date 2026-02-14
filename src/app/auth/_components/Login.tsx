@@ -59,6 +59,8 @@ const LoginForm: React.FC = () => {
     },
   });
 
+  const currentYear = new Date().getFullYear();
+
   return (
     <>
       <main className="min-h-screen w-full grid grid-cols-1 lg:grid-cols-10 bg-white lg:bg-[#0A0A0A]">
@@ -139,7 +141,7 @@ const LoginForm: React.FC = () => {
 
           {/* Bottom Copyright - Hidden on mobile if you want it exactly like the screenshot */}
           <div className="mt-auto pt-8 pb-8 px-6 hidden lg:block">
-            <p className="text-gray-500 text-xs">© Jolly 2023</p>
+            <p className="text-gray-500 text-xs">© Jolly {currentYear}</p>
           </div>
         </section>
 

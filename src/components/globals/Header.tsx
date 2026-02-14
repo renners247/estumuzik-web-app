@@ -1,10 +1,13 @@
 "use client";
 
+import { Fragment } from "react";
 import { RiSearchLine, RiLogoutBoxLine } from "react-icons/ri";
 import { Avatar } from "@heroui/react";
 import { signOut } from "../utils/data";
 
 import { useAppSelector } from "../Hooks";
+import { Menu, Transition } from "@headlessui/react";
+import { FiUser } from "react-icons/fi";
 
 const Header = () => {
   const { user } = useAppSelector((state: any) => state.auth);
@@ -65,10 +68,51 @@ const Header = () => {
 							isBordered={false}
 						/>
 					</div> */}
-          <div className="w-8 h-8 rounded-full bg-amber-400 flex items-center justify-center text-black font-bold text-lg text-white">
-            {initials}
-          </div>
         </div>
+
+        <Menu as="div" className="relative menu inline-block text-left ">
+          <div>
+            <Menu.Button className="menu-button cursor-pointer focus:outline-none p-1 hover:scale-110 transition-transform duration-200 active:scale-95">
+              {/* @ts-ignore */}
+              <span className="w-8 h-8 rounded-full bg-amber-400 flex items-center justify-center text-black font-bold text-lg text-white">
+                {initials}
+              </span>
+            </Menu.Button>
+          </div>
+
+          <Transition
+            as={Fragment}
+            enter="transition ease-out duration-200"
+            enterFrom="transform opacity-0 scale-95 -translate-y-2"
+            enterTo="transform opacity-100 scale-100 translate-y-0"
+            leave="transition ease-in duration-150"
+            leaveFrom="transform opacity-100 scale-100 translate-y-0"
+            leaveTo="transform opacity-0 scale-95 -translate-y-2"
+          >
+            <Menu.Items className="menu-items absolute right-0 mt-2 w-72 origin-top-right rounded-lg bg-black-100 shadow-xl backdrop-blur-sm focus:outline-none p-2 z-50 overflow-hidden">
+              {/* Background shimmer effect */}
+              <div className="absolute inset-0 overflow-hidden">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-white/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </div>
+
+              <Menu.Item>
+                {({ active }) => (
+                  <a
+                    href={"/profile"}
+                    className={`relative font-light  group flex w-full items-center rounded-md px-3 py-2 text-sm transition-all duration-200`}
+                  >
+                    <span className="text-lg mr-3 transition-transform duration-200 group-hover:scale-110">
+                      <FiUser color="white" />
+                    </span>
+                    <span className="transition-all text-white duration-200 group-hover:translate-x-1">
+                      Profile
+                    </span>
+                  </a>
+                )}
+              </Menu.Item>
+            </Menu.Items>
+          </Transition>
+        </Menu>
 
         <button
           onClick={() => signOut()}
