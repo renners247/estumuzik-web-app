@@ -1,4 +1,4 @@
-export interface PodcastEpisode {
+interface PodcastEpisode {
   id: number;
   podcast_id: number;
   content_url: string;
@@ -41,7 +41,7 @@ export interface PodcastEpisode {
   };
 }
 
-export interface NewestEpisode {
+interface NewestEpisode {
   id: number;
   title: string;
   description: string;
