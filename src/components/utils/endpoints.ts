@@ -32,3 +32,12 @@ export const subCategories = async (
       subcategory ? `&sub_category_name=${subcategory}` : ""
     }&page=${page}&per_page=${per_page}`,
   );
+
+export const topJolly = async (page: number, per_page: number) =>
+  axios.get(`${API_URL}/podcasts/top-jolly?page=${page}&per_page=${per_page}`);
+
+export const getLatestEpisodes = async () =>
+  axios.get(`${API_URL}/episodes/latest`);
+
+export const getHandPicked = async (amount: number) =>
+  axios.get(`${API_URL}/podcasts/handpicked?amount=${amount}`);
