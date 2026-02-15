@@ -2,24 +2,19 @@
 
 import { useState } from "react";
 import Picture from "../picture/Index";
-import { APICall } from "../utils/extra";
-import { MdFavorite } from "react-icons/md";
-import { removeFromFavorites } from "../utils/endpoints";
-import { useMutation, useQueryClient } from "react-query";
 import { useAppDispatch, useAppSelector } from "../Hooks";
 import { playPause, setActiveSong } from "../Redux/playerOne";
 import { setIsEpisodeRegistered } from "../Redux/ToggleModal";
 import { FaPlay, FaPause, FaPlus, FaCheck } from "react-icons/fa6";
 
-interface FavoritesCardProps {
+interface RecentlyPlayedCardProps {
   episode: NewestEpisode;
   allEpisodes: NewestEpisode[];
   index: number;
 }
 
-const FavoritesCard = ({ episode, allEpisodes, index }: FavoritesCardProps) => {
+const RecentlyPlayedCard = ({ episode, allEpisodes, index }: RecentlyPlayedCardProps) => {
   const dispatch = useAppDispatch();
-  const queryClient = useQueryClient();
   const { activeSong, isPlaying, isLoading } = useAppSelector(
     (state) => state.playerOne,
   );
@@ -54,21 +49,6 @@ const FavoritesCard = ({ episode, allEpisodes, index }: FavoritesCardProps) => {
   //   setFollowing(!following);
   // };
 
-  // Mutation for removing from favorites
-  const removeFromFavoritesMutation = useMutation(
-    (episodeId: number) =>
-      APICall(removeFromFavorites, [episodeId], false, false),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries("favorites");
-      },
-    },
-  );
-
-  const handleRemoveFromFavorite = (id: number) => {
-    removeFromFavoritesMutation.mutate(id);
-  };
-
   return (
     <div className="bg-[#1A1A1A] p-4 rounded-xl flex flex-col gap-4 group hover:bg-[#222] transition-colors cursor-pointer">
       {/* Podcast Image */}
@@ -78,15 +58,7 @@ const FavoritesCard = ({ episode, allEpisodes, index }: FavoritesCardProps) => {
           alt={episode.podcast?.title || episode.title}
           className="object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-500"
         />
-        {episode?.is_favourite && (
-          <button
-            className="absolute top-2 right-2 bg-gray-900/70 p-1 rounded-full backdrop-blur-sm transition-colors hover:bg-gray-900/90"
-            // title="favorite"
-            onClick={() => handleRemoveFromFavorite(episode?.id)}
-          >
-            <MdFavorite className="text-red-500 text-lg" />
-          </button>
-        )}
+        
       </div>
 
       {/* Details */}
@@ -145,4 +117,4 @@ const FavoritesCard = ({ episode, allEpisodes, index }: FavoritesCardProps) => {
   );
 };
 
-export default FavoritesCard;
+export default RecentlyPlayedCard;

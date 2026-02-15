@@ -13,11 +13,17 @@ import {
 import Picture from "@/components/picture/Index";
 import { useQuery } from "react-query";
 import { APICall } from "@/components/utils/extra";
-import { getFavorites } from "@/components/utils/endpoints";
+import {
+  getFavorites,
+  getPlaylists,
+  getRecentlyPlayed,
+} from "@/components/utils/endpoints";
 
 const LibraryPage = () => {
-  const [totalFavorites, setTotalFavorites] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [totalFavorites, setTotalFavorites] = useState(null);
+  const [totalPlaylists, setTotalPlaylists] = useState(null);
+  const [totalRecentlyPlayed, setTotalRecentlyPlayed] = useState(null);
 
   const { data: favoriteEpisodesData, isLoading } = useQuery(
     ["favoriteEpisodes"],
@@ -25,6 +31,36 @@ const LibraryPage = () => {
       const response = await APICall(getFavorites, false, false);
       const total = response?.data?.data?.data?.total;
       setTotalFavorites(total);
+      return response?.data?.data?.data;
+    },
+    {
+      staleTime: 1000 * 60 * 5,
+    },
+  );
+
+  const { data: playlistsData } = useQuery(
+    ["playlists"],
+    async () => {
+      const response = await APICall(getPlaylists, false, false); // Fetch 3 items
+      const total = response?.data?.data?.data?.total;
+      setTotalPlaylists(total);
+      return response?.data?.data?.data;
+    },
+    {
+      staleTime: 1000 * 60 * 5,
+    },
+  );
+
+  const { data: recentlyPlayedData } = useQuery(
+    ["recently-played"],
+    async () => {
+      const response = await APICall(
+        getRecentlyPlayed,
+        false,
+        false,
+      );
+      const total = response?.data?.data?.data?.total;
+      setTotalRecentlyPlayed(total);
       return response?.data?.data?.data;
     },
     {
@@ -45,24 +81,24 @@ const LibraryPage = () => {
     {
       id: "recently-played",
       title: "Recently played",
-      subtitle: "3 Episodes",
+      subtitle: `${totalPlaylists ? totalPlaylists : ""} Episodes`,
       image: recentlyPlayed,
-      href: "/library/recent",
+      href: "/library/recently-played",
     },
     {
       id: "playlists",
       title: "Your Playlists",
-      subtitle: "0 Playlist",
+      subtitle: `${totalPlaylists ? totalPlaylists : ""} Playlists`,
       image: playlist,
-      href: "/library/playlists",
+      href: "/library/playlist",
     },
-    {
-      id: "following",
-      title: "Podcast you follow",
-      subtitle: "2 Podcasts",
-      image: podcastFollow,
-      href: "/library/following",
-    },
+    // {
+    //   id: "following",
+    //   title: "Podcast you follow",
+    //   subtitle: "2 Podcasts",
+    //   image: podcastFollow,
+    //   href: "/library/following",
+    // },
   ];
 
   const filteredItems = libraryItems.filter((item) =>
