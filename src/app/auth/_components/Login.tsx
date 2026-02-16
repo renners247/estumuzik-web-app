@@ -45,7 +45,7 @@ const LoginForm: React.FC = () => {
 				dispatch(authLogin({ token: Token, user: User }));
 				hasSignedOut === false;
 				startTransition(() => {
-					router.push("/");
+					router.push("/loggedIn");
 				});
 				formik.resetForm();
 			},

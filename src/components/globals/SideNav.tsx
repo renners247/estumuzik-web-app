@@ -56,7 +56,7 @@ const Sidebar = () => {
 
 	const navItems: NavItem[] = [
 		{
-			href: "/discover",
+			href: "/",
 			label: "Discover",
 			icon: <MdOutlinePodcasts />, // Matches the broadcast icon in UI
 		},
