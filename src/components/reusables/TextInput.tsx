@@ -171,9 +171,9 @@ const TextInput = ({
 						onClick={togglePasswordVisibility}
 					>
 						{showPassword ? (
-							<FaEye className='text-black-100 text-sm' />
+							<FaEye className='text-white text-sm' />
 						) : (
-							<FaEyeSlash className='text-black-100 text-sm' />
+							<FaEyeSlash className='text-white text-sm' />
 						)}
 					</span>
 				)}

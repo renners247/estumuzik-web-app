@@ -1,6 +1,7 @@
 import axios from "axios";
 
 export const API_URL = process.env.NEXT_PUBLIC_BACK_URL;
+export const BaseUrl = process.env.NEXT_PUBLIC_FRONT_URL || "";
 
 export const login = async (data: any) =>
   axios.post(`${API_URL}/auth/login`, data);
@@ -41,3 +42,57 @@ export const getLatestEpisodes = async () =>
 
 export const getHandPicked = async (amount: number) =>
   axios.get(`${API_URL}/podcasts/handpicked?amount=${amount}`);
+
+export const getRecentlyPlayed = async (page: number, per_page: number) =>
+  axios.get(
+    `${API_URL}/episodes/plays?${page ? `page=${page}` : ""}${
+      per_page ? `&per_page=${per_page}` : ""
+    }`,
+  );
+
+export const getFavorites = async (page: number, per_page: number) =>
+  axios.get(
+    `${API_URL}/episodes/favourites?${page ? `page=${page}` : ""}${
+      per_page ? `&per_page=${per_page}` : ""
+    }`,
+  );
+
+export const addFavorite = async (episodeId: number) =>
+	axios.delete(`${API_URL}/episodes/favourites?episodeId=${episodeId}`);
+
+export const getEpisode = async (episodeId: number) =>
+	axios.get(`${API_URL}/episodes/${episodeId}`);
+
+export const getPodcast = async (podcastId: number) =>
+	axios.get(`${API_URL}/podcasts/${podcastId}`);
+
+export const removeFromFavorites = async (episodeId: number) =>
+  axios.delete(`${API_URL}/episodes/favourites?episodeId=${episodeId}`);
+
+export const getPlaylists = async (
+  page: number,
+  per_page: number,
+  name: string,
+) =>
+  axios.get(
+    `${API_URL}/playlists?${page ? `page=${page}` : ""}${
+      per_page ? `&per_page=${per_page}` : ""
+    }${name ? `&name=${name}` : ""}`,
+  );
+
+export const getPlaylistsEpisodes = async (
+  playlistId: number,
+  page: number,
+  per_page: number,
+) =>
+  axios.get(
+    `${API_URL}/playlists/${playlistId}/episodes?${page ? `page=${page}` : ""}${
+      per_page ? `&per_page=${per_page}` : ""
+    }`,
+  );
+
+export const updatePassword = async (data: {
+  phone_number: string;
+  old_password: string;
+  new_password: string;
+}) => axios.patch(`${API_URL}/users/change-password`, data);
