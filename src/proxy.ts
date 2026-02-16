@@ -17,7 +17,8 @@ export function proxy(req: NextRequest) {
 		return NextResponse.next();
 	}
 
-	const isAuthPage = pathname.startsWith("/auth");
+	const isAuthPage =
+		pathname.startsWith("/auth") || pathname.startsWith("/loggedIn");
 
 	// 2. PROTECT: If NOT authenticated and NOT on the login page, redirect to login
 	if (!isAuthenticated && !isAuthPage) {
@@ -37,5 +38,11 @@ export function proxy(req: NextRequest) {
 
 // 4. Matcher configuration: Ensure it covers all protected routes
 export const config = {
-	matcher: ["/", "/dashboard/:path*", "/discover/:path*", "/auth/:path*"],
+	matcher: [
+		"/",
+		"/dashboard/:path*",
+		"/discover/:path*",
+		"/auth/:path*,",
+		"/loggedIn",
+	],
 };
