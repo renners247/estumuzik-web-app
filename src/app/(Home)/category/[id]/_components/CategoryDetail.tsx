@@ -3,28 +3,18 @@
 import React, { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { IoChevronBack } from "react-icons/io5";
-import { LuListFilter } from "react-icons/lu";
 import FilterPills from "./FilterPills";
 import TrendingEpisodeCard from "./TrendingEpisodeCard";
-import PodcastShowCard from "./PodcastShowCard";
 import { useQuery } from "react-query";
 import { APICall } from "@/components/utils/extra";
 import { categories, subCategories } from "@/components/utils/endpoints";
 import { Skeleton } from "@heroui/react";
+import CategoryPodcasts from "./CategoryPodcasts";
+import { formatCategoryName } from "@/components/utils/function";
+import SimplePagination from "@/components/reusables/SimplePagination";
 
 interface CategoryDetailProps {
   categoryId: string;
-}
-
-interface ApiSubCategory {
-  name: string;
-  image_url: string;
-}
-
-interface ApiCategory {
-  name: string;
-  categories: ApiSubCategory[];
-  images: string[];
 }
 
 interface ApiEpisode {
@@ -44,9 +34,8 @@ const CategoryDetail = ({ categoryId }: CategoryDetailProps) => {
   const router = useRouter();
   const [activeFilter, setActiveFilter] = useState("All");
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [perPage, setPerPage] = useState<number>(15); // Changed from const to state
-  const categoryName =
-    categoryId ? categoryId.charAt(0).toUpperCase() + categoryId.slice(1) : "";
+  const [perPage, setPerPage] = useState<number>(10); // Changed from const to state
+  const categoryName = formatCategoryName(categoryId);
 
   // 1. Fetch Key Categories to get the subcategories for the current category
   const { data: categoriesData } = useQuery(["categories"], async () => {
@@ -69,12 +58,12 @@ const CategoryDetail = ({ categoryId }: CategoryDetailProps) => {
   }, [currentCategory]);
 
   const { data: episodesData, isLoading: episodesIsLoading } = useQuery(
-    ["categoryEpisodes", categoryId, activeFilter],
+    ["categoryEpisodes", categoryId, activeFilter, currentPage, perPage],
     async () => {
       const subCategoryParam = activeFilter === "All" ? "" : activeFilter;
       const response = await APICall(
         subCategories,
-        [currentPage, perPage, categoryId, subCategoryParam], // Args: page, per_page, name, subcategory
+        [currentPage, perPage, categoryId, subCategoryParam],
         false,
         false,
       );
@@ -87,6 +76,8 @@ const CategoryDetail = ({ categoryId }: CategoryDetailProps) => {
   );
 
   const episodes: ApiEpisode[] = episodesData?.data || [];
+
+  const totalPages = episodesData?.total;
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 lg:px-6 py-6 pb-24">
@@ -112,9 +103,15 @@ const CategoryDetail = ({ categoryId }: CategoryDetailProps) => {
         />
       </div>
 
+      <CategoryPodcasts
+        categoryId={categoryId}
+        categoryData={currentCategory}
+        subCategory={activeFilter}
+      />
+
       {/* Trending Episodes Section */}
-      <div className="mb-12">
-        <div className="mb-6">
+      <div className="mt-12">
+        <div className="mt-6">
           <h2 className="text-xl font-bold text-white mb-1">
             Trending episodes - {categoryName}
           </h2>
@@ -152,32 +149,19 @@ const CategoryDetail = ({ categoryId }: CategoryDetailProps) => {
             )}
           </div>
         }
+
+        {/* Pagination */}
+        {totalPages && totalPages > perPage && (
+          <SimplePagination
+            currentPage={currentPage}
+            totalContent={totalPages}
+            perPage={perPage}
+            onPageChange={(page: number) => setCurrentPage(page)}
+          />
+        )}
       </div>
 
       {/* All Podcasts Section */}
-      <div>
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-2 text-white font-medium cursor-pointer hover:text-gray-300">
-            <LuListFilter size={20} />
-            <span className="text-sm">
-              Sort by: <span className="text-gray-400">Newest</span>
-            </span>
-            <IoChevronBack className="rotate-[-90deg]" size={14} />
-          </div>
-
-          <button className="px-4 py-1.5 rounded-full border border-white/20 text-white text-sm hover:bg-white/5 transition-colors">
-            Show More
-          </button>
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-4 gap-y-8">
-          <PodcastShowCard isFollowing={false} />
-          <PodcastShowCard isFollowing={true} />
-          <PodcastShowCard isFollowing={false} />
-          <PodcastShowCard isFollowing={true} />
-          <PodcastShowCard isFollowing={false} />
-        </div>
-      </div>
     </div>
   );
 };

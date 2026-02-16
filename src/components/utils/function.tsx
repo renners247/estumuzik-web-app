@@ -725,3 +725,12 @@ export const FormSkeleton = () => (
 		</div>
 	</div>
 </div>;
+
+export const formatCategoryName = (categoryId: string) => {
+	if (!categoryId) return "";
+
+	return decodeURIComponent(categoryId)
+		.split(" ")
+		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+		.join(" ");
+};
