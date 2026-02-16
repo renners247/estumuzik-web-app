@@ -6,6 +6,7 @@ import AppMenu from "./(Home)/AppMenu";
 import MainDiscoverView from "./(Home)/MainDiscoverView";
 import TopJolly from "./(Home)/_components/TopJolly";
 import Handpicked from "./(Home)/_components/Handpicked";
+import EditorsPick from "./(Home)/_components/EditorsPick";
 import NewestEpisodes from "./(Home)/_components/NewestEpisodes";
 
 const { description, keywords, title, url } = SEODATA.default;
@@ -41,6 +42,7 @@ const page = () => {
   return (
     <Applayout className="px-2 lg:px-0 mt-4 lg:mt-16">
       <MainDiscoverView />
+      <EditorsPick />
       <TopJolly />
       <NewestEpisodes />
       <Handpicked />
