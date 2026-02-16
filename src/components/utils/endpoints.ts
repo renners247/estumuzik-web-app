@@ -75,6 +75,9 @@ export const getEpisodeStatus = async (statusId: number) =>
 export const getEpisode = async (episodeId: number) =>
 	axios.get(`${API_URL}/episodes/${episodeId}`);
 
+export const getEpisodeComments = async (episodeId: number) =>
+	axios.get(`${API_URL}/episodes/${episodeId}/comments`);
+
 export const getPodcast = async (podcastId: number) =>
 	axios.get(`${API_URL}/podcasts/${podcastId}`);
 
