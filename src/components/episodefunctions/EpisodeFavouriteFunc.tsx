@@ -36,7 +36,7 @@ const EpisodeFavouriteFunc = ({
 			return response?.data?.data;
 		},
 		{
-			staleTime: 5000,
+			staleTime: 6000,
 			refetchOnWindowFocus: true,
 		},
 	);

@@ -66,6 +66,9 @@ export const removeFromFavorites = async (episodeId: number) =>
 export const addToQueue = async (episodeId: number) =>
 	axios.post(`${API_URL}/episodes/${episodeId}/queues`);
 
+export const registerPlayEpisode = async (episodeId: number) =>
+	axios.post(`${API_URL}/episodes/plays?episodeId=${episodeId}`);
+
 export const removeQueue = async (episodeId: number) =>
 	axios.delete(`${API_URL}/episodes/${episodeId}/queues`);
 

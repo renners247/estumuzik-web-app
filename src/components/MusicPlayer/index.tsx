@@ -58,7 +58,7 @@ import Cookies from "js-cookie";
 import { AUTH_TOKEN_KEY, hasSignedOut } from "../utils/data";
 import EpisodeFavouriteFunc from "../episodefunctions/EpisodeFavouriteFunc";
 import EpisodePlayListAdd from "../Cards/_components/EpisodePlayListAdd";
-import { BaseUrl } from "../utils/endpoints";
+import { BaseUrl, registerPlayEpisode } from "../utils/endpoints";
 import { RiShareLine } from "react-icons/ri";
 
 const MusicPlayer: React.FC = () => {
@@ -159,7 +159,6 @@ const MusicPlayer: React.FC = () => {
 	}, [currentIndex]);
 
 	useEffect(() => {
-		//   Save the player state to localStorage whenever it changes
 		const playerState = {
 			isPlaying: false,
 			volume,
@@ -169,20 +168,20 @@ const MusicPlayer: React.FC = () => {
 	}, [isPlaying, volume, seekTime, appTime]);
 
 	// plays api setup
-	// const registerPlayMutation = useMutation(
-	// 	(episodeId: number | string) =>
-	// 		APICall(registerPlayEpisode, episodeId, false, false),
-	// 	{
-	// 		onSuccess: () => {
-	// 			// Handle success if needed
-	// 		},
-	// 	},
-	// );
+	const registerPlayMutation = useMutation(
+		(episodeId?: number | string) =>
+			APICall(registerPlayEpisode, [episodeId], false, false),
+		{
+			onSuccess: () => {
+				// Handle success if needed
+			},
+		},
+	);
 
 	// I want to use this functionality to register an episode as played when the track time is 15%. I only want to register an episode as played once the when another track is played register it again as play also when a track is replayed register it as another play
 	const handleRegisterPlay = async (episodeId?: number) => {
 		try {
-			// await registerPlayMutation.mutateAsync(episodeId);
+			await registerPlayMutation.mutateAsync(episodeId);
 		} catch (error: any) {}
 	};
 
@@ -261,65 +260,6 @@ const MusicPlayer: React.FC = () => {
 		}
 	};
 
-	const handleRemoveLikeEpisode = async (episodeId: number | string) => {
-		try {
-			// Use the mutate function provided by useMutation
-			dispatch(setIsRemoveLikeEpisode(episodeId));
-			// await removeLikeEpisodeMutation.mutateAsync(episodeId);
-		} catch (error) {
-			// Revert the change if the mutation fails
-			// Handle error if needed
-			dispatch(setIsLikedEpisode(episodeId));
-		}
-	};
-
-	// const likeEpisodeMutation = useMutation(
-	// 	(episodeId: number | string) => APICall(likeEpisode, episodeId, false),
-	// 	{
-	// 		onSuccess: (data, variables) => {
-	// 			const { episodeId }: any = variables; // Destructure episodeId from variables
-	// 			// Handle success if needed
-	// 			dispatch(setIsLikedEpisode(episodeId));
-	// 		},
-	// 	},
-	// );
-
-	// const removeLikeEpisodeMutation = useMutation(
-	// 	(episodeId: number | string) => APICall(removeLikeEpisode, episodeId, true),
-	// 	{
-	// 		onSuccess: (data, variables) => {
-	// 			const { episodeId }: any = variables; // Destructure episodeId from variables
-	// 			// Handle success if needed
-	// 			dispatch(setIsRemoveLikeEpisode(episodeId));
-	// 		},
-	// 	},
-	// );
-
-	// const handleLikeEpisodeClick = (episodeId: number) => {
-	// 	const isLiked = likedEpisodes ? likedEpisodes[episodeId] : false;
-
-	// 	if (user) {
-	// 		if (!likeEpisodeMutation.isLoading) {
-	// 			if (!isLiked) {
-	// 				handleLikeEpisode(episodeId); // You can still call the non-Redux function if needed
-	// 			} else {
-	// 				handleRemoveLikeEpisode(episodeId); // You can still call the non-Redux function if needed
-	// 			}
-	// 		}
-	// 	} else {
-	// 		dispatch(toggleLoginModal());
-	// 	}
-	// };
-
-	// const handleQueueEpisode = async (episode_id: number) => {
-	// 	if (user) {
-	// 		const response = await APICall(addToQueue, [episode_id], true);
-	// 	} else {
-	// 		dispatch(toggleLoginModal());
-	// 	}
-	// };
-
-	// console.log(currentSongs)
 	const fullUrl = `${BaseUrl}/${activeSong?.id}`;
 	const handleNativeShare = async () => {
 		if (navigator.share) {
@@ -547,11 +487,12 @@ const MusicPlayer: React.FC = () => {
 													color='#fff'
 													size={20}
 													onClick={rewind30Secs}
-													className={`${
-														appTime < 30
-															? "cursor-not-allowed"
-															: "cursor-pointer"
-													}`}
+													className={`cursor-pointer`}
+													// className={`${
+													// 	appTime < 30
+													// 		? "cursor-not-allowed"
+													// 		: "cursor-pointer"
+													// }`}
 												/>
 											</TooltipWrapper>
 											<TooltipWrapper content='Prev' position='top'>
@@ -587,7 +528,7 @@ const MusicPlayer: React.FC = () => {
 														<TooltipWrapper content='Pause' position='top'>
 															<button
 																className='flex items-center justify-center bg-gradient-button h-10 w-10 overflow-hidden rounded-full z-10 transition'
-																onClick={handlePlayPause} // help create a function that will trigger plays api when player time percentage is 15%
+																onClick={handlePlayPause}
 															>
 																<BsFillPauseFill size={32} color='#fff' />
 															</button>
@@ -669,40 +610,20 @@ const MusicPlayer: React.FC = () => {
 												>
 													<RiShareLine className='text-xs lg:text-base' />
 												</button>
-												{/* <TooltipWrapper content='Share episode' position='top'>
-												<FaShareAlt
-													size={18}
-													onClick={handleShareClick}
-													color='#D0D5DD'
-													className='cursor-pointer'
-												/>
-											</TooltipWrapper> */}
-												{/* Download icon */}
-												{/* <TooltipWrapper content='Download' position='top'>
-								<IoMdDownload
-									size={21}
-									color='#D0D5DD'
-									className='cursor-pointer'
-								/>
-							</TooltipWrapper> */}
 											</div>
 											<div className='ml-2'>
 												<CustomRangeVolume
-													// Logic
-													sliderValue={volume * 100} // Volume (0.0 - 1.0) to Percentage (0 - 100)
+													sliderValue={volume * 100}
 													onChange={onScrubVolume}
 													onAfterChange={onScrubEnd}
 													minValue={0}
 													maxValue={100}
-													// Logic for the icon click (toggle mute)
 													setVolume={(val) => dispatch(setVolume(val))}
-													// MTN Branding
-													backgroundColor='#333333' // Dark track
-													sliderColor='#FFCC00' // MTN Yellow fill
-													circleColor='#FFCC00' // MTN Yellow dot
-													// Custom Dimensions provided by you
-													width='w-[4.5rem]' // Slightly wider for easier desktop use
-													height='h-[3px]' // Perfect balance between sleek and clickable
+													backgroundColor='#333333'
+													sliderColor='#FFCC00'
+													circleColor='#FFCC00'
+													width='w-[4.5rem]'
+													height='h-[3px]'
 												/>
 											</div>
 										</div>
@@ -712,8 +633,8 @@ const MusicPlayer: React.FC = () => {
 
 							{/* mobile */}
 							<motion.div
-								initial={{ opacity: 0, y: 100 }} // Initial position and opacity
-								animate={{ opacity: 1, y: 0 }} // Animation target
+								initial={{ opacity: 0, y: 100 }}
+								animate={{ opacity: 1, y: 0 }}
 								transition={{ type: "spring", damping: 15, stiffness: 100 }}
 								className={`flex flex-col px-1 pt-2 pb-3 h-fit animate-slideup bg-gradient-to-br from-white/10 to-primary-100/60 backdrop-blur-lg fixed bottom-0 right-0 z-40 lg:hidden w-full ${
 									activeSong ? "visible" : "invisible"
@@ -726,22 +647,16 @@ const MusicPlayer: React.FC = () => {
 										</span>
 										<div className='flex-1 flex w-full item-center'>
 											<CustomRangeInput
-												// Logic: Pass the calculated percentage (0-100)
 												sliderValue={(appTime / duration) * 100}
-												// Handlers
 												onChange={onScrub}
 												onAfterChange={onScrubEnd}
-												// Limits: Since sliderValue is 0-100, maxValue must be 100
 												minValue={0}
 												maxValue={100}
-												// --- MTN BRAND STYLING ---
-												backgroundColor='#2D2D2D' // Deep charcoal background for the track
-												sliderColor='#FFCC00' // Iconic MTN Yellow for the progress fill
-												circleColor='#FFCC00' // Iconic MTN Yellow for the seeker dot
-												// Dimensions
+												backgroundColor='#2D2D2D'
+												sliderColor='#FFCC00'
 												width='w-full'
-												height='h-1' // Sleeker thin bar (standard for music apps)
-												circleRefTop='50%' // Centers the circle vertically perfectly
+												height='h-1'
+												circleRefTop='50%'
 											/>
 										</div>
 										<span className='w-7 flex items-center'>
@@ -795,8 +710,7 @@ const MusicPlayer: React.FC = () => {
 												/>
 											</TooltipWrapper>
 										</div>
-										{/* <LikeButton episodeId={activeSong?.id} />
-					<QueueButton episodeId={activeSong?.id} /> */}
+
 										<TooltipWrapper content='Prev' position='top'>
 											<AiOutlineStepForward
 												color='#fff'
