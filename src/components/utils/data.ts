@@ -15,7 +15,6 @@ export const signOut = () => {
 		localStorage.setItem("EstumuzikredirectAfterLogin", window.location.href);
 	}
 	Cookies.remove(AUTH_TOKEN_KEY);
-	Cookies.remove(PERMISSIONS);
 	toast.success("Logged out successfully!");
 	window.location.pathname = "/";
 };

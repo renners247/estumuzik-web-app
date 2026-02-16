@@ -31,10 +31,10 @@ const VolumeBar = ({
 
 	return (
 		<div
-			className={`hidden lg:flex items-center ${isMinimized ? "flex-col-reverse gap-4 mb-4" : "justify-end gap-2"}`}
+			className={`hidden lg:flex flex-col items-center ${isMinimized ? "flex-col-reverse gap-4" : "justify-end gap-2"}`}
 		>
 			{/* Volume Icon Logic */}
-			<div className='flex items-center justify-center w-8'>
+			<div className='flex items-center justify-center'>
 				{value > 0.5 ? (
 					<TooltipWrapper content='Mute' position='top'>
 						<BsFillVolumeUpFill
@@ -60,57 +60,53 @@ const VolumeBar = ({
 						/>
 					</TooltipWrapper>
 				)}
-			</div>
 
-			{/* Styled Range Input */}
-			<div className='relative group flex items-center'>
-				<input
-					type='range'
-					step='any'
-					value={value}
-					min={min}
-					max={max}
-					onChange={onChange}
-					className={`cursor-pointer appearance-none bg-transparent rounded-full outline-none transition-all
-						${
-							isMinimized
-								? "w-24 h-1.5 -rotate-90 origin-center"
-								: "w-20 h-1 hover:h-1.5"
-						}`}
-					style={{
-						// Perfect MTN Gradient Fill
-						background: `linear-gradient(to right, #FFCC00 ${percentage}%, #333333 ${percentage}%)`,
-					}}
-				/>
+				{/* Styled Range Input */}
+				<div className='relative group flex items-center'>
+					<input
+						type='range'
+						step='any'
+						value={value}
+						min={min}
+						max={max}
+						onChange={onChange}
+						className={`cursor-pointer appearance-none bg-transparent rounded-full outline-none transition-all
+						${isMinimized ? "w-10 h-1.5 -rotate-90 origin-center" : "w-10 h-1 hover:h-1.5"}`}
+						style={{
+							// Perfect MTN Gradient Fill
+							background: `linear-gradient(to right, #FFCC00 ${percentage}%, #333333 ${percentage}%)`,
+						}}
+					/>
 
-				{/* Custom styling for the slider "thumb" (The dot) */}
-				<style jsx>{`
-					input[type="range"]::-webkit-slider-thumb {
-						appearance: none;
-						height: 12px;
-						width: 12px;
-						background: #ffcc00;
-						border-radius: 50%;
-						border: 2px solid white;
-						box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-						opacity: 0;
-						transition: opacity 0.2s;
-					}
-					.group:hover input[type="range"]::-webkit-slider-thumb {
-						opacity: 1;
-					}
-					input[type="range"]::-moz-range-thumb {
-						height: 12px;
-						width: 12px;
-						background: #ffcc00;
-						border-radius: 50%;
-						border: 2px solid white;
-						opacity: 0;
-					}
-					.group:hover input[type="range"]::-moz-range-thumb {
-						opacity: 1;
-					}
-				`}</style>
+					{/* Custom styling for the slider "thumb" (The dot) */}
+					<style jsx>{`
+						input[type="range"]::-webkit-slider-thumb {
+							appearance: none;
+							height: 12px;
+							width: 12px;
+							background: #ffcc00;
+							border-radius: 50%;
+							border: 2px solid white;
+							box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+							opacity: 0;
+							transition: opacity 0.2s;
+						}
+						.group:hover input[type="range"]::-webkit-slider-thumb {
+							opacity: 1;
+						}
+						input[type="range"]::-moz-range-thumb {
+							height: 12px;
+							width: 12px;
+							background: #ffcc00;
+							border-radius: 50%;
+							border: 2px solid white;
+							opacity: 0;
+						}
+						.group:hover input[type="range"]::-moz-range-thumb {
+							opacity: 1;
+						}
+					`}</style>
+				</div>
 			</div>
 		</div>
 	);

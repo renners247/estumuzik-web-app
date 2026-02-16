@@ -8,6 +8,7 @@ import Picture from "@/components/picture/Index";
 import { useAppDispatch, useAppSelector } from "@/components/Hooks";
 import { playPause, setActiveSong } from "@/components/Redux/playerOne";
 import { setIsEpisodeRegistered } from "@/components/Redux/ToggleModal";
+import PodcastEpisodeShareButton from "@/components/Player/PodcastEpisodeShareButton";
 
 // ... (PodcastEpisode interface remains the same)
 
@@ -60,18 +61,18 @@ const PodcastCard = ({ data, index, allEpisodes }: PodcastProps) => {
 			<div className='absolute top-0 left-0 w-full h-3/5 opacity-50 z-0'>
 				<Picture
 					src={podcastCover}
-					alt={data.podcast.title}
+					alt={data?.podcast.title}
 					className='w-full h-full object-cover grayscale-[30%]'
 				/>
 				<div className='absolute inset-0 bg-gradient-to-b from-transparent via-[#062c1b]/40 to-[#0a1a12]'></div>
 			</div>
 
-			<div className='relative z-10 p-5 flex flex-col'>
+			<div className='relative z-10 p-5 flex flex-col justify-between lg:h-[370px]'>
 				{/* 3. Overlapping Thumbnail with Play/Pause Button */}
 				<div className='relative size-32 mx-auto lg:mx-0 mb-6 mt-4 shadow-2xl'>
 					<Picture
 						src={episodeThumbnail}
-						alt={data.title}
+						alt={data?.title}
 						className='w-full h-full object-cover rounded-2xl border-2 border-white/10'
 					/>
 
@@ -104,10 +105,10 @@ const PodcastCard = ({ data, index, allEpisodes }: PodcastProps) => {
 						{category}
 					</span>
 					<h3 className='text-white font-bold text-lg leading-tight tracking-wide line-clamp-1'>
-						{data.title}
+						{data?.title}
 					</h3>
 					<p className='text-gray-400 text-xs line-clamp-3 leading-relaxed font-normal opacity-80'>
-						{data.description}
+						{data?.description}
 					</p>
 				</div>
 
@@ -122,6 +123,7 @@ const PodcastCard = ({ data, index, allEpisodes }: PodcastProps) => {
 					<button className='size-11 flex items-center justify-center rounded-full border border-gray-500/40 text-white hover:bg-white/10 transition-all'>
 						<RiShareLine size={20} />
 					</button>
+					<PodcastEpisodeShareButton data={data} />
 					<button className='size-11 flex items-center justify-center rounded-full border border-gray-500/40 text-white hover:bg-white/10 transition-all'>
 						<AiOutlinePlus size={20} />
 					</button>
