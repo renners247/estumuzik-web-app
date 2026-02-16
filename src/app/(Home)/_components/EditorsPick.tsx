@@ -35,7 +35,7 @@ const EditorsPick = () => {
       {/* Card */}
       <div className="px-2">
         {isLoading ?
-          <div className="w-full h-[250px] bg-[#05180F] rounded-2xl p-6 flex gap-8 items-center">
+          <div className="w-full h-[250px] bg-bg-500 rounded-2xl p-6 flex gap-8 items-center">
             <Skeleton className="size-[200px] rounded-xl bg-white/5 shrink-0" />
             <div className="flex flex-col gap-4 w-full">
               <Skeleton className="h-6 w-32 rounded bg-white/5" />
