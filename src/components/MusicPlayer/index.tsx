@@ -56,6 +56,10 @@ import Player from "./Player";
 import { loadingBarRef } from "@/app/redux-provider";
 import Cookies from "js-cookie";
 import { AUTH_TOKEN_KEY, hasSignedOut } from "../utils/data";
+import EpisodeFavouriteFunc from "../episodefunctions/EpisodeFavouriteFunc";
+import EpisodePlayListAdd from "../Cards/_components/EpisodePlayListAdd";
+import { BaseUrl } from "../utils/endpoints";
+import { RiShareLine } from "react-icons/ri";
 
 const MusicPlayer: React.FC = () => {
 	const {
@@ -316,10 +320,19 @@ const MusicPlayer: React.FC = () => {
 	// };
 
 	// console.log(currentSongs)
-
-	const handleShareClick = () => {
-		// dispatch(setSocialShareEpisode(activeSong));
-		dispatch(toggleSocialShareModal());
+	const fullUrl = `${BaseUrl}/${activeSong?.id}`;
+	const handleNativeShare = async () => {
+		if (navigator.share) {
+			try {
+				await navigator.share({
+					title: activeSong?.title,
+					text: activeSong?.description,
+					url: fullUrl,
+				});
+			} catch (err) {
+				console.log("Share cancelled");
+			}
+		}
 	};
 
 	return (
@@ -637,12 +650,25 @@ const MusicPlayer: React.FC = () => {
 														className='cursor-pointer hover:scale-75 transition-[.4]'
 													/>
 												</TooltipWrapper>
+												{activeSong && (
+													<>
+														<EpisodeFavouriteFunc
+															episodeData={activeSong}
+															className='size-9'
+														/>
+														<EpisodePlayListAdd
+															episodeData={activeSong}
+															className='size-9'
+														/>
+													</>
+												)}
 
-												<LikeButton episodeId={activeSong?.id} />
-
-												<QueueButton episodeId={activeSong?.id} />
-
-												<ShareButton episode={activeSong} />
+												<button
+													onClick={handleNativeShare}
+													className={`size-9 flex items-center justify-center rounded-full text-white hover:text-white border border-white/40 hover:bg-white/10 transition-al`}
+												>
+													<RiShareLine className='text-xs lg:text-base' />
+												</button>
 												{/* <TooltipWrapper content='Share episode' position='top'>
 												<FaShareAlt
 													size={18}

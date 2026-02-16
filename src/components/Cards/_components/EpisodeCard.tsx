@@ -12,6 +12,7 @@ import { BaseUrl } from "@/components/utils/endpoints";
 import EpisodeFavouriteFunc from "@/components/episodefunctions/EpisodeFavouriteFunc";
 import { useRouter } from "next/navigation";
 import GlobalLoader from "@/components/reusables/GlobalLoader";
+import EpisodePlayListAdd from "./EpisodePlayListAdd";
 
 // ... (PodcastEpisode interface remains the same)
 
@@ -136,7 +137,7 @@ const PodcastCard = ({ data, index, allEpisodes }: PodcastProps) => {
 									router.push(`/episode/${data?.id}`);
 								})
 							}
-							className='text-white font-bold text-lg leading-tight tracking-wide line-clamp-1'
+							className='text-white hover:text-primary-400 font-bold text-lg leading-tight cursor-pointer tracking-wide line-clamp-1'
 						>
 							{data?.title}
 						</h3>
@@ -148,20 +149,17 @@ const PodcastCard = ({ data, index, allEpisodes }: PodcastProps) => {
 					{/* 5. Action Buttons */}
 					<div className='flex items-center gap-3.5'>
 						<EpisodeFavouriteFunc episodeData={data} />
-
-						<button className='size-11 flex items-center justify-center rounded-full border border-gray-500/40 text-white hover:bg-white/10 transition-all'>
-							<MdPlaylistAdd size={22} />
-						</button>
+						<EpisodePlayListAdd episodeData={data} />
 
 						<button
 							onClick={handleNativeShare}
-							className={`size-11 flex items-center justify-center rounded-full border border-gray-500/40 text-white hover:bg-white/10 transition-al`}
+							className={`size-11 flex items-center justify-center rounded-full text-white/70 hover:text-white border border-white/40 hover:bg-white/10 transition-al`}
 						>
-							<RiShareLine className='text-xs lg:text-base' />
+							<RiShareLine className='text-xs lg:text-lg' />
 						</button>
-						<button className='size-11 flex items-center justify-center rounded-full border border-gray-500/40 text-white hover:bg-white/10 transition-all'>
+						{/* <button className='size-11 flex items-center justify-center rounded-full text-zinc-500 hover:text-zinc-300 border border-gray-500/40  hover:bg-white/10 transition-all'>
 							<AiOutlinePlus size={20} />
-						</button>
+						</button> */}
 					</div>
 				</div>
 			</div>
