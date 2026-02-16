@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import { useQuery } from "react-query";
 import { Skeleton } from "@heroui/react";
+import { useEffect, useState } from "react";
+import GoBack from "../../_components/GoBack";
 import { APICall } from "@/components/utils/extra";
 import { getFavorites } from "@/components/utils/endpoints";
 import FavoritesCard from "@/components/Cards/FavoritesCard";
@@ -21,25 +22,34 @@ const Favorites = () => {
         false,
         false,
       );
-      const total = response?.data?.data?.data?.total;
-      setTotalFavorites(total);
+      const total = response?.data?.data?.total;
+      console.log("total: ", total);
+
       return response?.data?.data?.data;
     },
     {
-      staleTime: 1000 * 60 * 5,
+      // staleTime: 1000 * 60 * 5,
     },
   );
 
   const favoriteEpisodes: NewestEpisode[] = favoritesData?.data;
 
+  useEffect(() => {
+    setTotalFavorites(favoritesData?.total);
+    console.log("total favorites: ", totalFavorites);
+  }, []);
+
   return (
     <div className="space-y-6 mt-10">
       {/* Header */}
-      <div className="flex flex-col gap-1 px-2">
-        <h2 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
-          <span>❤️</span> Your Favorite Episodes
-        </h2>
-        <p className="text-gray-400 text-sm">Episodes you love</p>
+      <div className="space-y-8">
+        <GoBack />
+        <div className="flex flex-col gap-1 px-2">
+          <h2 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+            <span>❤️</span> Your Favorite Episodes
+          </h2>
+          <p className="text-gray-400 text-sm">Episodes you love</p>
+        </div>
       </div>
 
       {/* Grid */}
@@ -80,7 +90,7 @@ const Favorites = () => {
                   key={index}
                   className={`w-8 h-8 rounded-full flex items-center justify-center ${
                     currentPage === index + 1
-                      ? "bg-primary-100 text-white"
+                      ? "bg-primary-500 text-white"
                       : "bg-gray-700 text-gray-300"
                   }`}
                   onClick={() => setCurrentPage(index + 1)}
