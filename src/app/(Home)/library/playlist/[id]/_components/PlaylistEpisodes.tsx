@@ -2,6 +2,7 @@
 
 import { useQuery } from "react-query";
 import { Skeleton } from "@heroui/react";
+import GoBack from "../../../_components/GoBack";
 import { APICall } from "@/components/utils/extra";
 import { getPlaylistsEpisodes } from "@/components/utils/endpoints"; // Ensure this is exported
 import NewestEpisodeCard from "@/components/Cards/NewestEpisodeCard";
@@ -33,14 +34,17 @@ const PlaylistEpisodes = ({ playlistId }: PlaylistIdProps) => {
   return (
     <div className="space-y-6 mt-10">
       {/* Header */}
-      <div className="flex items-center justify-between px-2">
-        <h2 className="text-2xl font-bold text-white tracking-tight">
-          Episodes in Playlist
-        </h2>
+      <div className="space-y-8">
+        <GoBack />
+        <div className="flex items-center justify-between px-2">
+          <h2 className="text-2xl font-bold text-white tracking-tight">
+            Episodes in Playlist
+          </h2>
 
-        <button className="px-5 py-1.5 border border-white/20 text-xs font-bold text-white rounded-full uppercase hover:bg-white/10 transition-all">
-          See all
-        </button>
+          <button className="px-5 py-1.5 border border-white/20 text-xs font-bold text-white rounded-full uppercase hover:bg-white/10 transition-all">
+            See all
+          </button>
+        </div>
       </div>
 
       {/* Grid Layout */}
@@ -69,7 +73,9 @@ const PlaylistEpisodes = ({ playlistId }: PlaylistIdProps) => {
               />
             ))
         ) : (
-          <h3 className="font-bold text-lg text-zinc-100 truncate group-hover:text-white">No episodes found</h3>
+          <h3 className="font-bold text-lg text-zinc-100 truncate group-hover:text-white">
+            No episodes found
+          </h3>
         )}
       </div>
     </div>

@@ -72,11 +72,11 @@ const Header = () => {
 
         <Menu as="div" className="relative menu inline-block text-left ">
           <div>
-            <Menu.Button className="menu-button cursor-pointer focus:outline-none p-1 hover:scale-110 transition-transform duration-200 active:scale-95">
+            <Menu.Button className="menu-button w-8 h-8 rounded-full bg-amber-400 flex items-center justify-center text-black font-bold text-lg text-white cursor-pointer focus:outline-none p-1 hover:scale-110 transition-transform duration-200 active:scale-95">
               {/* @ts-ignore */}
-              <span className="w-8 h-8 rounded-full bg-amber-400 flex items-center justify-center text-black font-bold text-lg text-white">
-                {initials}
-              </span>
+              {/* <span className="w-8 h-8 rounded-full bg-amber-400 flex items-center justify-center text-black font-bold text-lg text-white">
+              </span> */}
+              {initials}
             </Menu.Button>
           </div>
 

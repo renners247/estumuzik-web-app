@@ -34,7 +34,7 @@ const LibraryPage = () => {
       return response?.data?.data?.data;
     },
     {
-      staleTime: 1000 * 60 * 5,
+      // staleTime: 1000 * 60 * 5,
     },
   );
 
@@ -47,7 +47,7 @@ const LibraryPage = () => {
       return response?.data?.data?.data;
     },
     {
-      staleTime: 1000 * 60 * 5,
+      // staleTime: 1000 * 60 * 5,
     },
   );
 
@@ -64,7 +64,7 @@ const LibraryPage = () => {
       return response?.data?.data?.data;
     },
     {
-      staleTime: 1000 * 60 * 5,
+      // staleTime: 1000 * 60 * 5,
     },
   );
 
@@ -74,21 +74,21 @@ const LibraryPage = () => {
     {
       id: "favorites",
       title: "Your Favorites",
-      subtitle: `${totalFavorites ? totalFavorites : ""} Episodes`,
+      subtitle: `${totalFavorites && totalFavorites !== null ? totalFavorites : ""} Episodes`,
       image: favorites,
       href: "/library/favorites",
     },
     {
       id: "recently-played",
       title: "Recently played",
-      subtitle: `${totalPlaylists ? totalPlaylists : ""} Episodes`,
+      subtitle: `${totalPlaylists && totalPlaylists !== null ? totalPlaylists : ""} Episodes`,
       image: recentlyPlayed,
       href: "/library/recently-played",
     },
     {
       id: "playlists",
       title: "Your Playlists",
-      subtitle: `${totalPlaylists ? totalPlaylists : ""} Playlists`,
+      subtitle: `${totalPlaylists && totalPlaylists !== null ? totalPlaylists : ""} Playlists`,
       image: playlist,
       href: "/library/playlist",
     },
