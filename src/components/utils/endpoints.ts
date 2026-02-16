@@ -42,3 +42,38 @@ export const getLatestEpisodes = async () =>
 
 export const getHandPicked = async (amount: number) =>
 	axios.get(`${API_URL}/podcasts/handpicked?amount=${amount}`);
+
+export const getRecentlyPlayed = async (page: number, per_page: number) =>
+	axios.get(
+		`${API_URL}/episodes/plays?${page ? `page=${page}` : ""}${
+			per_page ? `&per_page=${per_page}` : ""
+		}`,
+	);
+
+export const getFavorites = async (page: number, per_page: number) =>
+	axios.get(
+		`${API_URL}/episodes/favourites?${page ? `page=${page}` : ""}${
+			per_page ? `&per_page=${per_page}` : ""
+		}`,
+	);
+
+export const removeFromFavorites = async (episodeId: number) =>
+	axios.delete(`${API_URL}/episodes/favourites?episodeId=${episodeId}`);
+
+export const getPlaylists = async (page: number, per_page: number) =>
+	axios.get(
+		`${API_URL}/playlists?${page ? `page=${page}` : ""}${
+			per_page ? `&per_page=${per_page}` : ""
+		}`,
+	);
+
+export const getPlaylistsEpisodes = async (
+	playlistId: number,
+	page: number,
+	per_page: number,
+) =>
+	axios.get(
+		`${API_URL}/playlists/${playlistId}/episodes?${page ? `page=${page}` : ""}${
+			per_page ? `&per_page=${per_page}` : ""
+		}`,
+	);

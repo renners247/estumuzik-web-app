@@ -49,6 +49,7 @@ interface NewestEpisode {
   created_at: string;
   picture_url: string;
   content_url: string;
+  is_favourite: string;
   podcast: {
     title: string;
     author: string;
@@ -57,4 +58,14 @@ interface NewestEpisode {
     category_name: string;
     description?: string;
   };
+}
+
+interface Playlist {
+  id: number;
+  name: string;
+  total_duration: number;
+  episode_count: number;
+  images: string[];
+  created_at: string;
+  updated_at: string;
 }
