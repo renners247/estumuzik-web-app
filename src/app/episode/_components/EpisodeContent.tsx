@@ -79,10 +79,10 @@ const EpisodeContent = ({ episodeId }: EpisodeContentProps) => {
           false,
           false,
         );
-		console.log("episode comments: ", episodeCommentsData)
+        console.log("episode comments: ", episodeCommentsData);
         return response.data.data;
       },
-      { staleTime: Infinity },
+      //   { staleTime: Infinity },
     );
 
   const EpisodeData: PodcastEpisode = episodeData?.data;
@@ -210,17 +210,22 @@ const EpisodeContent = ({ episodeId }: EpisodeContentProps) => {
           </div>
         </div>
       )}
-      
-      <div className="space-y-4">
-        {episodeCommentsIsLoading ? (
-          <p className="text-white">Loading...</p>
-        ) : EpisodeCommentsData && EpisodeCommentsData?.length > 0 ? (
-          EpisodeCommentsData?.map((comment) => (
-            <Comment user={comment?.user} comment={comment} />
-          ))
-        ) : (
-          <p className="text-white">No comments found</p>
-        )}
+
+      <div className="space-y-6">
+        <h2 className="text-2xl font-bold text-white tracking-tight">
+          Comments
+        </h2>
+        <div className="space-y-4">
+          {episodeCommentsIsLoading ? (
+            <p className="text-white">Loading...</p>
+          ) : EpisodeCommentsData && EpisodeCommentsData?.length > 0 ? (
+            EpisodeCommentsData?.map((comment) => (
+              <Comment user={comment?.user} comment={comment} />
+            ))
+          ) : (
+            <p className="text-white">No comments found</p>
+          )}
+        </div>
       </div>
     </main>
   );
