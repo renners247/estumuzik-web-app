@@ -60,6 +60,27 @@ interface NewestEpisode {
   };
 }
 
+interface User {
+  id: number;
+  first_name: string;
+  last_name: string;
+  company_name: string | null;
+  email: string;
+  profile_image_url: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+interface EpisodeComment {
+  id: number;
+  user_id: number;
+  episode_id: number;
+  body: string;
+  created_at: string;
+  updated_at: string;
+  user: User;
+}
+
 interface Playlist {
   id: number;
   name: string;
