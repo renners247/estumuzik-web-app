@@ -6,6 +6,7 @@ import { trendingEpisodes } from "@/components/utils/endpoints";
 import { APICall } from "@/components/utils/extra";
 import { RiArrowLeftSLine, RiArrowRightSLine } from "react-icons/ri"; // Import arrows
 import TopJolly from "./_components/TopJolly";
+import { ScrollShadow, Spinner } from "@heroui/react";
 
 const PodcastSkeleton = () => (
 	<div className='shrink-0 w-[280px] lg:w-[320px] h-[400px] bg-white/5 animate-pulse rounded-[32px]' />
@@ -33,6 +34,8 @@ const MainDiscoverView = () => {
 					const lastPageNum = lastPage?.data?.data?.last_page;
 					return currentPage < lastPageNum ? currentPage + 1 : undefined;
 				},
+				staleTime: Infinity,
+				refetchOnWindowFocus: true,
 			},
 		);
 
@@ -103,48 +106,71 @@ const MainDiscoverView = () => {
 			</div>
 
 			{/* Horizontal Scroll Container */}
-			<div
-				ref={scrollContainerRef} // Attached Ref
-				className='flex overflow-x-auto gap-6 pb-8 px-2 no-scrollbar scroll-smooth'
-			>
-				{isLoading &&
-					Array.from({ length: 4 }).map((_, i) => <PodcastSkeleton key={i} />)}
-
-				{allEpisodes.map((episode: any, index: number) => (
-					<div
-						key={episode?.id || index}
-						className='shrink-0 w-[240px] lg:w-[280px]'
-					>
-						<EpisodeCard
-							key={episode.id}
-							data={episode}
-							index={index}
-							allEpisodes={allEpisodes}
-						/>
-					</div>
-				))}
-
-				{(hasNextPage || isFetchingNextPage) && (
-					<div
-						ref={observerTarget}
-						className='shrink-0 w-[280px] lg:w-[320px] h-full min-h-[400px] flex flex-col items-center justify-center bg-white/5 rounded-[32px] border border-white/10 backdrop-blur-sm'
-					>
-						<div className='flex flex-col items-center gap-6'>
-							<div className='relative size-16'>
-								<div className='absolute inset-0 bg-primary-500 rounded-full animate-ping opacity-20'></div>
-								<div className='size-full border-4 border-white/10 border-t-primary-500 rounded-full animate-spin shadow-[0_0_15px_rgba(255,204,0,0.3)]'></div>
+			<div className='w-full relative group'>
+				{/* 
+                Hero UI ScrollShadow 
+                - orientation="horizontal": Enables side shadows
+                - size={100}: The "strength" or width of the shadow
+                - hideScrollBar: Clean tech look
+            */}
+				<ScrollShadow
+					hideScrollBar
+					offset={10}
+					orientation='horizontal'
+					size={100}
+					className='flex items-center gap-6 pb-8 px-4 scroll-smooth'
+				>
+					{/* 1. LOADING SKELETONS */}
+					{isLoading &&
+						Array.from({ length: 4 }).map((_, i) => (
+							<div key={i} className='shrink-0 w-[240px] lg:w-[280px]'>
+								<PodcastSkeleton />
 							</div>
-							<div className='text-center space-y-1'>
-								<p className='text-white font-bold text-lg animate-pulse tracking-wide'>
-									Fetching more
-								</p>
-								<p className='text-gray-500 text-[10px] uppercase tracking-[0.2em] font-bold'>
-									Jolly Episodes
-								</p>
+						))}
+
+					{/* 2. EPISODE CARDS */}
+					{allEpisodes.map((episode: any, index: number) => (
+						<div
+							key={episode?.id || index}
+							className='shrink-0 w-[240px] lg:w-[280px]'
+						>
+							<EpisodeCard
+								data={episode}
+								index={index}
+								allEpisodes={allEpisodes}
+							/>
+						</div>
+					))}
+
+					{/* 3. INFINITE LOADING TARGET (Hero UI Styled) */}
+					{(hasNextPage || isFetchingNextPage) && (
+						<div
+							ref={observerTarget}
+							className='shrink-0 w-[240px] lg:w-[280px] h-[380px] flex flex-col items-center justify-center bg-zinc-900/40 rounded-[32px] border border-white/5 backdrop-blur-md'
+						>
+							<div className='flex flex-col items-center gap-4'>
+								{/* Using Hero UI Spinner with your brand color */}
+								<Spinner
+									size='lg'
+									color='primary'
+									labelColor='primary'
+									classNames={{
+										circle1: "border-b-blue-500",
+										circle2: "border-b-blue-500",
+									}}
+								/>
+								<div className='text-center'>
+									<p className='text-white font-bold text-sm tracking-widest uppercase italic'>
+										Syncing
+									</p>
+									<p className='text-zinc-600 text-[10px] font-black uppercase tracking-[0.2em]'>
+										Data Stream
+									</p>
+								</div>
 							</div>
 						</div>
-					</div>
-				)}
+					)}
+				</ScrollShadow>
 			</div>
 		</div>
 	);

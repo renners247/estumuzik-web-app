@@ -1,29 +1,30 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { APICall } from "../utils/extra";
-import {
-	addFavorite,
-	getEpisodeStatus,
-	removeFromFavorites,
-} from "../utils/endpoints";
-import { RiHeartFill, RiHeartLine } from "react-icons/ri"; // Sleeker tech icons
-import { motion, AnimatePresence } from "framer-motion";
 
-interface EpisodeFavouriteFuncProps {
+import { motion, AnimatePresence } from "framer-motion";
+import { APICall } from "@/components/utils/extra";
+import {
+	addToQueue,
+	getEpisodeStatus,
+	removeQueue,
+} from "@/components/utils/endpoints";
+import { RiPlayList2Fill, RiPlayListAddLine } from "react-icons/ri";
+
+interface EpisodePlayListAddProps {
 	episodeData: PodcastEpisode;
 	className?: string;
 }
 
-const EpisodeFavouriteFunc = ({
+const EpisodePlayListAdd = ({
 	episodeData,
 	className,
-}: EpisodeFavouriteFuncProps) => {
-	const [isFavourite, setIsFavourite] = useState(false);
+}: EpisodePlayListAddProps) => {
+	const [isQueued, setIsQueued] = useState(false);
 	const queryClient = useQueryClient();
 	const episodeId = episodeData?.id;
 
-	// 1. FETCH STATUS
+	// 1. FETCH STATUS (Reusing the same status endpoint)
 	const { data: episodeStatusData } = useQuery(
 		["episode-status", episodeId],
 		async () => {
@@ -40,74 +41,76 @@ const EpisodeFavouriteFunc = ({
 			refetchOnWindowFocus: true,
 		},
 	);
+
+	// Using the same interface structure as Favourite
 	const EpisodeStatusData: EpisodeType = episodeStatusData?.data;
 
-	// 2. SYNC LOCAL STATE WITH SERVER DATA
+	// 2. SYNC LOCAL STATE
 	useEffect(() => {
 		if (EpisodeStatusData) {
-			setIsFavourite(EpisodeStatusData.is_favourite);
+			setIsQueued(EpisodeStatusData.is_queued);
 		}
 	}, [EpisodeStatusData]);
 
 	// 3. MUTATIONS
-	const addFavoriteMutation = useMutation(
-		() => APICall(addFavorite, [episodeId], false, false),
+	const addQueueMutation = useMutation(
+		() => APICall(addToQueue, [episodeId], false, false),
 		{
 			onSuccess: () => {
 				queryClient.invalidateQueries(["episode-status", episodeId]);
-				queryClient.invalidateQueries("favorite-list"); // Clear cache for favorites page
+				queryClient.invalidateQueries("queue-list");
 			},
 		},
 	);
 
-	const removeFavoriteMutation = useMutation(
-		() => APICall(removeFromFavorites, [episodeId], false, false),
+	const removeQueueMutation = useMutation(
+		() => APICall(removeQueue, [episodeId], false, false),
 		{
 			onSuccess: () => {
 				queryClient.invalidateQueries(["episode-status", episodeId]);
-				queryClient.invalidateQueries("favorite-list");
+				queryClient.invalidateQueries("queue-list");
 			},
 		},
 	);
 
-	// 4. HANDLERS (With Optimistic UI updates)
-	const toggleFavorite = () => {
-		if (isFavourite) {
-			setIsFavourite(false);
-			removeFavoriteMutation.mutate();
+	// 4. HANDLER
+	const toggleQueue = () => {
+		if (isQueued) {
+			setIsQueued(false);
+			removeQueueMutation.mutate();
 		} else {
-			setIsFavourite(true);
-			addFavoriteMutation.mutate();
+			setIsQueued(true);
+			addQueueMutation.mutate();
 		}
 	};
 
 	return (
 		<button
-			onClick={toggleFavorite}
-			aria-label={isFavourite ? "Remove from favorites" : "Add to favorites"}
-			className='group relative outline-none'
+			onClick={toggleQueue}
+			aria-label={isQueued ? "Remove from playlist" : "Add to playlist"}
+			className='relative outline-none'
 		>
 			{/* Socket Container */}
 			<div
 				className={`
-				relative size-11 flex items-center justify-center rounded-full border  transition-all duration-500
-			${className}	${
-				isFavourite
-					? "border-red-500/40 shadow-[0_0_20px_rgba(239,68,68,0.15)]"
-					: "border-white/50 hover:border-white/20"
-			}
+				relative size-11 flex items-center justify-center rounded-full border transition-all duration-500
+				${
+					isQueued
+						? "border-blue-500/40 shadow-[0_0_20px_rgba(59,130,246,0.15)] bg-blue-500/5"
+						: "border-white/50 hover:border-white/20"
+				} ${className}
 			`}
 			>
 				<AnimatePresence mode='wait'>
-					{isFavourite ? (
+					{isQueued ? (
 						<motion.div
 							key='active'
 							initial={{ scale: 0.5, opacity: 0 }}
 							animate={{ scale: 1, opacity: 1 }}
 							exit={{ scale: 0.5, opacity: 0 }}
-							className='text-red-500'
+							className='text-blue-500'
 						>
-							<RiHeartFill className='text-xl' />
+							<RiPlayList2Fill className='text-xl' />
 						</motion.div>
 					) : (
 						<motion.div
@@ -117,21 +120,21 @@ const EpisodeFavouriteFunc = ({
 							exit={{ scale: 0.8, opacity: 0 }}
 							className='text-white/60 hover:text-white/80'
 						>
-							<RiHeartLine className='text-xl' />
+							<RiPlayListAddLine className='text-xl' />
 						</motion.div>
 					)}
 				</AnimatePresence>
 
 				{/* Hardware Reflection Effect */}
-				<div className='absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-2xl pointer-events-none' />
+				<div className='absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-full pointer-events-none' />
 			</div>
 
-			{/* Tooltip (Desktop only) */}
+			{/* Tooltip */}
 			<span className='absolute -top-10 left-1/2 -translate-x-1/2 px-3 py-1 bg-zinc-800 text-white text-[10px] font-black uppercase tracking-widest rounded-lg opacity-0 hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap border border-white/5'>
-				{isFavourite ? "Saved" : "Save Episode"}
+				{isQueued ? "In Queue" : "Add to Queue"}
 			</span>
 		</button>
 	);
 };
 
-export default EpisodeFavouriteFunc;
+export default EpisodePlayListAdd;
