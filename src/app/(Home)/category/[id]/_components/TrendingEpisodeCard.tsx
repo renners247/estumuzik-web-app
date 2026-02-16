@@ -29,7 +29,7 @@ const TrendingEpisodeCard = ({
   });
 
   return (
-    <div className="flex gap-4 p-3 rounded-xl hover:bg-white/5 transition-colors cursor-pointer group">
+    <div className="flex gap-4 p-3 rounded-xl hover:bg-white/5 transition-colors cursor-pointer group ">
       {/* Thumbnail with Play Button Overlay */}
       <div className="relative min-w-[100px] w-[100px] h-[100px] rounded-lg overflow-hidden shrink-0">
         <Picture

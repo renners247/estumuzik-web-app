@@ -6,11 +6,25 @@ import { IoShareSocialOutline } from "react-icons/io5";
 import { ndlShowFollow, ndlShowFollowing } from "../../../../../../public";
 import Picture from "@/components/picture/Index";
 
+export interface PodcastShow {
+  id: number;
+  title: string;
+  author: string;
+  category_name: string;
+  picture_url: string;
+  subscriber_count: number;
+  description: string;
+}
+
 interface PodcastShowCardProps {
+  podcast: PodcastShow;
   isFollowing?: boolean;
 }
 
-const PodcastShowCard = ({ isFollowing = false }: PodcastShowCardProps) => {
+const PodcastShowCard = ({
+  podcast,
+  isFollowing = false,
+}: PodcastShowCardProps) => {
   const [following, setFollowing] = useState(isFollowing);
 
   const toggleFollow = (e: React.MouseEvent) => {
@@ -21,20 +35,22 @@ const PodcastShowCard = ({ isFollowing = false }: PodcastShowCardProps) => {
   return (
     <div className="flex flex-col w-full group cursor-pointer">
       {/* Show Cover */}
-      <div className="relative aspect-square w-full rounded-xl overflow-hidden mb-3">
+      <div className="relative aspect-square w-full rounded-xl overflow-hidden mb-3 bg-[#1A1A1A]">
         <Picture
-          src={following ? ndlShowFollowing : ndlShowFollow}
-          alt="The NDL Show"
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          src={podcast.picture_url || "/placeholder.png"}
+          alt={podcast.title}
+          className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
         />
       </div>
 
       {/* Show Details */}
       <div className="flex flex-col gap-1 mb-3">
-        <h3 className="text-white font-bold text-lg leading-tight">
-          The NDL Show
+        <h3 className="text-white font-bold text-lg leading-tight line-clamp-1">
+          {podcast.title}
         </h3>
-        <p className="text-gray-400 text-sm">By: Nathan Bassey</p>
+        <p className="text-gray-400 text-sm line-clamp-1">
+          By: {podcast.author}
+        </p>
       </div>
 
       {/* Action Buttons */}

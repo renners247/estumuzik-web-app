@@ -11,7 +11,7 @@ const Handpicked = () => {
   const { data: handpickedData, isLoading } = useQuery(
     ["handpicked"],
     async () => {
-      const response = await APICall(getHandPicked, [4], false, false); // Fetch 3 items
+      const response = await APICall(getHandPicked, [4], false, false); // Fetch 4 items
       return response?.data?.data?.data;
     },
     {
@@ -19,7 +19,7 @@ const Handpicked = () => {
     },
   );
 
-  const handpickedEpisodes: NewestEpisode[] = handpickedData?.data;
+  const handpickedEpisodes: NewestEpisode[] = handpickedData?.data || [];
 
   return (
     <div className="space-y-6 mt-10">
