@@ -1,231 +1,109 @@
 "use client";
 
-import { ReactNode, useState, useTransition } from "react";
-
-import { MdHomeFilled } from "react-icons/md";
-import { FaDice, FaHeart, FaUser } from "react-icons/fa";
-import { RiSearchLine, RiMoreFill } from "react-icons/ri";
-
-// import {
-//   billiard,
-//   giftIcon,
-//   giftIcon2,
-//   hotBadgeIcon,
-//   networkLogosIcon,
-//   notificationsIcon,
-//   ticket,
-// } from "../../../public";
-import Picture from "../picture/Index";
-// import { NaijaDreamsLogo } from "../utils/function";
-import styles from "../../app/css/Scrollbar.module.css";
-import GlobalLoader from "../reusables/GlobalLoader";
+import { ReactNode, useTransition } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import {
+	MdOutlinePodcasts,
+	MdOutlineGridView,
+	MdOutlineLibraryMusic,
+} from "react-icons/md";
+import GlobalLoader from "../reusables/GlobalLoader";
+import { EstuMuzikLogo } from "../utils/function";
 
-interface SidebarItemProps {
-  item: NavItem;
-  onClick: (href: string) => void;
+interface NavItem {
+	href: string;
+	label: string;
+	icon: ReactNode;
 }
 
-interface SideNavProps {
-  onOpen?: () => void;
-}
-
-export interface NavItem {
-  href?: string; // Make href optional
-  label: string;
-  icon: ReactNode;
-  badge?: string;
-  badgeType?: "hot" | "default";
-  onClick?: () => void;
-}
-
-export interface SidebarProps {
-  activeId?: string;
-  onNavigate?: (id: string) => void;
-}
-
-const SidebarItem: React.FC<SidebarItemProps> = ({ item, onClick }) => {
-  const pathname = usePathname();
-  const { href, label, icon, badge, onClick: itemOnClick } = item;
-
-  const handleClick = () => {
-    if (itemOnClick) {
-      itemOnClick(); // Call the custom onClick if provided
-    } else if (href) {
-      onClick(href); // Otherwise navigate
-    }
-  };
-
-  // Only check active state if href exists
-  const isActive = href ? pathname === href : false;
-
-  return (
-    <button
-      onClick={handleClick}
-      className={`group relative flex items-center w-full px-4 py-3 text-sm transition-all duration-200 rounded-xl
+const SidebarItem = ({
+	item,
+	isActive,
+	onClick,
+}: {
+	item: NavItem;
+	isActive: boolean;
+	onClick: (href: string) => void;
+}) => {
+	return (
+		<button
+			onClick={() => onClick(item.href)}
+			className={`group flex items-center w-full px-4 py-3 text-base transition-all duration-200 rounded-md mb-1
         ${
-          isActive
-            ? "bg-gradient-to-r from-green-900/40 to-green-800/20 text-primary-100 border-l-4 border-green-500"
-            : "text-gray-400 hover:text-white hover:bg-white/5"
-        }`}
-    >
-      <span
-        className={`text-xl mr-4 ${isActive ? "text-green-500" : "text-gray-400 group-hover:text-white"}`}
-      >
-        {icon}
-      </span>
-      <div className="flex gap-1 items-center">
-        <span className="font-medium">{label}</span>
-        {/* {badge && <Picture src={hotBadgeIcon} alt="" className="w-10" />} */}
-      </div>
-    </button>
-  );
+					isActive
+						? "bg-[#161616] text-white" // Subtle dark highlight for active item
+						: "text-gray-400 hover:text-white hover:bg-white/5"
+				}`}
+		>
+			<span
+				className={`text-2xl mr-4 ${isActive ? "text-white" : "text-gray-400"}`}
+			>
+				{item.icon}
+			</span>
+			<span
+				className={`font-medium ${isActive ? "text-white" : "text-gray-400"}`}
+			>
+				{item.label}
+			</span>
+		</button>
+	);
 };
 
-const ActionButton: React.FC<{ icon: React.ReactNode; hasDot?: boolean }> = ({
-  icon,
-  hasDot,
-}) => (
-  <button className="relative p-2.5 rounded-xl bg-gray_1-300 text-gray-400 hover:bg-gray_1-400 hover:text-white transition-all">
-    <span className="text-xl">{icon}</span>
-    {hasDot && (
-      <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 border-2 border-gray_1-300 rounded-full"></span>
-    )}
-  </button>
-);
+const Sidebar = () => {
+	const router = useRouter();
+	const pathname = usePathname();
+	const [isPending, startTransition] = useTransition();
 
-const QuickActions: React.FC = () => {
-  return (
-    <div className="flex items-center justify-between px-2 gap-2 2xl:w-3/4 mx-auto">
-      <ActionButton icon={<RiSearchLine color="white" />} />
-      <ActionButton
-        icon={
-          // <Picture src={giftIcon} alt="" className="w-auto h-auto shrink-0" />
-          <></>
-        }
-      />
-      <ActionButton
-        icon={
-          <Picture
-            // src={notificationsIcon}
-            src={""}
-            alt=""
-            className="w-auto h-auto shrink-0"
-          />
-        }
-      />
-      <ActionButton
-        icon={
-          <Picture
-            // src={networkLogosIcon}
-            src={""}
-            alt=""
-            className="w-auto h-auto shrink-0"
-          />
-        }
-      />
-    </div>
-  );
-};
+	const navItems: NavItem[] = [
+		{
+			href: "/discover",
+			label: "Discover",
+			icon: <MdOutlinePodcasts />, // Matches the broadcast icon in UI
+		},
+		{
+			href: "/category",
+			label: "Categories",
+			icon: <MdOutlineGridView />, // Matches the grid icon in UI
+		},
+		{
+			href: "/library",
+			label: "Library",
+			icon: <MdOutlineLibraryMusic />, // Matches the person/music icon in UI
+		},
+	];
 
-const Sidebar = ({ onOpen }: SideNavProps) => {
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
+	const handleNavigate = (href: string) => {
+		startTransition(() => {
+			router.push(href);
+		});
+	};
 
-  const navItems: NavItem[] = [
-    {
-      href: "/",
-      label: "Home",
-      icon: <MdHomeFilled />,
-    },
-    {
-      href: "/xclusive-games",
-      label: "Xclusive Games",
-      icon: <FaDice />,
-    },
-    {
-      href: "/result",
-      label: "Result",
-      icon: <FaDice />,
-    },
-    {
-      // href removed since we're using onClick
-      label: "Manage Tickets",
-      icon: <FaDice />,
-      onClick: onOpen, // Now this works with the updated interface
-    },
-    {
-      href: "/account",
-      label: "Account & Wallet",
-      icon: <FaUser />,
-    },
-    {
-      href: "/promotions",
-      label: "Promotions",
-      icon: <FaDice />,
-    },
-    {
-      href: "/favorites",
-      label: "Favorite Games",
-      icon: <FaHeart />,
-    },
-    {
-      href: "/crs",
-      label: "CRS impact games",
-      icon: <FaDice />,
+	return (
+		<>
+			<aside className='w-[260px] h-screen bg-black-100 hidden lg:flex flex-col p-4 border-r border-white/5'>
+				{/* Logo Section */}
 
-      badge: "Hot",
-      badgeType: "hot",
-    },
-    {
-      href: "/more",
-      label: "More",
-      icon: <RiMoreFill />,
-    },
-  ];
+				{/* Navigation Items */}
+				<div className='pl-4 mb-10 mt-1'>
+					<EstuMuzikLogo />
+				</div>
+				<nav className='flex-1'>
+					<div className='space-y-2'>
+						{navItems.map((item) => (
+							<SidebarItem
+								key={item.href}
+								item={item}
+								isActive={pathname === item.href}
+								onClick={handleNavigate}
+							/>
+						))}
+					</div>
+				</nav>
+			</aside>
 
-  const handleNavigate = (href: string) => {
-    startTransition(() => {
-      router.push(href);
-    });
-  };
-
-  return (
-    <>
-      <aside className="w-1/4 h-screen bg-black-600 lg:flex flex-col p-3 gap-3 hidden">
-        {/* Header Card */}
-        <div className="bg-black-500 rounded-3xl p-5 flex flex-col gap-6 shadow-xl border border-white/5">
-          {/* Logo Section */}
-          {/* <NaijaDreamsLogo /> */}
-
-          {/* Auth Buttons */}
-          <div className="flex gap-2">
-            <button className="flex-1 py-3 bg-primary-100 hover:bg-primary-100/90 text-black font-medium rounded-xl transition-all text-sm active:scale-95 shadow-lg shadow-green-900/20">
-              Register
-            </button>
-            <button className="flex-1 py-3 border border-primary-100 text-primary-100 hover:bg-primary-100/10 font-medium rounded-xl transition-all text-sm active:scale-95">
-              Log in
-            </button>
-          </div>
-
-          {/* Action Buttons */}
-          <QuickActions />
-        </div>
-
-        {/* Navigation Card */}
-        <nav
-          className={`flex-1 bg-black-500 rounded-3xl p-3 overflow-y-auto ${styles["inner-sidebar-scroll"]} shadow-xl border border-white/5`}
-        >
-          <div className="space-y-1">
-            {navItems.map((item, index) => (
-              <SidebarItem key={index} item={item} onClick={handleNavigate} />
-            ))}
-          </div>
-        </nav>
-      </aside>
-      <GlobalLoader isPending={isPending} />
-    </>
-  );
+			<GlobalLoader isPending={isPending} />
+		</>
+	);
 };
 
 export default Sidebar;
