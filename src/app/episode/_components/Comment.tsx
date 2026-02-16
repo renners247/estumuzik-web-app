@@ -52,14 +52,6 @@ const Comment = ({ user, comment }: Comment) => {
         </p>
 
         <div className="mt-3 flex items-center gap-4 text-[10px] font-bold text-zinc-600">
-          <button className="flex items-center gap-1 hover:text-indigo-400 transition-colors">
-            <i className="fa-regular fa-thumbs-up"></i>
-            <span>Like</span>
-          </button>
-          <button className="flex items-center gap-1 hover:text-indigo-400 transition-colors">
-            <i className="fa-regular fa-comment"></i>
-            <span>Reply</span>
-          </button>
           {user.company_name && (
             <span className="ml-auto text-zinc-700 italic font-normal truncate">
               {user.company_name}

@@ -33,6 +33,17 @@ export const subCategories = async (
 			subcategory ? `&sub_category_name=${subcategory}` : ""
 		}&page=${page}&per_page=${per_page}`,
 	);
+export const episodePodcast = async (
+	podcastId: string,
+	page: number,
+	per_page: number,
+	q = "",
+) =>
+	axios.get(
+		`${API_URL}/podcasts/${podcastId}/episodes?${
+			q ? `&q=${q}` : ""
+		}&page=${page}&per_page=${per_page}`,
+	);
 
 export const topJolly = async (page: number, per_page: number) =>
 	axios.get(`${API_URL}/podcasts/top-jolly?page=${page}&per_page=${per_page}`);
@@ -63,6 +74,12 @@ export const addFavorite = async (episodeId: number) =>
 export const removeFromFavorites = async (episodeId: number) =>
 	axios.delete(`${API_URL}/episodes/favourites?episodeId=${episodeId}`);
 
+export const subscribeToPodcast = async (podcastId: number) =>
+	axios.post(`${API_URL}/podcasts/${podcastId}/subscriptions`);
+
+export const unsubscribeFromPodcast = async (podcastId: number) =>
+	axios.delete(`${API_URL}/podcasts/${podcastId}/subscriptions`);
+
 export const addToQueue = async (episodeId: number) =>
 	axios.post(`${API_URL}/episodes/${episodeId}/queues`);
 
@@ -74,6 +91,9 @@ export const removeQueue = async (episodeId: number) =>
 
 export const getEpisodeStatus = async (statusId: number) =>
 	axios.get(`${API_URL}/episodes/${statusId}/status`);
+
+export const getPodcastsStatus = async (statusId: number) =>
+	axios.get(`${API_URL}/podcasts/${statusId}/status`);
 
 export const getEpisode = async (episodeId: number) =>
 	axios.get(`${API_URL}/episodes/${episodeId}`);
