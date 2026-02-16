@@ -70,7 +70,7 @@ const PodcastCard = ({ data, index, allEpisodes }: PodcastProps) => {
 					url: fullUrl,
 				});
 			} catch (err) {
-				console.log("Share cancelled");
+				// console.log("Share cancelled");
 			}
 		}
 	};

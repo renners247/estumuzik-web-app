@@ -12,13 +12,18 @@ import {
 } from "react-icons/fi";
 import Link from "next/link";
 
-import { BaseUrl, getPodcast } from "@/components/utils/endpoints";
+import {
+	BaseUrl,
+	getPodcast,
+	getPodcastsStatus,
+} from "@/components/utils/endpoints";
 import { APICall } from "@/components/utils/extra";
 import Picture from "@/components/picture/Index";
 import GlobalLoader from "@/components/reusables/GlobalLoader";
 import { BackButton } from "@/components/utils/function";
 import { formatDateYMD } from "@/components/utils/constants";
 import EpisodePodcastList from "./EpisodePodcastList";
+import PodcastSubscribeFunc from "./PodcastSubscribeFunc";
 
 interface PodcastContentProps {
 	PodcastId: string;
@@ -36,7 +41,7 @@ const PodcastContent = ({ PodcastId }: PodcastContentProps) => {
 
 	const PodcastData: PodcastType = podcastData?.data;
 
-	const fullUrl = `${BaseUrl}/$episodeId}`;
+	const fullUrl = `${BaseUrl}/podcast/${PodcastId}`;
 
 	if (podcastIsLoading) return <GlobalLoader isPending={true} />;
 
@@ -49,7 +54,7 @@ const PodcastContent = ({ PodcastId }: PodcastContentProps) => {
 					url: fullUrl,
 				});
 			} catch (err) {
-				console.log("Share cancelled");
+				// console.log("Share cancelled");
 			}
 		}
 	};
@@ -68,7 +73,7 @@ const PodcastContent = ({ PodcastId }: PodcastContentProps) => {
 						/>
 						{/* Hardware Overlay Gradients */}
 						<div className='absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/40 to-transparent' />
-						<div className='absolute inset-0 bg-black/20 backdrop-blur-[2px]' />
+						<div className='absolute inset-0 bg-black-100/20 backdrop-blur-[2px]' />
 
 						{/* Back Button Overlay */}
 						<div className='absolute top-8 left-6 lg:left-12 z-20'>
@@ -101,12 +106,12 @@ const PodcastContent = ({ PodcastId }: PodcastContentProps) => {
 									</span>
 								</div>
 
-								<h1 className='text-4xl lg:text-7xl font-black leading-tight tracking-tighter text-white uppercase'>
+								<h1 className='text-2xl lg:text-7xl font-black leading-tight tracking-tighter text-white uppercase'>
 									{PodcastData?.title}
 								</h1>
 
 								<div className='flex items-center gap-4 text-zinc-400'>
-									<p className='font-bold uppercase tracking-[0.2em] text-sm'>
+									<p className='font-bold uppercase tracking-[0.2em] text-xs lg:text-sm'>
 										Authorized by:{" "}
 										<span className='text-white'>{PodcastData?.author}</span>
 									</p>
@@ -115,9 +120,8 @@ const PodcastContent = ({ PodcastId }: PodcastContentProps) => {
 
 							{/* Action Socket */}
 							<div className='flex gap-3 pb-4 w-full lg:w-auto'>
-								<button className='flex-1 lg:flex-none px-4 lg:px-8 py-2 lg:py-4 bg-primary-600 hover:bg-primary-500 text-white font-black uppercase tracking-widest rounded-2xl transition-all active:scale-95 shadow-lg shadow-blue-900/20'>
-									Subscribe
-								</button>
+								<PodcastSubscribeFunc podcastDataId={PodcastData?.id} />
+
 								<button
 									onClick={handleNativeShare}
 									className='p-4 bg-zinc-900 border border-white/5 rounded-2xl text-zinc-400 hover:text-white transition-colors'
@@ -166,13 +170,10 @@ const PodcastContent = ({ PodcastId }: PodcastContentProps) => {
 						{/* 4. DESCRIPTION & CONTENT */}
 						<div className='mt-12 grid grid-cols-1 lg:grid-cols-12 gap-12'>
 							<div className='lg:col-span-8 space-y-8'>
-								{/* <EpisodePodcastList
-									podcastId={PodcastId}
-									PodcastData={podcastData}
-								/> */}
+								<EpisodePodcastList podcastId={PodcastId} />
 								<div className='p-8 bg-zinc-900/20 rounded-[2.5rem] border border-white/5 relative overflow-hidden'>
 									<h4 className='text-white font-black uppercase text-xs tracking-[0.3em] mb-6 flex items-center gap-3'>
-										Channel Manifest
+										Summary
 									</h4>
 
 									<div
