@@ -6,6 +6,7 @@ import { useQuery } from "react-query";
 import { setIsEpisodeRegistered, setIsSoftRefresh } from "../Redux/ToggleModal";
 import { RotatingLines } from "react-loader-spinner";
 import { APICall } from "../utils/extra";
+import { getEpisode } from "../utils/endpoints";
 
 interface PlayButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 	episode: any;
@@ -21,23 +22,21 @@ const PlayButton: React.FC<PlayButtonProps> = ({
 }) => {
 	const dispatch = useAppDispatch();
 
-	// const { data: EpisodePodcastsData, isLoading: episodeDataIsLoading } =
-	// 	useQuery(
-	// 		["episodePodcast", episode?.podcast_id],
-	// 		async () => {
-	// 			if (episode?.podcast_id) {
-	// 				const response = await APICall(getEpisodePodcasts, [
-	// 					episode?.podcast_id,
-	// 				]);
-	// 				return response.data;
-	// 			}
-	// 		},
-	// 		{
-	// 			staleTime: Infinity,
-	// 			keepPreviousData: true,
-	// 			notifyOnChangeProps: "tracked",
-	// 		},
-	// 	);
+	const { data: EpisodePodcastsData, isLoading: episodeDataIsLoading } =
+		useQuery(
+			["episodePodcast", episode?.podcast_id],
+			async () => {
+				if (episode?.podcast_id) {
+					const response = await APICall(getEpisode, [episode?.podcast_id]);
+					return response.data;
+				}
+			},
+			{
+				staleTime: Infinity,
+				keepPreviousData: true,
+				notifyOnChangeProps: "tracked",
+			},
+		);
 
 	const { isPlaying, activeSong, isLoading } = useAppSelector(
 		(state) => state.playerOne,

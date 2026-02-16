@@ -57,6 +57,15 @@ export const getFavorites = async (page: number, per_page: number) =>
 		}`,
 	);
 
+export const addFavorite = async (episodeId: number) =>
+	axios.delete(`${API_URL}/episodes/favourites?episodeId=${episodeId}`);
+
+export const getEpisode = async (episodeId: number) =>
+	axios.get(`${API_URL}/episodes/${episodeId}`);
+
+export const getPodcast = async (podcastId: number) =>
+	axios.get(`${API_URL}/podcasts/${podcastId}`);
+
 export const removeFromFavorites = async (episodeId: number) =>
 	axios.delete(`${API_URL}/episodes/favourites?episodeId=${episodeId}`);
 

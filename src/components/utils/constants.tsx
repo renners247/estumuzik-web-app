@@ -46,17 +46,40 @@ export const latestWinners = [
 	},
 ];
 
-// export const socialMediaPlatforms = [
-// 	{ Button: WhatsappShareButton, Icon: WhatsappIcon, color: "#25D366" },
-// 	{ Button: TwitterShareButton, Icon: XIcon, color: "#1DA1F2" },
-// 	{ Button: FacebookShareButton, Icon: FacebookIcon2, color: "#1877f2" },
-// 	{ Button: LinkedinShareButton, Icon: LinkedinIcon, color: "#0077B5" },
-// 	{ Button: PinterestShareButton, Icon: PinterestIcon, color: "#25D366" },
-// 	{ Button: EmailShareButton, Icon: EmailIcon, color: "#D44638" },
-// 	{
-// 		Button: FacebookMessengerShareButton,
-// 		Icon: FacebookMessengerIcon,
-// 		color: "#25D366",
-// 	},
+export const formatDuration = (seconds: number): string => {
+	const hours = Math.floor(seconds / 3600);
+	const remainingMinutes = Math.floor((seconds % 3600) / 60);
+	const remainingSeconds = seconds % 60;
 
-// ];
+	const formatNumber = (
+		num: number,
+		singular: string,
+		plural: string,
+	): string => `${num} ${num === 1 ? singular : plural}`;
+
+	const formattedHours = hours > 0 ? formatNumber(hours, "hour", "hours") : "";
+	const formattedMinutes =
+		remainingMinutes > 0
+			? formatNumber(remainingMinutes, "minute", "minutes")
+			: "";
+	const formattedSeconds =
+		remainingSeconds > 0
+			? formatNumber(remainingSeconds, "second", "seconds")
+			: "";
+
+	const parts = [formattedHours, formattedMinutes, formattedSeconds].filter(
+		Boolean,
+	);
+
+	return parts.join(" - ");
+};
+
+export function formatDateYMD(dateString: string) {
+	const date = new Date(dateString);
+	const formattedDate = date.toLocaleDateString("en-US", {
+		year: "numeric",
+		month: "long",
+		day: "numeric",
+	});
+	return formattedDate; // Returns the formatted date string
+}

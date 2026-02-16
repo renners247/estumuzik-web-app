@@ -88,20 +88,22 @@ export const formatDateToISOString = (date: Date | null): string => {
 	return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
 };
 
-export const BackButton = () => {
+interface BackButtonProps {
+	className: string;
+}
+export const BackButton = ({ className }: BackButtonProps) => {
 	const router = useRouter();
 
 	return (
 		<button
 			type='button'
 			onClick={() => router.back()}
-			className='
-        flex items-center justify-center
+			className={`flex items-center justify-center
         w-9 h-9
         rounded-full
         bg-gray-200 hover:bg-gray-300
-        transition
-      '
+        transition ${className}
+      `}
 		>
 			<FaChevronLeft size={14} className='text-black' />
 		</button>

@@ -3,7 +3,6 @@ import { toast } from "react-toastify";
 
 export const IMAGE_URL = process.env.NEXT_PUBLIC_WP_IMAGE_URL || "";
 export const AUTH_TOKEN_KEY = "ESTUMUSIK_LOGIN_ACCESS";
-export const PERMISSIONS = "PERMISSION_ACCESS_ESTUMUSIK_WEB_APP";
 export let hasSignedOut = false;
 
 export const signOut = () => {
