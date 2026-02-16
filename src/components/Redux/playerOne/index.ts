@@ -1,19 +1,19 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // Ensure this matches the interface used in your PodcastCard
-export interface PodcastEpisode {
-	id: number;
-	title: string;
-	content_url: string;
-	picture_url: string;
-	description: string;
-	duration: number;
-	podcast: {
-		title: string;
-		author: string;
-		category_name: string;
-	};
-}
+// export interface PodcastEpisode {
+// 	id: number;
+// 	title: string;
+// 	content_url: string;
+// 	picture_url: string;
+// 	description: string;
+// 	duration: number;
+// 	podcast: {
+// 		title: string;
+// 		author: string;
+// 		category_name: string;
+// 	};
+// }
 
 interface PlayerState {
 	currentSongs: PodcastEpisode[];

@@ -58,7 +58,22 @@ export const getFavorites = async (page: number, per_page: number) =>
 	);
 
 export const addFavorite = async (episodeId: number) =>
+	axios.post(`${API_URL}/episodes/favourites?episodeId=${episodeId}`);
+
+export const removeFromFavorites = async (episodeId: number) =>
 	axios.delete(`${API_URL}/episodes/favourites?episodeId=${episodeId}`);
+
+export const addToQueue = async (episodeId: number) =>
+	axios.post(`${API_URL}/episodes/${episodeId}/queues`);
+
+export const registerPlayEpisode = async (episodeId: number) =>
+	axios.post(`${API_URL}/episodes/plays?episodeId=${episodeId}`);
+
+export const removeQueue = async (episodeId: number) =>
+	axios.delete(`${API_URL}/episodes/${episodeId}/queues`);
+
+export const getEpisodeStatus = async (statusId: number) =>
+	axios.get(`${API_URL}/episodes/${statusId}/status`);
 
 export const getEpisode = async (episodeId: number) =>
 	axios.get(`${API_URL}/episodes/${episodeId}`);
@@ -68,9 +83,6 @@ export const getEpisodeComments = async (episodeId: number) =>
 
 export const getPodcast = async (podcastId: number) =>
 	axios.get(`${API_URL}/podcasts/${podcastId}`);
-
-export const removeFromFavorites = async (episodeId: number) =>
-	axios.delete(`${API_URL}/episodes/favourites?episodeId=${episodeId}`);
 
 export const getPlaylists = async (
 	page: number,
