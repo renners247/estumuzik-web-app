@@ -49,7 +49,7 @@ const EditorsPickCard = ({ episode }: EditorsPickCardProps) => {
   };
 
   return (
-    <div className="w-full bg-[#05180F] rounded-2xl p-4 sm:p-6 flex flex-row gap-4 md:gap-8 items-center md:items-start group transition-colors border border-white/5">
+    <div className="w-full bg-bg-500 rounded-2xl p-4 sm:p-6 flex flex-row gap-4 md:gap-8 items-center md:items-start group transition-colors border border-white/5">
       {/* Image Section */}
       <div className="relative shrink-0 w-[120px] sm:w-[180px] md:w-[220px] aspect-square rounded-xl overflow-hidden shadow-lg">
         <Picture

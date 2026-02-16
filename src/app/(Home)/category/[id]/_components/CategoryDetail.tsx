@@ -131,6 +131,7 @@ const CategoryDetail = ({ categoryId }: CategoryDetailProps) => {
             {episodes.map((episode) => (
               <TrendingEpisodeCard
                 key={episode.id}
+                episode={episode}
                 title={episode.title}
                 description={episode.description}
                 image={
