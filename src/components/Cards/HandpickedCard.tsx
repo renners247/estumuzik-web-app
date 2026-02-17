@@ -1,11 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaPlay, FaPause, FaPlus, FaCheck } from "react-icons/fa6";
 import Picture from "../picture/Index";
 import { useAppDispatch, useAppSelector } from "../Hooks";
 import { playPause, setActiveSong } from "../Redux/playerOne";
 import { setIsEpisodeRegistered } from "../Redux/ToggleModal";
+import { useQuery } from "react-query";
+import { APICall } from "../utils/extra";
+import { getUserStatus } from "../utils/endpoints";
 
 interface HandpickedCardProps {
   episode: NewestEpisode;
@@ -48,10 +51,18 @@ const HandpickedCard = ({
     dispatch(setIsEpisodeRegistered(false));
   };
 
-  const toggleFollow = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setFollowing(!following);
-  };
+  const userId = episode?.podcast?.user_id;
+
+  const { data: followStatus } = useQuery(["userStatus", userId], async () => {
+    const response = await APICall(getUserStatus, userId, false, false);
+    return response?.data?.data?.data;
+  });
+
+  useEffect(() => {
+    if (followStatus) {
+      setFollowing(followStatus?.is_following);
+    }
+  }, [followStatus]);
 
   return (
     <div className="bg-[#1A1A1A] p-4 rounded-xl flex flex-col gap-4 group hover:bg-[#222] transition-colors cursor-pointer">
@@ -82,11 +93,10 @@ const HandpickedCard = ({
       {/* Actions */}
       <div className="flex items-center gap-3 mt-auto pt-2">
         <button
-          onClick={toggleFollow}
           className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all
             ${
               following ?
-                "bg-white/20 text-white"
+                "bg-green_1-100 text-white"
               : "bg-white/10 text-gray-300 hover:bg-white/20"
             }`}>
           {following ?

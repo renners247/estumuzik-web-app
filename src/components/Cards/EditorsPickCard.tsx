@@ -1,12 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import { FaPlay, FaPause, FaPlus, FaCheck } from "react-icons/fa6";
 import { IoShareSocialOutline } from "react-icons/io5";
 import Picture from "../picture/Index";
 import { useAppDispatch, useAppSelector } from "../Hooks";
 import { playPause, setActiveSong } from "../Redux/playerOne";
 import { setIsEpisodeRegistered } from "../Redux/ToggleModal";
+import { useRouter } from "next/navigation";
+import GlobalLoader from "../reusables/GlobalLoader";
+import { useQuery } from "react-query";
+import { getUserStatus } from "../utils/endpoints";
+import { APICall } from "../utils/extra";
 
 interface EditorsPickCardProps {
   episode: PodcastEpisode;
@@ -18,9 +23,37 @@ const EditorsPickCard = ({ episode }: EditorsPickCardProps) => {
     (state) => state.playerOne,
   );
   const [following, setFollowing] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
+
+  // Fetch Follow Status
+  const { data: followStatus } = useQuery(
+    ["userStatus", episode.podcast?.user_id],
+    async () => {
+      const response = await APICall(
+        getUserStatus,
+        episode.podcast?.user_id,
+        false,
+        false,
+      );
+      return response?.data?.data?.data;
+    },
+  );
+
+  useEffect(() => {
+    if (followStatus) {
+      setFollowing(followStatus?.is_following);
+    }
+  }, [followStatus]);
 
   // Check if THIS specific card is the one playing
   const isCurrentActiveSong = activeSong?.id === episode.id;
+
+  const handleCardClick = () => {
+    startTransition(() => {
+      router.push(`/episode/${episode.id}`);
+    });
+  };
 
   const handlePauseClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -43,9 +76,30 @@ const EditorsPickCard = ({ episode }: EditorsPickCardProps) => {
     dispatch(setIsEpisodeRegistered(false));
   };
 
-  const toggleFollow = (e: React.MouseEvent) => {
+  const handleNativeShare = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    setFollowing(!following);
+    const fullUrl = `${window.location.origin}/episode/${episode.id}`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: episode.title,
+          text: episode.description,
+          url: fullUrl,
+        });
+      } catch (err) {
+        console.log("Share cancelled");
+      }
+    } else {
+      // Fallback or just log as requested, but copying is better UX
+      try {
+        await navigator.clipboard.writeText(fullUrl);
+        // alert("Link copied to clipboard!"); // Optional
+        console.log("Link copied to clipboard");
+      } catch (err) {
+        console.log("Failed to copy link");
+      }
+    }
   };
 
   return (
@@ -69,7 +123,7 @@ const EditorsPickCard = ({ episode }: EditorsPickCardProps) => {
                 handlePlayClick
               )
             }
-            className="bg-[#00C27A] size-10 md:size-14 grid place-items-center rounded-full text-white shadow-[0_0_20px_rgba(0,194,122,0.4)] hover:scale-110 transition-transform">
+            className="bg-primary-500 size-10 md:size-14 grid place-items-center rounded-full text-white shadow-[0_0_20px_rgba(0,194,122,0.4)] hover:scale-110 transition-transform">
             {isLoading && isCurrentActiveSong ?
               <div className="size-5 md:size-6 border-2 border-white/20 border-t-white rounded-full animate-spin" />
             : isCurrentActiveSong && isPlaying ?
@@ -97,7 +151,9 @@ const EditorsPickCard = ({ episode }: EditorsPickCardProps) => {
             </p>
           </div>
 
-          <h3 className="text-white font-bold text-lg md:text-2xl leading-tight line-clamp-2 hover:text-[#00C27A] transition-colors cursor-pointer">
+          <h3
+            onClick={handleCardClick}
+            className="text-white font-bold text-lg md:text-2xl leading-tight line-clamp-2 hover:text-primary-500 transition-colors cursor-pointer">
             {episode.title}
           </h3>
           <p className="text-gray-400 text-xs md:text-sm font-medium">
@@ -119,7 +175,6 @@ const EditorsPickCard = ({ episode }: EditorsPickCardProps) => {
         {/* Action Buttons */}
         <div className="flex items-center gap-3 mt-1 md:mt-2">
           <button
-            onClick={toggleFollow}
             className={`flex items-center gap-2 px-4 py-2 md:px-5 md:py-2.5 rounded-full text-xs md:text-sm font-bold transition-all
               ${
                 following ?
@@ -132,12 +187,16 @@ const EditorsPickCard = ({ episode }: EditorsPickCardProps) => {
             {following ? "Following" : "Follow"}
           </button>
 
-          <button className="size-8 md:size-10 flex items-center justify-center rounded-full bg-transparent border border-gray-600 text-gray-400 hover:text-white hover:border-gray-400 transition-all">
+          <button
+            onClick={handleNativeShare}
+            className="size-8 md:size-10 flex items-center justify-center rounded-full bg-transparent border border-gray-600 text-gray-400 hover:text-white hover:border-gray-400 transition-all">
             <IoShareSocialOutline size={16} className="md:hidden" />
             <IoShareSocialOutline size={20} className="hidden md:block" />
           </button>
         </div>
       </div>
+
+      <GlobalLoader isPending={isPending} />
     </div>
   );
 };

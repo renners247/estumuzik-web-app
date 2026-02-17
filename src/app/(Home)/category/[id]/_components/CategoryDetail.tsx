@@ -34,10 +34,10 @@ const CategoryDetail = ({ categoryId }: CategoryDetailProps) => {
   const router = useRouter();
   const [activeFilter, setActiveFilter] = useState("All");
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [perPage, setPerPage] = useState<number>(10); // Changed from const to state
+  const [perPage, setPerPage] = useState<number>(10); 
   const categoryName = formatCategoryName(categoryId);
 
-  // 1. Fetch Key Categories to get the subcategories for the current category
+ 
   const { data: categoriesData } = useQuery(["categories"], async () => {
     const response = await APICall(categories, false, false);
     return response?.data?.data?.data;
@@ -85,8 +85,8 @@ const CategoryDetail = ({ categoryId }: CategoryDetailProps) => {
       <div className="flex flex-col gap-6 mb-8">
         <button
           onClick={() => router.back()}
-          className="flex items-center gap-2 text-white hover:text-[#FFCC00] transition-colors w-fit group">
-          <div className="p-1 rounded-full border border-gray-600 group-hover:border-[#FFCC00] transition-colors">
+          className="flex items-center gap-2 text-white hover:text-primary-500 transition-colors w-fit group">
+          <div className="p-1 rounded-full border border-gray-600 group-hover:border-primary-500 transition-colors">
             <IoChevronBack size={16} />
           </div>
           <span className="text-sm font-medium">Go back</span>

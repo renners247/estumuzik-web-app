@@ -52,6 +52,7 @@ interface NewestEpisode {
   is_favourite: string;
   podcast: {
     title: string;
+    user_id: number;
     author: string;
     cover_picture_url?: string;
     picture_url?: string;

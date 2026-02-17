@@ -99,7 +99,7 @@ const PodcastShowCard = ({
             className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200
             ${
               following ?
-                "bg-[#00C27A] text-white hover:bg-[#00a86b]"
+                "bg-green_1-100 text-white"
               : "bg-white/10 text-gray-300 hover:bg-white/20"
             }`}>
             {following ?
