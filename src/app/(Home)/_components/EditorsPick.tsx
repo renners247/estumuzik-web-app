@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { useQuery } from "react-query";
 import { FaStar } from "react-icons/fa";
 import { getEditorPick } from "@/components/utils/endpoints";
@@ -23,10 +22,10 @@ const EditorsPick = () => {
   const episode = editorPickData;
 
   return (
-    <div className="space-y-4 mt-8 mb-10">
+    <div className="space-y-4 mb-10">
       {/* Header */}
       <div className="flex items-center gap-2 px-2">
-        <FaStar className="text-purple_1-100 text-xl" /> {/* Purple Star */}
+        <FaStar className="text-purple_1-100 text-2xl" />
         <h2 className="text-2xl font-bold text-white tracking-tight">
           Editor's pick
         </h2>

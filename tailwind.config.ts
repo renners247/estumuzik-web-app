@@ -78,6 +78,9 @@ const config: Config = {
         purple_1: {
           100: "#8B5CF6",
         },
+        green_1: {
+          100: "#00C27A",
+        },
         // Specific color for the 'MUZIK' section
         muzik_accent: "#FFCC00",
       },

@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { RiSearchLine } from "react-icons/ri";
 
@@ -9,6 +10,7 @@ import { APICall } from "@/components/utils/extra";
 import { categories } from "@/components/utils/endpoints";
 import { useQuery } from "react-query";
 import { Skeleton } from "@heroui/react";
+import GlobalLoader from "@/components/reusables/GlobalLoader";
 
 interface ApiSubCategory {
   name: string;
@@ -35,6 +37,15 @@ const CategoryPage = () => {
       // refetchOnWindowFocus: false,
     },
   );
+
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+
+  const handleCategoryClick = (categoryName: string) => {
+    startTransition(() => {
+      router.push(`/category/${categoryName.toLowerCase()}`);
+    });
+  };
 
   const apiCategories: ApiCategory[] = categoriesData?.data || [];
 
@@ -88,10 +99,9 @@ const CategoryPage = () => {
                 : "";
 
               return (
-                <Link
+                <div
                   key={index}
-                  // Generate an ID from name (e.g. "ARTS" -> "arts") since API might not provide ID
-                  href={`/category/${category.name.toLowerCase()}`}
+                  onClick={() => handleCategoryClick(category.name)}
                   className="group rounded-xl overflow-hidden bg-[#1A1A1A] cursor-pointer 
                           transition-transform duration-300 hover:scale-[1.03] 
                           focus:outline-none focus:ring-2 focus:ring-[#FFCC00]/50">
@@ -110,7 +120,7 @@ const CategoryPage = () => {
                       {category.name}
                     </span>
                   </div>
-                </Link>
+                </div>
               );
             })}
 
@@ -126,6 +136,7 @@ const CategoryPage = () => {
           </div>
         )}
       </div>
+      <GlobalLoader isPending={isPending} />
     </section>
   );
 };
