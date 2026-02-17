@@ -188,7 +188,7 @@ const EpisodeContent = ({ episodeId }: EpisodeContentProps) => {
 
 									<EpisodeFavouriteFunc episodeData={EpisodeData} />
 									<EpisodeQueueListAdd episodeData={EpisodeData} />
-									{/* <EpisodePlayListAdd episodeData={EpisodeData} /> */}
+									<EpisodePlayListAdd episodeData={EpisodeData} />
 									<Tooltip
 										content='Share Episode'
 										placement='top'

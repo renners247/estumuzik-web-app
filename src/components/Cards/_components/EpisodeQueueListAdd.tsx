@@ -52,33 +52,33 @@ const EpisodeQueueListAdd = ({
 		}
 	}, [EpisodeStatusData]);
 
-	const addQueueMutation = useMutation(
-		() => APICall(addToQueue, [episodeId], true, false),
-		{
-			onSuccess: () => {
-				queryClient.invalidateQueries(["episode-status", episodeId]);
-				queryClient.invalidateQueries("queue-list");
-			},
-		},
-	);
+	// const addQueueMutation = useMutation(
+	// 	() => APICall(addToQueue, [episodeId], true, false),
+	// 	{
+	// 		onSuccess: () => {
+	// 			queryClient.invalidateQueries(["episode-status", episodeId]);
+	// 			queryClient.invalidateQueries("queue-list");
+	// 		},
+	// 	},
+	// );
 
-	const removeQueueMutation = useMutation(
-		() => APICall(removeQueue, [episodeId], true, false),
-		{
-			onSuccess: () => {
-				queryClient.invalidateQueries(["episode-status", episodeId]);
-				queryClient.invalidateQueries("queue-list");
-			},
-		},
-	);
+	// const removeQueueMutation = useMutation(
+	// 	() => APICall(removeQueue, [episodeId], true, false),
+	// 	{
+	// 		onSuccess: () => {
+	// 			queryClient.invalidateQueries(["episode-status", episodeId]);
+	// 			queryClient.invalidateQueries("queue-list");
+	// 		},
+	// 	},
+	// );
 
 	const toggleQueue = () => {
 		if (isQueued) {
 			setIsQueued(false);
-			removeQueueMutation.mutate();
+			// removeQueueMutation.mutate();
 		} else {
 			setIsQueued(true);
-			addQueueMutation.mutate();
+			// addQueueMutation.mutate();
 		}
 	};
 

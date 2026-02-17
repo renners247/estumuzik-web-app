@@ -14,6 +14,8 @@ import {
 	unsubscribeFromPodcast,
 } from "@/components/utils/endpoints";
 import { APICall } from "@/components/utils/extra";
+import { Tooltip } from "@heroui/react";
+import { RiShareLine } from "react-icons/ri";
 
 export interface PodcastShow {
 	id: number;

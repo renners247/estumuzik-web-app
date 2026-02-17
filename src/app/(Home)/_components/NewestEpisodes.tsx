@@ -30,7 +30,7 @@ const NewestEpisodes = () => {
 			},
 		);
 
-	const episodes: NewestEpisode[] =
+	const episodes: PodcastEpisode[] =
 		data?.pages.flatMap((page) => page?.data?.data?.data) || [];
 
 	return (
