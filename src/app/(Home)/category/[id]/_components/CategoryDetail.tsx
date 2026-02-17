@@ -34,17 +34,23 @@ const CategoryDetail = ({ categoryId }: CategoryDetailProps) => {
   const router = useRouter();
   const [activeFilter, setActiveFilter] = useState("All");
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [perPage, setPerPage] = useState<number>(10); 
+  const [perPage, setPerPage] = useState<number>(10);
   const categoryName = formatCategoryName(categoryId);
 
- 
-  const { data: categoriesData } = useQuery(["categories"], async () => {
-    const response = await APICall(categories, false, false);
-    return response?.data?.data?.data;
-  });
+  const { data: categoriesData } = useQuery(
+    ["categories"],
+    async () => {
+      const response = await APICall(categories, false, false);
+      return response?.data?.data;
+    },
+    {
+      staleTime: Infinity,
+      refetchOnWindowFocus: false,
+    },
+  );
 
   const allCategories: ApiCategory[] =
-    Array.isArray(categoriesData) ? categoriesData : [];
+    Array.isArray(categoriesData?.data) ? categoriesData.data : [];
 
   const currentCategory = useMemo(() => {
     return allCategories.find(
