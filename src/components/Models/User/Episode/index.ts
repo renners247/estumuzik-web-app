@@ -52,6 +52,7 @@ interface NewestEpisode {
 	is_favourite: string;
 	podcast: {
 		title: string;
+		user_id: number;
 		author: string;
 		cover_picture_url?: string;
 		picture_url?: string;
@@ -61,24 +62,24 @@ interface NewestEpisode {
 }
 
 interface User {
-  id: number;
-  first_name: string;
-  last_name: string;
-  company_name: string | null;
-  email: string;
-  profile_image_url: string | null;
-  created_at: string;
-  updated_at: string;
+	id: number;
+	first_name: string;
+	last_name: string;
+	company_name: string | null;
+	email: string;
+	profile_image_url: string | null;
+	created_at: string;
+	updated_at: string;
 }
 
 interface EpisodeComment {
-  id: number;
-  user_id: number;
-  episode_id: number;
-  body: string;
-  created_at: string;
-  updated_at: string;
-  user: User;
+	id: number;
+	user_id: number;
+	episode_id: number;
+	body: string;
+	created_at: string;
+	updated_at: string;
+	user: User;
 }
 
 interface Playlist {

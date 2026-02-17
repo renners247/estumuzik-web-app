@@ -146,3 +146,6 @@ export const updatePassword = async (data: {
 	old_password: string;
 	new_password: string;
 }) => axios.patch(`${API_URL}/users/change-password`, data);
+
+export const getUserStatus = async (userId: number) =>
+	axios.get(`${API_URL}/users/${userId}/status`);
