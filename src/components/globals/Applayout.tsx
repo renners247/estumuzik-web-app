@@ -18,7 +18,7 @@ const Applayout = ({ children, className }: AppLayoutProps) => {
 				<div className='overflow-y-scroll w-full lg:w-[85%] relative bg-black-100'>
 					<Header />
 					<div
-						className={`w-full relative md:px-2 lg:px-4 pb-5 lg:mt-8 ${className}`}
+						className={`w-full relative md:px-2 lg:px-4 pb-5 lg:mt-0 ${className}`}
 					>
 						{children}
 					</div>

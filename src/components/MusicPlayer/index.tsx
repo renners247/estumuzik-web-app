@@ -57,9 +57,10 @@ import { loadingBarRef } from "@/app/redux-provider";
 import Cookies from "js-cookie";
 import { AUTH_TOKEN_KEY, hasSignedOut } from "../utils/data";
 import EpisodeFavouriteFunc from "../episodefunctions/EpisodeFavouriteFunc";
-import EpisodePlayListAdd from "../Cards/_components/EpisodePlayListAdd";
+import EpisodeQueueListAdd from "../Cards/_components/EpisodeQueueListAdd";
 import { BaseUrl, registerPlayEpisode } from "../utils/endpoints";
 import { RiShareLine } from "react-icons/ri";
+import { Tooltip } from "@heroui/react";
 
 const MusicPlayer: React.FC = () => {
 	const {
@@ -597,19 +598,54 @@ const MusicPlayer: React.FC = () => {
 															episodeData={activeSong}
 															className='size-9'
 														/>
-														<EpisodePlayListAdd
+														<EpisodeQueueListAdd
 															episodeData={activeSong}
 															className='size-9'
 														/>
 													</>
 												)}
 
-												<button
-													onClick={handleNativeShare}
-													className={`size-9 flex items-center justify-center rounded-full text-white hover:text-white border border-white/40 hover:bg-white/10 transition-al`}
+												<Tooltip
+													content='Share Episode'
+													placement='top'
+													showArrow
+													closeDelay={0}
+													// Technical styling (Zinc + Industrial Typography)
+													classNames={{
+														base: ["before:bg-zinc-800"], // Arrow color
+														content: [
+															"py-1.5 px-3 shadow-xl",
+															"text-[10px] font-black uppercase tracking-widest",
+															"text-white bg-zinc-900",
+															"border border-white/10 rounded-lg",
+														],
+													}}
+													// Snappy spring animation
+													motionProps={{
+														variants: {
+															exit: {
+																opacity: 0,
+																transition: { duration: 0.1 },
+															},
+															enter: {
+																opacity: 1,
+																transition: { duration: 0.1 },
+															},
+														},
+													}}
 												>
-													<RiShareLine className='text-xs lg:text-base' />
-												</button>
+													<button
+														onClick={handleNativeShare}
+														className='relative size-11 flex items-center justify-center rounded-full border border-white/40 hover:bg-white/10 text-white/60 hover:text-white hover:border-white/50 transition-all shrink-0 active:scale-95'
+													>
+														{/* The Icon */}
+														<RiShareLine className='text-xl transition-transform ' />
+
+														{/* Hardware Reflection Effect */}
+
+														{/* Subtle Hover Glow */}
+													</button>
+												</Tooltip>
 											</div>
 											<div className='ml-2'>
 												<CustomRangeVolume

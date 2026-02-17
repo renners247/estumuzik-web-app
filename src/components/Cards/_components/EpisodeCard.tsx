@@ -12,6 +12,8 @@ import { BaseUrl } from "@/components/utils/endpoints";
 import EpisodeFavouriteFunc from "@/components/episodefunctions/EpisodeFavouriteFunc";
 import { useRouter } from "next/navigation";
 import GlobalLoader from "@/components/reusables/GlobalLoader";
+import EpisodeQueueListAdd from "./EpisodeQueueListAdd";
+import { Tooltip } from "@heroui/react";
 import EpisodePlayListAdd from "./EpisodePlayListAdd";
 
 // ... (PodcastEpisode interface remains the same)
@@ -84,7 +86,7 @@ const PodcastCard = ({ data, index, allEpisodes }: PodcastProps) => {
 						alt={data?.podcast.title}
 						className='w-full h-full object-cover grayscale-[30%]'
 					/>
-					<div className='absolute inset-0 bg-gradient-to-b from-transparent via-[#062c1b]/40 to-[#0a1a12]'></div>
+					<div className='absolute inset-0 bg-gradient-to-b from-transparent via-[#FFCC00]/20 to-[#050505]'></div>
 				</div>
 
 				<div className='relative z-10 p-5 flex flex-col justify-between lg:h-[370px]'>
@@ -150,13 +152,43 @@ const PodcastCard = ({ data, index, allEpisodes }: PodcastProps) => {
 					<div className='flex items-center gap-3.5'>
 						<EpisodeFavouriteFunc episodeData={data} />
 						<EpisodePlayListAdd episodeData={data} />
+						<EpisodeQueueListAdd episodeData={data} />
 
-						<button
-							onClick={handleNativeShare}
-							className={`size-11 flex items-center justify-center rounded-full text-white/70 hover:text-white border border-white/40 hover:bg-white/10 transition-al`}
+						<Tooltip
+							content='Share Episode'
+							placement='top'
+							showArrow
+							closeDelay={0}
+							// Technical styling (Zinc + Industrial Typography)
+							classNames={{
+								base: ["before:bg-zinc-800"], // Arrow color
+								content: [
+									"py-1.5 px-3 shadow-xl",
+									"text-[10px] font-black uppercase tracking-widest",
+									"text-white bg-zinc-900",
+									"border border-white/10 rounded-lg",
+								],
+							}}
+							// Snappy spring animation
+							motionProps={{
+								variants: {
+									exit: { opacity: 0, transition: { duration: 0.1 } },
+									enter: { opacity: 1, transition: { duration: 0.1 } },
+								},
+							}}
 						>
-							<RiShareLine className='text-xs lg:text-lg' />
-						</button>
+							<button
+								onClick={handleNativeShare}
+								className='relative size-11 flex items-center justify-center rounded-full border border-white/40 hover:bg-white/10 text-white/60 hover:text-white hover:border-white/50 transition-all shrink-0 active:scale-95'
+							>
+								{/* The Icon */}
+								<RiShareLine className='text-xl transition-transform ' />
+
+								{/* Hardware Reflection Effect */}
+
+								{/* Subtle Hover Glow */}
+							</button>
+						</Tooltip>
 						{/* <button className='size-11 flex items-center justify-center rounded-full text-zinc-500 hover:text-zinc-300 border border-gray-500/40  hover:bg-white/10 transition-all'>
 							<AiOutlinePlus size={20} />
 						</button> */}

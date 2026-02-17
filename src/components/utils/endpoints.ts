@@ -48,8 +48,10 @@ export const episodePodcast = async (
 export const topJolly = async (page: number, per_page: number) =>
 	axios.get(`${API_URL}/podcasts/top-jolly?page=${page}&per_page=${per_page}`);
 
-export const getLatestEpisodes = async () =>
-	axios.get(`${API_URL}/episodes/latest`);
+export const getLatestEpisodes = async (
+	page: number = 1,
+	per_page: number = 15,
+) => axios.get(`${API_URL}/episodes/latest?page=${page}&per_page=${per_page}`);
 
 export const getHandPicked = async (amount: number) =>
 	axios.get(`${API_URL}/podcasts/handpicked?amount=${amount}`);
@@ -74,20 +76,20 @@ export const addFavorite = async (episodeId: number) =>
 export const removeFromFavorites = async (episodeId: number) =>
 	axios.delete(`${API_URL}/episodes/favourites?episodeId=${episodeId}`);
 
-export const subscribeToPodcast = async (podcastId: number) =>
-	axios.post(`${API_URL}/podcasts/${podcastId}/subscriptions`);
-
-export const unsubscribeFromPodcast = async (podcastId: number) =>
-	axios.delete(`${API_URL}/podcasts/${podcastId}/subscriptions`);
-
 export const addToQueue = async (episodeId: number) =>
 	axios.post(`${API_URL}/episodes/${episodeId}/queues`);
 
-export const registerPlayEpisode = async (episodeId: number) =>
-	axios.post(`${API_URL}/episodes/plays?episodeId=${episodeId}`);
-
 export const removeQueue = async (episodeId: number) =>
 	axios.delete(`${API_URL}/episodes/${episodeId}/queues`);
+
+export const addToPlaylist = async (episodeId: number) =>
+	axios.post(`${API_URL}/playlists/${episodeId}/episodes`);
+
+export const removeFromPlaylist = async (episodeId: number) =>
+	axios.delete(`${API_URL}/playlists/${episodeId}/episodes`);
+
+export const registerPlayEpisode = async (episodeId: number) =>
+	axios.post(`${API_URL}/episodes/plays?episodeId=${episodeId}`);
 
 export const getEpisodeStatus = async (statusId: number) =>
 	axios.get(`${API_URL}/episodes/${statusId}/status`);
@@ -149,3 +151,24 @@ export const updatePassword = async (data: {
 
 export const getUserStatus = async (userId: number) =>
 	axios.get(`${API_URL}/users/${userId}/status`);
+
+export const getKeywords = async () =>
+	axios.get(`${API_URL}/podcasts/keywords`);
+
+export const searchForPodcast = async (
+	search: string,
+	page: number = 1,
+	per_page: number = 100,
+) =>
+	axios.get(
+		`${API_URL}/podcasts/search?q=${search}&page=${page}&per_page=${per_page}`,
+	);
+
+export const getPodcastStatus = async (podcastId: number) =>
+	axios.get(`${API_URL}/podcasts/${podcastId}/status`);
+
+export const subscribeToPodcast = async (podcastId: number, data: any) =>
+	axios.post(`${API_URL}/podcasts/${podcastId}/subscriptions`, data);
+
+export const unsubscribeFromPodcast = async (podcastId: number, data: any) =>
+	axios.delete(`${API_URL}/podcasts/${podcastId}/subscriptions`, data);

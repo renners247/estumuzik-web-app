@@ -424,10 +424,17 @@ interface LendoVerifyLogoProps {
 //   );
 // };
 
-export const EstuMuzikLogo = () => {
+interface EstuMuzikLogoProps {
+	className?: string;
+}
+export const EstuMuzikLogo = ({ className }: EstuMuzikLogoProps) => {
 	return (
 		<Link href='/'>
-			<Picture src={logoImage} alt='logo image' className='w-16 rounded-sm' />
+			<Picture
+				src={logoImage}
+				alt='logo image'
+				className={`w-16 rounded-sm ${className}`}
+			/>
 		</Link>
 	);
 };

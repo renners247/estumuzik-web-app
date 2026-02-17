@@ -7,8 +7,10 @@ import {
 	getEpisodeStatus,
 	removeFromFavorites,
 } from "../utils/endpoints";
-import { RiHeartFill, RiHeartLine } from "react-icons/ri"; // Sleeker tech icons
+import { RiHeartFill, RiHeartLine } from "react-icons/ri";
 import { motion, AnimatePresence } from "framer-motion";
+// 1. Import Tooltip from Hero UI
+import { Tooltip } from "@heroui/react";
 
 interface EpisodeFavouriteFuncProps {
 	episodeData: PodcastEpisode;
@@ -23,7 +25,6 @@ const EpisodeFavouriteFunc = ({
 	const queryClient = useQueryClient();
 	const episodeId = episodeData?.id;
 
-	// 1. FETCH STATUS
 	const { data: episodeStatusData } = useQuery(
 		["episode-status", episodeId],
 		async () => {
@@ -36,32 +37,20 @@ const EpisodeFavouriteFunc = ({
 			return response?.data?.data;
 		},
 		{
-			staleTime: 6000,
+			staleTime: Infinity,
 			refetchOnWindowFocus: true,
 		},
 	);
 	const EpisodeStatusData: EpisodeType = episodeStatusData?.data;
 
-	// 2. SYNC LOCAL STATE WITH SERVER DATA
 	useEffect(() => {
 		if (EpisodeStatusData) {
 			setIsFavourite(EpisodeStatusData.is_favourite);
 		}
 	}, [EpisodeStatusData]);
 
-	// 3. MUTATIONS
 	const addFavoriteMutation = useMutation(
-		() => APICall(addFavorite, [episodeId], false, false),
-		{
-			onSuccess: () => {
-				queryClient.invalidateQueries(["episode-status", episodeId]);
-				queryClient.invalidateQueries("favorite-list"); // Clear cache for favorites page
-			},
-		},
-	);
-
-	const removeFavoriteMutation = useMutation(
-		() => APICall(removeFromFavorites, [episodeId], false, false),
+		() => APICall(addFavorite, [episodeId], true, false),
 		{
 			onSuccess: () => {
 				queryClient.invalidateQueries(["episode-status", episodeId]);
@@ -70,7 +59,16 @@ const EpisodeFavouriteFunc = ({
 		},
 	);
 
-	// 4. HANDLERS (With Optimistic UI updates)
+	const removeFavoriteMutation = useMutation(
+		() => APICall(removeFromFavorites, [episodeId], true, false),
+		{
+			onSuccess: () => {
+				queryClient.invalidateQueries(["episode-status", episodeId]);
+				queryClient.invalidateQueries("favorite-list");
+			},
+		},
+	);
+
 	const toggleFavorite = () => {
 		if (isFavourite) {
 			setIsFavourite(false);
@@ -82,14 +80,38 @@ const EpisodeFavouriteFunc = ({
 	};
 
 	return (
-		<button
-			onClick={toggleFavorite}
-			aria-label={isFavourite ? "Remove from favorites" : "Add to favorites"}
-			className='group relative outline-none'
+		// 2. Wrap the button with Hero UI Tooltip
+		<Tooltip
+			content={isFavourite ? "Unlike Episode" : "Like Episode"}
+			placement='top'
+			showArrow
+			closeDelay={0}
+			// 3. Technical styling for the tooltip
+			classNames={{
+				base: ["before:bg-zinc-800"], // Arrow color
+				content: [
+					"py-1.5 px-3 shadow-xl",
+					"text-[10px] font-black uppercase tracking-widest",
+					"text-white bg-zinc-900",
+					"border border-white/10 rounded-lg",
+				],
+			}}
+			// 4. Snappy spring animation for the tooltip
+			motionProps={{
+				variants: {
+					exit: { opacity: 0, transition: { duration: 0.1 } },
+					enter: { opacity: 1, transition: { duration: 0.1 } },
+				},
+			}}
 		>
-			{/* Socket Container */}
-			<div
-				className={`
+			<button
+				onClick={toggleFavorite}
+				aria-label={isFavourite ? "Remove from favorites" : "Add to favorites"}
+				className='group relative outline-none flex items-center justify-center shrink-0'
+			>
+				{/* Socket Container */}
+				<div
+					className={`
 				relative size-11 flex items-center justify-center rounded-full border  transition-all duration-500
 			${className}	${
 				isFavourite
@@ -97,40 +119,35 @@ const EpisodeFavouriteFunc = ({
 					: "border-white/50 hover:border-white/20"
 			}
 			`}
-			>
-				<AnimatePresence mode='wait'>
-					{isFavourite ? (
-						<motion.div
-							key='active'
-							initial={{ scale: 0.5, opacity: 0 }}
-							animate={{ scale: 1, opacity: 1 }}
-							exit={{ scale: 0.5, opacity: 0 }}
-							className='text-red-500'
-						>
-							<RiHeartFill className='text-xl' />
-						</motion.div>
-					) : (
-						<motion.div
-							key='inactive'
-							initial={{ scale: 0.8, opacity: 0 }}
-							animate={{ scale: 1, opacity: 1 }}
-							exit={{ scale: 0.8, opacity: 0 }}
-							className='text-white/60 hover:text-white/80'
-						>
-							<RiHeartLine className='text-xl' />
-						</motion.div>
-					)}
-				</AnimatePresence>
+				>
+					<AnimatePresence mode='wait'>
+						{isFavourite ? (
+							<motion.div
+								key='active'
+								initial={{ scale: 0.5, opacity: 0 }}
+								animate={{ scale: 1, opacity: 1 }}
+								exit={{ scale: 0.5, opacity: 0 }}
+								className='text-red-500'
+							>
+								<RiHeartFill className='text-xl' />
+							</motion.div>
+						) : (
+							<motion.div
+								key='inactive'
+								initial={{ scale: 0.8, opacity: 0 }}
+								animate={{ scale: 1, opacity: 1 }}
+								exit={{ scale: 0.8, opacity: 0 }}
+								className='text-white/60 hover:text-white/80'
+							>
+								<RiHeartLine className='text-xl' />
+							</motion.div>
+						)}
+					</AnimatePresence>
 
-				{/* Hardware Reflection Effect */}
-				<div className='absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-2xl pointer-events-none' />
-			</div>
-
-			{/* Tooltip (Desktop only) */}
-			<span className='absolute -top-10 left-1/2 -translate-x-1/2 px-3 py-1 bg-zinc-800 text-white text-[10px] font-black uppercase tracking-widest rounded-lg opacity-0 hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap border border-white/5'>
-				{isFavourite ? "Saved" : "Save Episode"}
-			</span>
-		</button>
+					{/* Hardware Reflection Effect */}
+				</div>
+			</button>
+		</Tooltip>
 	);
 };
 

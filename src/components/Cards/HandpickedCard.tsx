@@ -6,9 +6,14 @@ import Picture from "../picture/Index";
 import { useAppDispatch, useAppSelector } from "../Hooks";
 import { playPause, setActiveSong } from "../Redux/playerOne";
 import { setIsEpisodeRegistered } from "../Redux/ToggleModal";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { APICall } from "../utils/extra";
-import { getUserStatus } from "../utils/endpoints";
+import {
+	getPodcastStatus,
+	getUserStatus,
+	subscribeToPodcast,
+	unsubscribeFromPodcast,
+} from "../utils/endpoints";
 
 interface HandpickedCardProps {
 	episode: PodcastEpisode;
@@ -26,6 +31,46 @@ const HandpickedCard = ({
 		(state) => state.playerOne,
 	);
 	const [following, setFollowing] = useState(false);
+	const queryClient = useQueryClient();
+
+	const podcastId = episode?.podcast?.id;
+
+	const { data: podcastStatus } = useQuery(
+		["podcastStatus", podcastId],
+		async () => {
+			const response = await APICall(getPodcastStatus, podcastId, false, false);
+			return response?.data?.data?.data;
+		},
+		{
+			enabled: !!podcastId,
+			onSuccess: (data) => {
+				if (data && typeof data.is_subscribed === "boolean") {
+					setFollowing(data.is_subscribed);
+				}
+			},
+		},
+	);
+
+	// Toggle Follow/Unfollow
+	const toggleFollow = async (e: React.MouseEvent) => {
+		e.stopPropagation();
+		if (!podcastId) return;
+
+		const newFollowing = !following;
+		setFollowing(newFollowing); // Optimistic update
+
+		try {
+			if (newFollowing) {
+				await APICall(subscribeToPodcast, [podcastId, {}], true, false);
+			} else {
+				await APICall(unsubscribeFromPodcast, [podcastId, {}], true, false);
+			}
+			queryClient.invalidateQueries(["podcastStatus", podcastId]);
+		} catch (err) {
+			setFollowing(!newFollowing); // Revert on error
+			console.log("Follow toggle failed", err);
+		}
+	};
 
 	// Check if THIS specific card is the one playing
 	const isCurrentActiveSong = activeSong?.id === episode.id;
@@ -52,17 +97,6 @@ const HandpickedCard = ({
 	};
 
 	const userId = episode?.podcast?.user_id;
-
-	const { data: followStatus } = useQuery(["userStatus", userId], async () => {
-		const response = await APICall(getUserStatus, userId, false, false);
-		return response?.data?.data?.data;
-	});
-
-	useEffect(() => {
-		if (followStatus) {
-			setFollowing(followStatus?.is_following);
-		}
-	}, [followStatus]);
 
 	return (
 		<div className='bg-[#1A1A1A] p-4 rounded-xl flex flex-col gap-4 group hover:bg-[#222] transition-colors cursor-pointer'>
@@ -93,10 +127,11 @@ const HandpickedCard = ({
 			{/* Actions */}
 			<div className='flex items-center gap-3 mt-auto pt-2'>
 				<button
+					onClick={toggleFollow}
 					className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all
             ${
 							following
-								? "bg-green_1-100 text-white"
+								? "bg-primary-500 text-white"
 								: "bg-white/10 text-gray-300 hover:bg-white/20"
 						}`}
 				>

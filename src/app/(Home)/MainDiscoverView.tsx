@@ -101,12 +101,12 @@ const MainDiscoverView = () => {
 			{/* Horizontal Scroll Container */}
 			<div className='w-full relative group'>
 				<ScrollShadow
-					ref={scrollContainerRef} // !!! CRITICAL FIX: ATTACHED THE REF HERE !!!
+					ref={scrollContainerRef}
 					hideScrollBar
-					offset={10}
+					offset={5}
 					orientation='horizontal'
-					size={100}
-					className='flex items-center gap-6 pb-12 px-4 scroll-smooth'
+					size={40}
+					className='flex lg:items-center gap-6 pb-12 px-4 scroll-smooth'
 				>
 					{/* 1. LOADING SKELETONS */}
 					{isLoading &&

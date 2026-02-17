@@ -1,7 +1,9 @@
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment, ReactNode } from "react";
 import { BiChevronDown } from "react-icons/bi";
+import { FaApple, FaGooglePlay } from "react-icons/fa";
 import { IoMdCheckmarkCircle } from "react-icons/io";
+import { useEffect, useState } from "react";
 
 interface GeneralDropdownOption {
 	id: string | number;
@@ -23,6 +25,224 @@ interface GeneralDropdownProps {
 	sectionTitle?: string;
 	isLoading?: boolean;
 }
+
+export const AndriodButtons = () => {
+	const { installApp, isInstallable, isStandalone } = usePWAInstall();
+
+	// 1. HIDDEN IF ALREADY DOWNLOADED:
+	// If the app is already installed and running, return null (no fallback)
+	if (isStandalone) return null;
+
+	// 2. DETECT iOS:
+	// We check if the user is on an iPhone/iPad to show the App Store disguise
+	const isIos =
+		typeof window !== "undefined" &&
+		/iPad|iPhone|iPod/.test(navigator.userAgent);
+
+	// 3. ANDROID / CHROME / EDGE LOGIC:
+	// If the browser supports the automated install prompt
+	if (isInstallable) {
+		return (
+			<button
+				onClick={installApp}
+				className='flex items-center gap-x-2 justify-center bg-primary-400 hover:bg-primary-500 transition-all px-1 sm:px-4 py-2 sm:py-3 rounded-full shadow-lg active:scale-95 group border border-white/10'
+			>
+				<FaGooglePlay className='text-2xl text-black group-hover:scale-110 transition-transform' />
+				<div className='flex flex-col items-start leading-tight'>
+					<span className='text-[9px] font-bold text-black uppercase tracking-tighter'>
+						Download for Free
+					</span>
+					<span className='text-xs lg:text-sm font-black text-black text-start -mt-1 tracking-tight'>
+						Google Playstore
+					</span>
+				</div>
+			</button>
+		);
+	}
+
+	// 4. iOS DISGUISE:
+	// If we are on iOS, show the App Store disguise (manual instructions)
+	if (isIos) {
+		return (
+			<button
+				onClick={() =>
+					alert(
+						"To install: \n1. Tap the 'Share' icon (square with arrow). \n2. Scroll down and tap 'Add to Home Screen'.",
+					)
+				}
+				className='flex items-center gap-x-2 justify-center bg-primary-400 hover:bg-primary-500 px-1 sm:px-4 transition-all py-2 sm:py-3 rounded-full shadow-lg active:scale-95 group border border-white/10'
+			>
+				<FaApple className='text-3xl text-black group-hover:scale-110 transition-transform' />
+				<div className='flex flex-col items-start leading-tight'>
+					<span className='text-[9px] font-bold text-black uppercase tracking-tighter'>
+						Download for Free
+					</span>
+					<span className='text-xs lg:text-sm font-black text-black text-start -mt-1 tracking-tight'>
+						App Store
+					</span>
+				</div>
+			</button>
+		);
+	}
+
+	// 5. NO FALLBACK:
+	// If the app isn't installable and it's not iOS (e.g., standard desktop browser), show nothing.
+	return null;
+};
+export const AppleButtons = () => {
+	const { installApp, isInstallable, isStandalone } = usePWAInstall();
+
+	// 1. HIDDEN IF ALREADY DOWNLOADED:
+	// If the app is already installed and running, return null (no fallback)
+	if (isStandalone) return null;
+
+	// 2. DETECT iOS:
+	// We check if the user is on an iPhone/iPad to show the App Store disguise
+	const isIos =
+		typeof window !== "undefined" &&
+		/iPad|iPhone|iPod/.test(navigator.userAgent);
+
+	// 3. ANDROID / CHROME / EDGE LOGIC:
+	// If the browser supports the automated install prompt
+	if (isInstallable) {
+		return (
+			<button
+				onClick={installApp}
+				className='flex items-center gap-x-2 justify-center bg-primary-400 hover:bg-primary-500 transition-all px-1 sm:px-4 py-2 sm:py-3 rounded-full shadow-lg active:scale-95 group border border-white/10'
+			>
+				<FaApple className='text-3xl text-black group-hover:scale-110 transition-transform' />
+				<div className='flex flex-col items-start leading-tight'>
+					<span className='text-[9px] font-bold text-black uppercase tracking-tighter'>
+						Download for Free
+					</span>
+					<span className='text-xs lg:text-sm font-black text-black text-start -mt-1 tracking-tight'>
+						App Store
+					</span>
+				</div>
+			</button>
+		);
+	}
+
+	// 4. iOS DISGUISE:
+	// If we are on iOS, show the App Store disguise (manual instructions)
+	if (isIos) {
+		return (
+			<button
+				onClick={() =>
+					alert(
+						"To install: \n1. Tap the 'Share' icon (square with arrow). \n2. Scroll down and tap 'Add to Home Screen'.",
+					)
+				}
+				className='flex items-center gap-x-2 justify-center bg-primary-400 hover:bg-primary-500 transition-all px-4 py-2 sm:py-3 rounded-full shadow-lg active:scale-95 group border border-white/10'
+			>
+				<FaApple className='text-3xl text-black group-hover:scale-110 transition-transform' />
+				<div className='flex flex-col items-start leading-tight'>
+					<span className='text-[9px] font-bold text-black uppercase tracking-tighter'>
+						Download for Free
+					</span>
+					<span className='text-xs xs:text-sm font-black text-black text-start -mt-1 tracking-tight'>
+						App Store
+					</span>
+				</div>
+			</button>
+		);
+	}
+
+	// 5. NO FALLBACK:
+	// If the app isn't installable and it's not iOS (e.g., standard desktop browser), show nothing.
+	return null;
+};
+
+export const usePWAInstall = () => {
+	const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+	const [isInstallable, setIsInstallable] = useState(false);
+	const [isStandalone, setIsStandalone] = useState(false);
+
+	useEffect(() => {
+		// Check if already installed/standalone
+		if (
+			window.matchMedia("(display-mode: standalone)").matches ||
+			(window.navigator as any).standalone
+		) {
+			setIsStandalone(true);
+		}
+
+		const handler = (e: Event) => {
+			e.preventDefault();
+			setDeferredPrompt(e);
+			setIsInstallable(true);
+		};
+
+		window.addEventListener("beforeinstallprompt", handler);
+
+		// Listen for successful installation
+		window.addEventListener("appinstalled", () => {
+			setIsStandalone(true);
+			setIsInstallable(false);
+			setDeferredPrompt(null);
+		});
+
+		return () => window.removeEventListener("beforeinstallprompt", handler);
+	}, []);
+
+	const installApp = async () => {
+		if (!deferredPrompt) return;
+		deferredPrompt.prompt();
+		const { outcome } = await deferredPrompt.userChoice;
+		if (outcome === "accepted") {
+			setDeferredPrompt(null);
+			setIsInstallable(false);
+		}
+	};
+
+	return { installApp, isInstallable, isStandalone };
+};
+
+// export const AndriodButtons = () => {
+// 	const { installApp, isInstallable } = usePWAInstall();
+
+// 	if (!isInstallable) return null;
+
+// 	return (
+// 		<button
+// 			onClick={installApp}
+// 			className='flex items-center gap-2 justify-center bg-[#DAB13C] hover:bg-[#c9a130] transition-all px-3 py-3 rounded-full shadow-lg active:scale-95 group'
+// 		>
+// 			<FaGooglePlay className='text-2xl text-black-100 group-hover:scale-110 transition-transform' />
+// 			<div className='flex flex-col items-start leading-tight'>
+// 				<span className='text-[9px] font-bold text-black uppercase tracking-tighter'>
+// 					Download for Free
+// 				</span>
+// 				<span className='text-sm font-black text-black text-start -mt-1 tracking-tight'>
+// 					Install App
+// 				</span>
+// 			</div>
+// 		</button>
+// 	);
+// };
+
+// export const AppleButtons = () => {
+// 	const handleIOSInstall = () => {
+// 		alert("To install this app:\n\nTap Share → 'Add to Home Screen'");
+// 	};
+
+// 	return (
+// 		<button
+// 			onClick={handleIOSInstall}
+// 			className='flex items-center gap-2 justify-center bg-[#DAB13C] hover:bg-[#c9a130] transition-all px-3 py-3 rounded-full shadow-lg active:scale-95 group'
+// 		>
+// 			<FaApple className='text-3xl text-black group-hover:scale-110 transition-transform' />
+// 			<div className='flex flex-col items-start leading-tight'>
+// 				<span className='text-[9px] font-bold text-black uppercase tracking-tighter'>
+// 					Download for Free
+// 				</span>
+// 				<span className='text-sm font-black text-black -mt-1 tracking-tight'>
+// 					Add to Home Screen
+// 				</span>
+// 			</div>
+// 		</button>
+// 	);
+// };
 
 export const GeneralDropdown = ({
 	options,
@@ -309,3 +529,5 @@ export const MultiSelectDropdown = ({
 		</Menu>
 	);
 };
+
+// PWA Button

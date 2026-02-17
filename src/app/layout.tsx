@@ -89,7 +89,7 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang='en'>
-			<body className={`bg-bg-100 ${nunito.className}`}>
+			<body className={`bg-black-100 ${nunito.className}`}>
 				<ReduxProvider>{children}</ReduxProvider>
 			</body>
 		</html>

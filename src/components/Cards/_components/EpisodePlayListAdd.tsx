@@ -1,15 +1,22 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-
 import { motion, AnimatePresence } from "framer-motion";
+import { Tooltip } from "@heroui/react";
+import {
+	RiPlayListAddFill,
+	RiPlayListLine,
+	RiPlayListAddLine,
+} from "react-icons/ri";
+
 import { APICall } from "@/components/utils/extra";
 import {
-	addToQueue,
 	getEpisodeStatus,
-	removeQueue,
+	// Ensure these endpoints exist in your endpoints file
+	addToPlaylist,
+	removeFromPlaylist,
+	getPlaylists,
 } from "@/components/utils/endpoints";
-import { RiPlayList2Fill, RiPlayListAddLine } from "react-icons/ri";
 
 interface EpisodePlayListAddProps {
 	episodeData: PodcastEpisode;
@@ -20,11 +27,36 @@ const EpisodePlayListAdd = ({
 	episodeData,
 	className,
 }: EpisodePlayListAddProps) => {
-	const [isQueued, setIsQueued] = useState(false);
+	const [isInPlaylist, setIsInPlaylist] = useState(false);
 	const queryClient = useQueryClient();
+	const playlistId = episodeData?.id;
 	const episodeId = episodeData?.id;
+	const [perPage, setPerPage] = useState(8);
+	const [currentPage, setCurrentPage] = useState(1);
+	const [searchQuery, setSearchQuery] = useState("");
+	const [totalPlaylists, setTotalPlaylists] = useState(null);
 
-	// 1. FETCH STATUS (Reusing the same status endpoint)
+	// 1. FETCH STATUS
+	const { data: playlistsData, isLoading } = useQuery(
+		["playlists", currentPage, perPage, searchQuery],
+		async () => {
+			const response = await APICall(
+				getPlaylists,
+				[currentPage, perPage, searchQuery],
+				false,
+				false,
+			); // Fetch 3 items
+			const total = response?.data?.data?.data?.total;
+			setTotalPlaylists(total);
+			return response?.data?.data?.data;
+		},
+		{
+			// staleTime: 1000 * 60 * 5,
+		},
+	);
+
+	const playlists: Playlist[] = playlistsData?.data;
+
 	const { data: episodeStatusData } = useQuery(
 		["episode-status", episodeId],
 		async () => {
@@ -37,103 +69,125 @@ const EpisodePlayListAdd = ({
 			return response?.data?.data;
 		},
 		{
-			staleTime: 6000,
+			staleTime: Infinity,
 			refetchOnWindowFocus: true,
 		},
 	);
 
-	// Using the same interface structure as Favourite
 	const EpisodeStatusData: EpisodeType = episodeStatusData?.data;
 
-	// 2. SYNC LOCAL STATE
+	// 2. SYNC STATE (Assuming your API returns is_in_playlist or similar)
 	useEffect(() => {
 		if (EpisodeStatusData) {
-			setIsQueued(EpisodeStatusData.is_queued);
+			// Change this to your specific key for playlists
+			setIsInPlaylist(EpisodeStatusData.is_played);
 		}
 	}, [EpisodeStatusData]);
 
 	// 3. MUTATIONS
-	const addQueueMutation = useMutation(
-		() => APICall(addToQueue, [episodeId], false, false),
+	const addPlaylistMutation = useMutation(
+		() => APICall(addToPlaylist, [episodeId], false, false),
 		{
 			onSuccess: () => {
 				queryClient.invalidateQueries(["episode-status", episodeId]);
-				queryClient.invalidateQueries("queue-list");
+				queryClient.invalidateQueries("playlist-episodes");
 			},
 		},
 	);
 
-	const removeQueueMutation = useMutation(
-		() => APICall(removeQueue, [episodeId], false, false),
+	const removePlaylistMutation = useMutation(
+		() => APICall(removeFromPlaylist, [episodeId], false, false),
 		{
 			onSuccess: () => {
 				queryClient.invalidateQueries(["episode-status", episodeId]);
-				queryClient.invalidateQueries("queue-list");
+				queryClient.invalidateQueries("playlist-episodes");
 			},
 		},
 	);
 
 	// 4. HANDLER
-	const toggleQueue = () => {
-		if (isQueued) {
-			setIsQueued(false);
-			removeQueueMutation.mutate();
+	const togglePlaylist = () => {
+		if (isInPlaylist) {
+			setIsInPlaylist(false);
+			removePlaylistMutation.mutate();
 		} else {
-			setIsQueued(true);
-			addQueueMutation.mutate();
+			setIsInPlaylist(true);
+			addPlaylistMutation.mutate();
 		}
 	};
 
 	return (
-		<button
-			onClick={toggleQueue}
-			aria-label={isQueued ? "Remove from playlist" : "Add to playlist"}
-			className='relative outline-none'
-		>
-			{/* Socket Container */}
-			<div
-				className={`
-				relative size-11 flex items-center justify-center rounded-full border transition-all duration-500
-				${
-					isQueued
-						? "border-blue-500/40 shadow-[0_0_20px_rgba(59,130,246,0.15)] bg-blue-500/5"
-						: "border-white/50 hover:border-white/20"
-				} ${className}
-			`}
+		<>
+			{/* <h3 className='text-white'>{isInPlaylist ? "isplay" : "none"}</h3> */}
+
+			<Tooltip
+				content={isInPlaylist ? "Added to Playlist" : "Add to Playlist"}
+				placement='top'
+				showArrow
+				closeDelay={0}
+				classNames={{
+					base: ["before:bg-zinc-800"],
+					content: [
+						"py-1.5 px-3 shadow-xl",
+						"text-[10px] font-black uppercase tracking-widest",
+						"text-white bg-zinc-900",
+						"border border-white/10 rounded-lg",
+					],
+				}}
+				motionProps={{
+					variants: {
+						exit: { opacity: 0, transition: { duration: 0.1 } },
+						enter: { opacity: 1, transition: { duration: 0.1 } },
+					},
+				}}
 			>
-				<AnimatePresence mode='wait'>
-					{isQueued ? (
-						<motion.div
-							key='active'
-							initial={{ scale: 0.5, opacity: 0 }}
-							animate={{ scale: 1, opacity: 1 }}
-							exit={{ scale: 0.5, opacity: 0 }}
-							className='text-blue-500'
-						>
-							<RiPlayList2Fill className='text-xl' />
-						</motion.div>
-					) : (
-						<motion.div
-							key='inactive'
-							initial={{ scale: 0.8, opacity: 0 }}
-							animate={{ scale: 1, opacity: 1 }}
-							exit={{ scale: 0.8, opacity: 0 }}
-							className='text-white/60 hover:text-white/80'
-						>
-							<RiPlayListAddLine className='text-xl' />
-						</motion.div>
-					)}
-				</AnimatePresence>
+				<button
+					onClick={togglePlaylist}
+					aria-label={isInPlaylist ? "Remove from playlist" : "Add to playlist"}
+					className='group relative outline-none flex items-center justify-center shrink-0'
+				>
+					{/* Socket Container */}
 
-				{/* Hardware Reflection Effect */}
-				<div className='absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-full pointer-events-none' />
-			</div>
+					<div
+						className={`
+                        relative size-11 flex items-center justify-center rounded-full border transition-all duration-500
+                        ${
+													isInPlaylist
+														? "border-primary-500/40 shadow-[0_0_20px_rgba(59,130,246,0.15)] bg-primary-500/5"
+														: "border-white/20 hover:border-white/50 bg-zinc-900/50"
+												} ${className}
+                    `}
+					>
+						<AnimatePresence mode='wait'>
+							{isInPlaylist ? (
+								<motion.div
+									key='active'
+									initial={{ scale: 0.5, opacity: 0 }}
+									animate={{ scale: 1, opacity: 1 }}
+									exit={{ scale: 0.5, opacity: 0 }}
+									className='text-primary-500'
+								>
+									<RiPlayListAddFill className='text-xl' />
+								</motion.div>
+							) : (
+								<motion.div
+									key='inactive'
+									initial={{ scale: 0.8, opacity: 0 }}
+									animate={{ scale: 1, opacity: 1 }}
+									exit={{ scale: 0.8, opacity: 0 }}
+									className='text-white/60 group-hover:text-white'
+								>
+									<RiPlayListAddLine className='text-xl' />
+								</motion.div>
+							)}
+						</AnimatePresence>
 
-			{/* Tooltip */}
-			<span className='absolute -top-10 left-1/2 -translate-x-1/2 px-3 py-1 bg-zinc-800 text-white text-[10px] font-black uppercase tracking-widest rounded-lg opacity-0 hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap border border-white/5'>
-				{isQueued ? "In Queue" : "Add to Queue"}
-			</span>
-		</button>
+						{/* Hardware Shine Effect */}
+						<div className='absolute inset-0 bg-gradient-to-br from-white/10 to-transparent rounded-full pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity' />
+					</div>
+				</button>
+			</Tooltip>
+		</>
 	);
 };
 

@@ -104,7 +104,7 @@ const EpisodePodcastList = ({ podcastId }: EpisodePodcastListProps) => {
 									setActiveSong({
 										song: episode,
 										data: allEpisodes,
-										index: index,
+										index: episode?.id,
 									}),
 								);
 							}

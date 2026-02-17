@@ -24,6 +24,8 @@ import { BackButton } from "@/components/utils/function";
 import { formatDateYMD } from "@/components/utils/constants";
 import EpisodePodcastList from "./EpisodePodcastList";
 import PodcastSubscribeFunc from "./PodcastSubscribeFunc";
+import { RiShareLine } from "react-icons/ri";
+import { Tooltip } from "@heroui/react";
 
 interface PodcastContentProps {
 	PodcastId: string;
@@ -122,12 +124,41 @@ const PodcastContent = ({ PodcastId }: PodcastContentProps) => {
 							<div className='flex gap-3 pb-4 w-full lg:w-auto'>
 								<PodcastSubscribeFunc podcastDataId={PodcastData?.id} />
 
-								<button
-									onClick={handleNativeShare}
-									className='p-4 bg-zinc-900 border border-white/5 rounded-2xl text-zinc-400 hover:text-white transition-colors'
+								<Tooltip
+									content='Share Episode'
+									placement='top'
+									showArrow
+									closeDelay={0}
+									// Technical styling (Zinc + Industrial Typography)
+									classNames={{
+										base: ["before:bg-zinc-800"], // Arrow color
+										content: [
+											"py-1.5 px-3 shadow-xl",
+											"text-[10px] font-black uppercase tracking-widest",
+											"text-white bg-zinc-900",
+											"border border-white/10 rounded-lg",
+										],
+									}}
+									// Snappy spring animation
+									motionProps={{
+										variants: {
+											exit: { opacity: 0, transition: { duration: 0.1 } },
+											enter: { opacity: 1, transition: { duration: 0.1 } },
+										},
+									}}
 								>
-									<FiShare2 />
-								</button>
+									<button
+										onClick={handleNativeShare}
+										className='relative size-11 flex items-center justify-center rounded-full border border-white/40 hover:bg-white/10 text-white/60 hover:text-white hover:border-white/50 transition-all shrink-0 active:scale-95'
+									>
+										{/* The Icon */}
+										<RiShareLine className='text-xl transition-transform ' />
+
+										{/* Hardware Reflection Effect */}
+
+										{/* Subtle Hover Glow */}
+									</button>
+								</Tooltip>
 							</div>
 						</div>
 
