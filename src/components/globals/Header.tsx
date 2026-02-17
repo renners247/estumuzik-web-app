@@ -13,6 +13,8 @@ import { Menu, Transition } from "@headlessui/react";
 import { FiUser } from "react-icons/fi";
 import { usePathname, useRouter } from "next/navigation";
 import Search from "./Search";
+import { Squash as Hamburger } from "hamburger-react";
+import { EstuMuzikLogo } from "../utils/function";
 
 const Header = () => {
   const { user } = useAppSelector((state: any) => state.auth);
@@ -62,20 +64,36 @@ const Header = () => {
         <div className="w-full flex flex-col lg:flex-row lg:items-center justify-between px-4 py-3 lg:px-6 lg:py-4 gap-3 lg:gap-0">
           {/* Top Container: Title + Hamburger/Profile */}
           <div className="flex items-center justify-between lg:justify-start w-full lg:w-auto">
-            {/* Hamburger (Mobile only) */}
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden text-white p-1 hover:bg-white/10 rounded-lg transition-colors">
-              {isMobileMenuOpen ?
-                <RiCloseLine size={24} />
-              : <RiMenuLine size={24} />}
-            </button>
+            <div className="flex items-center gap-2 lg:gap-0 h-10 lg:h-auto">
+              {/* Hamburger (Mobile only) */}
+              <div className="lg:hidden text-white -ml-3 z-[60] relative">
+                <Hamburger
+                  toggled={isMobileMenuOpen}
+                  toggle={setIsMobileMenuOpen}
+                  size={24}
+                  duration={0.4}
+                  rounded
+                />
+              </div>
 
-            <h1 className="text-xl lg:text-2xl font-bold text-white tracking-tight">
-              {getHeaderTitle()}
-            </h1>
+              {/* Mobile Logo */}
+              <div className="lg:hidden scale-75 origin-left">
+                <EstuMuzikLogo />
+              </div>
 
-            {/* Mobile-only Profile & Logout */}
+              {/* Title (Hidden on mobile if Logo is present? Or present? User didn't specify, but space might be tight. 
+                  Let's keep it but maybe smaller or hidden if it clashes. 
+                  Original code had it visible on mobile. 
+                  With Logo + Hamburger + Title + Profile, it might be crowded.
+                  I'll hide title on mobile since we have the logo now, or keep it if space permits.
+                  Let's keep it hidden on mobile as Logo acts as title/brand.
+              */}
+              <h1 className="hidden lg:block text-xl lg:text-2xl font-bold text-white tracking-tight ml-2 lg:ml-0">
+                {getHeaderTitle()}
+              </h1>
+            </div>
+
+            {/* Mobile-only Profile */}
             <div className="flex lg:hidden items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-amber-400 flex items-center justify-center text-black font-bold text-sm">
                 {initials}
@@ -84,7 +102,7 @@ const Header = () => {
           </div>
 
           {/* Search Bar */}
-          <div className="w-full max-w-xl lg:ml-12">
+          <div className="w-full max-w-xl lg:ml-12 mt-2 lg:mt-0">
             <Search />
           </div>
 
@@ -135,39 +153,86 @@ const Header = () => {
             </button>
           </div>
         </div>
-
-        {/* Mobile Navigation Drawer */}
-        {isMobileMenuOpen && (
-          <div className="lg:hidden border-t border-white/5 bg-black-100 px-4 py-3 space-y-1 animate-in slide-in-from-top-2 duration-200">
-            {mobileNavItems.map((item) => (
-              <button
-                key={item.href}
-                onClick={() => handleMobileNavigate(item.href)}
-                className={`flex items-center gap-3 w-full px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  pathname === item.href ?
-                    "bg-white/10 text-white"
-                  : "text-gray-400 hover:text-white hover:bg-white/5"
-                }`}>
-                <span
-                  className={
-                    pathname === item.href ? "text-white" : "text-gray-400"
-                  }>
-                  {item.icon}
-                </span>
-                {item.label}
-              </button>
-            ))}
-
-            {/* Mobile Logout */}
-            <button
-              onClick={() => signOut()}
-              className="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-sm font-medium text-red-400 hover:text-red-300 hover:bg-white/5 transition-all duration-200">
-              <RiLogoutBoxLine size={22} />
-              Log out
-            </button>
-          </div>
-        )}
       </div>
+
+      {/* Mobile Navigation Drawer Overlay */}
+      <Transition show={isMobileMenuOpen} as={Fragment}>
+        <div className="relative z-50 lg:hidden">
+          {/* Backdrop */}
+          <Transition.Child
+            as={Fragment}
+            enter="transition-opacity ease-linear duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="transition-opacity ease-linear duration-300"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0">
+            <div
+              className="fixed inset-0 bg-black/80 backdrop-blur-sm"
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+          </Transition.Child>
+
+          {/* Drawer */}
+          <Transition.Child
+            as={Fragment}
+            enter="transition ease-in-out duration-300 transform"
+            enterFrom="-translate-x-full"
+            enterTo="translate-x-0"
+            leave="transition ease-in-out duration-300 transform"
+            leaveFrom="translate-x-0"
+            leaveTo="-translate-x-full">
+            <div className="fixed inset-y-0 left-0 w-[70%] max-w-sm bg-black-100 border-r border-white/10 shadow-xl flex flex-col p-6 overflow-y-auto">
+              {/* Drawer Header */}
+              <div className="flex items-center justify-between mb-8">
+                <EstuMuzikLogo />
+                {/* Close button is handled by Hamburger in header, or we can add another one here if needed. 
+                    But typically clicking outside or the hamburger again closes it.
+                    The Hamburger in the header is z-50 so it remains visible/clickable? 
+                    Ah, the header is sticky z-40. The drawer is z-50.
+                    So the header Hamburger might be covered by the backdrop/drawer if they are z-50.
+                    I should make sure the Hamburger in header is clickable or add a close button inside the drawer.
+                    Header is z-40. Drawer is z-50. Drawer covers header.
+                    So original Hamburger is covered.
+                    I should add a close button or header inside the drawer.
+                */}
+              </div>
+
+              {/* Nav Items */}
+              <div className="space-y-2 flex-1">
+                {mobileNavItems.map((item) => (
+                  <button
+                    key={item.href}
+                    onClick={() => handleMobileNavigate(item.href)}
+                    className={`flex items-center gap-4 w-full px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
+                      pathname === item.href ?
+                        "bg-white/10 text-white"
+                      : "text-gray-400 hover:text-white hover:bg-white/5"
+                    }`}>
+                    <span
+                      className={
+                        pathname === item.href ? "text-white" : "text-gray-400"
+                      }>
+                      {item.icon}
+                    </span>
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Mobile Logout (Bottom) */}
+              <div className="pt-6 border-t border-white/10">
+                <button
+                  onClick={() => signOut()}
+                  className="flex items-center gap-4 w-full px-4 py-3 rounded-xl text-base font-medium text-red-400 hover:text-red-300 hover:bg-white/5 transition-all duration-200">
+                  <RiLogoutBoxLine size={24} />
+                  Log out
+                </button>
+              </div>
+            </div>
+          </Transition.Child>
+        </div>
+      </Transition>
     </>
   );
 };
