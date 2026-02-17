@@ -18,9 +18,11 @@ import { APICall } from "@/components/utils/extra";
 import { BackButton } from "@/components/utils/function";
 
 import Comment from "./Comment";
-import EpisodePlayListAdd from "@/components/Cards/_components/EpisodePlayListAdd";
+import EpisodeQueueListAdd from "@/components/Cards/_components/EpisodeQueueListAdd";
 import EpisodeFavouriteFunc from "@/components/episodefunctions/EpisodeFavouriteFunc";
 import { RiShareLine } from "react-icons/ri";
+import { Tooltip } from "@heroui/react";
+import EpisodePlayListAdd from "@/components/Cards/_components/EpisodePlayListAdd";
 
 interface EpisodeContentProps {
 	episodeId: string;
@@ -121,22 +123,9 @@ const EpisodeContent = ({ episodeId }: EpisodeContentProps) => {
 						<div className='absolute inset-0 bg-gradient-to-b from-transparent via-[#050505]/80 to-[#050505]' />
 					</div>
 
-					<div className='relative z-10 max-w-[1440px] mx-auto px-6 lg:px-12 pt-4 pb-20'>
-						{/* NAVIGATION */}
-						<div className='mb-6 flex items-center justify-between'>
-							<BackButton className='bg-zinc-900/50 border border-white/10 backdrop-blur-md rounded-xl p-2 hover:bg-zinc-800 transition-all' />
-							<div className='flex gap-3'>
-								<button
-									onClick={handleNativeShare}
-									className='p-3 rounded-xl bg-zinc-900 border border-white/5 text-zinc-400 hover:text-blue-500 hover:border-blue-500/50 transition-all'
-								>
-									<FiShare2 />
-								</button>
-							</div>
-						</div>
-
+					<div className='relative z-10 max-w-[1440px] mx-auto px-6 lg:px-12 pt-8 pb-20'>
 						{/* 2. HERO CONTENT GRID */}
-						<div className='grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start'>
+						<div className='grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 '>
 							{/* LEFT: THE COMPONENT (IMAGE) */}
 							<div className='lg:col-span-4 sticky top-32'>
 								<motion.div
@@ -157,8 +146,11 @@ const EpisodeContent = ({ episodeId }: EpisodeContentProps) => {
 							<div className='lg:col-span-8 flex flex-col space-y-8'>
 								{/* TITLE & AUTHOR */}
 								<div className='space-y-4'>
-									<div className='inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-600/10 border border-primary-500/20 text-primary-200 text-[10px] font-black uppercase tracking-widest'>
-										{EpisodeData?.podcast?.category_name}
+									<div className='flex gap-x-2 items-center'>
+										<BackButton className='bg-zinc-900/50 border border-white/10 backdrop-blur-md rounded-xl p-2 hover:bg-zinc-800 transition-all' />
+										<div className='inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-600/10 border border-primary-500/20 text-primary-200 text-[10px] font-black uppercase tracking-widest'>
+											{EpisodeData?.podcast?.category_name}
+										</div>
 									</div>
 									<h1 className='text-4xl lg:text-6xl font-black leading-[1.1] tracking-tight text-white uppercase'>
 										{EpisodeData?.title}
@@ -191,10 +183,47 @@ const EpisodeContent = ({ episodeId }: EpisodeContentProps) => {
 								<div className='pt-6 flex flex-col sm:flex-row items-center gap-6'>
 									<PlayButton
 										episode={EpisodeData && EpisodeData}
-										className='grid place-items-center text-white bg-primary-700 rounded-full p-2 w-fit'
+										className='grid place-items-center text-white bg-primary-700 rounded-full p-2 size-fit'
 									/>
+
 									<EpisodeFavouriteFunc episodeData={EpisodeData} />
-									<EpisodePlayListAdd episodeData={EpisodeData} />
+									<EpisodeQueueListAdd episodeData={EpisodeData} />
+									{/* <EpisodePlayListAdd episodeData={EpisodeData} /> */}
+									<Tooltip
+										content='Share Episode'
+										placement='top'
+										showArrow
+										closeDelay={0}
+										// Technical styling (Zinc + Industrial Typography)
+										classNames={{
+											base: ["before:bg-zinc-800"], // Arrow color
+											content: [
+												"py-1.5 px-3 shadow-xl",
+												"text-[10px] font-black uppercase tracking-widest",
+												"text-white bg-zinc-900",
+												"border border-white/10 rounded-lg",
+											],
+										}}
+										// Snappy spring animation
+										motionProps={{
+											variants: {
+												exit: { opacity: 0, transition: { duration: 0.1 } },
+												enter: { opacity: 1, transition: { duration: 0.1 } },
+											},
+										}}
+									>
+										<button
+											onClick={handleNativeShare}
+											className='relative size-11 flex items-center justify-center rounded-full border border-white/40 hover:bg-white/10 text-white/60 hover:text-white hover:border-white/50 transition-all shrink-0 active:scale-95'
+										>
+											{/* The Icon */}
+											<RiShareLine className='text-xl transition-transform ' />
+
+											{/* Hardware Reflection Effect */}
+
+											{/* Subtle Hover Glow */}
+										</button>
+									</Tooltip>
 								</div>
 
 								{/* DESCRIPTION BOX */}

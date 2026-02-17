@@ -83,11 +83,17 @@ export const unsubscribeFromPodcast = async (podcastId: number) =>
 export const addToQueue = async (episodeId: number) =>
 	axios.post(`${API_URL}/episodes/${episodeId}/queues`);
 
-export const registerPlayEpisode = async (episodeId: number) =>
-	axios.post(`${API_URL}/episodes/plays?episodeId=${episodeId}`);
-
 export const removeQueue = async (episodeId: number) =>
 	axios.delete(`${API_URL}/episodes/${episodeId}/queues`);
+
+export const addToPlaylist = async (episodeId: number) =>
+	axios.post(`${API_URL}/playlists/${episodeId}/episodes`);
+
+export const removeFromPlaylist = async (episodeId: number) =>
+	axios.delete(`${API_URL}/playlists/${episodeId}/episodes`);
+
+export const registerPlayEpisode = async (episodeId: number) =>
+	axios.post(`${API_URL}/episodes/plays?episodeId=${episodeId}`);
 
 export const getEpisodeStatus = async (statusId: number) =>
 	axios.get(`${API_URL}/episodes/${statusId}/status`);

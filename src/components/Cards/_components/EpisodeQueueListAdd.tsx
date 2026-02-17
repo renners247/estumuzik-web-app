@@ -1,27 +1,29 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { APICall } from "../utils/extra";
-import {
-	addFavorite,
-	getEpisodeStatus,
-	removeFromFavorites,
-} from "../utils/endpoints";
-import { RiHeartFill, RiHeartLine } from "react-icons/ri";
 import { motion, AnimatePresence } from "framer-motion";
+import { APICall } from "@/components/utils/extra";
+import {
+	addToQueue,
+	getEpisodeStatus,
+	removeQueue,
+} from "@/components/utils/endpoints";
+import { RiPlayList2Fill, RiPlayListAddLine } from "react-icons/ri";
 // 1. Import Tooltip from Hero UI
 import { Tooltip } from "@heroui/react";
+import { BiAddToQueue } from "react-icons/bi";
+import { MdRemoveFromQueue } from "react-icons/md";
 
-interface EpisodeFavouriteFuncProps {
+interface EpisodeQueueListAddProps {
 	episodeData: PodcastEpisode;
 	className?: string;
 }
 
-const EpisodeFavouriteFunc = ({
+const EpisodeQueueListAdd = ({
 	episodeData,
 	className,
-}: EpisodeFavouriteFuncProps) => {
-	const [isFavourite, setIsFavourite] = useState(false);
+}: EpisodeQueueListAddProps) => {
+	const [isQueued, setIsQueued] = useState(false);
 	const queryClient = useQueryClient();
 	const episodeId = episodeData?.id;
 
@@ -41,52 +43,53 @@ const EpisodeFavouriteFunc = ({
 			refetchOnWindowFocus: true,
 		},
 	);
+
 	const EpisodeStatusData: EpisodeType = episodeStatusData?.data;
 
 	useEffect(() => {
 		if (EpisodeStatusData) {
-			setIsFavourite(EpisodeStatusData.is_favourite);
+			setIsQueued(EpisodeStatusData.is_queued);
 		}
 	}, [EpisodeStatusData]);
 
-	const addFavoriteMutation = useMutation(
-		() => APICall(addFavorite, [episodeId], true, false),
+	const addQueueMutation = useMutation(
+		() => APICall(addToQueue, [episodeId], true, false),
 		{
 			onSuccess: () => {
 				queryClient.invalidateQueries(["episode-status", episodeId]);
-				queryClient.invalidateQueries("favorite-list");
+				queryClient.invalidateQueries("queue-list");
 			},
 		},
 	);
 
-	const removeFavoriteMutation = useMutation(
-		() => APICall(removeFromFavorites, [episodeId], true, false),
+	const removeQueueMutation = useMutation(
+		() => APICall(removeQueue, [episodeId], true, false),
 		{
 			onSuccess: () => {
 				queryClient.invalidateQueries(["episode-status", episodeId]);
-				queryClient.invalidateQueries("favorite-list");
+				queryClient.invalidateQueries("queue-list");
 			},
 		},
 	);
 
-	const toggleFavorite = () => {
-		if (isFavourite) {
-			setIsFavourite(false);
-			removeFavoriteMutation.mutate();
+	const toggleQueue = () => {
+		if (isQueued) {
+			setIsQueued(false);
+			removeQueueMutation.mutate();
 		} else {
-			setIsFavourite(true);
-			addFavoriteMutation.mutate();
+			setIsQueued(true);
+			addQueueMutation.mutate();
 		}
 	};
 
 	return (
 		// 2. Wrap the button with Hero UI Tooltip
 		<Tooltip
-			content={isFavourite ? "Unlike Episode" : "Like Episode"}
+			content={isQueued ? "In Your Queue" : "Add to Queue"}
 			placement='top'
 			showArrow
 			closeDelay={0}
-			// 3. Technical styling for the tooltip
+			// 3. Technical styling (Zinc + Mono/Uppercase)
 			classNames={{
 				base: ["before:bg-zinc-800"], // Arrow color
 				content: [
@@ -96,7 +99,7 @@ const EpisodeFavouriteFunc = ({
 					"border border-white/10 rounded-lg",
 				],
 			}}
-			// 4. Snappy spring animation for the tooltip
+			// 4. Snappy spring animation
 			motionProps={{
 				variants: {
 					exit: { opacity: 0, transition: { duration: 0.1 } },
@@ -105,31 +108,32 @@ const EpisodeFavouriteFunc = ({
 			}}
 		>
 			<button
-				onClick={toggleFavorite}
-				aria-label={isFavourite ? "Remove from favorites" : "Add to favorites"}
+				onClick={toggleQueue}
+				aria-label={isQueued ? "Remove from playlist" : "Add to playlist"}
 				className='group relative outline-none flex items-center justify-center shrink-0'
 			>
 				{/* Socket Container */}
 				<div
 					className={`
-				relative size-11 flex items-center justify-center rounded-full border  transition-all duration-500
-			${className}	${
-				isFavourite
-					? "border-red-500/40 shadow-[0_0_20px_rgba(239,68,68,0.15)]"
-					: "border-white/50 hover:border-white/20"
-			}
+				relative size-11 flex items-center justify-center rounded-full border transition-all duration-500
+				${
+					isQueued
+						? "border-primary-500/40 shadow-[0_0_20px_rgba(59,130,246,0.15)] bg-primary-500/5"
+						: "border-white/50 hover:border-white/20"
+				} ${className}
 			`}
 				>
 					<AnimatePresence mode='wait'>
-						{isFavourite ? (
+						{isQueued ? ( // Use your state variable here (e.g., isQueued or isInPlaylist)
 							<motion.div
 								key='active'
 								initial={{ scale: 0.5, opacity: 0 }}
 								animate={{ scale: 1, opacity: 1 }}
 								exit={{ scale: 0.5, opacity: 0 }}
-								className='text-red-500'
+								className='text-primary-500'
 							>
-								<RiHeartFill className='text-xl' />
+								{/* --- THE QUEUE ICON --- */}
+								<BiAddToQueue className='text-xl' />
 							</motion.div>
 						) : (
 							<motion.div
@@ -137,9 +141,10 @@ const EpisodeFavouriteFunc = ({
 								initial={{ scale: 0.8, opacity: 0 }}
 								animate={{ scale: 1, opacity: 1 }}
 								exit={{ scale: 0.8, opacity: 0 }}
-								className='text-white/60 hover:text-white/80'
+								className='text-white/60 group-hover:text-white'
 							>
-								<RiHeartLine className='text-xl' />
+								{/* --- THE INACTIVE QUEUE ICON --- */}
+								<MdRemoveFromQueue className='text-xl' />
 							</motion.div>
 						)}
 					</AnimatePresence>
@@ -151,4 +156,4 @@ const EpisodeFavouriteFunc = ({
 	);
 };
 
-export default EpisodeFavouriteFunc;
+export default EpisodeQueueListAdd;
