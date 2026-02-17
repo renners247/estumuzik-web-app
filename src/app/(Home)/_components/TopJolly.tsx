@@ -93,9 +93,9 @@ const TopJolly = () => {
             </button>
           </div>
 
-          <button className="px-5 py-1.5 border border-white/20 text-xs font-bold text-white rounded-full uppercase hover:bg-white/10 transition-all">
+          {/* <button className="px-5 py-1.5 border border-white/20 text-xs font-bold text-white rounded-full uppercase hover:bg-white/10 transition-all">
             See all
-          </button>
+          </button> */}
         </div>
       </div>
 
