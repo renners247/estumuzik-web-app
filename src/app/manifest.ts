@@ -17,7 +17,7 @@ export default function manifest(): MetadataRoute.Manifest {
 		orientation: "portrait",
 		lang: "en-US",
 		dir: "auto",
-		theme_color: "#00C27A",
+		theme_color: "#FFD552",
 		background_color: "#F8F8F8",
 		categories: ["productivity", "utilities"],
 		icons: [
@@ -71,20 +71,5 @@ export default function manifest(): MetadataRoute.Manifest {
 				form_factor: "wide",
 			},
 		],
-		// shortcuts: [
-		// 	{
-		// 		name: "Dashboard",
-		// 		short_name: "Dashboard",
-		// 		description: "View verification dashboard",
-		// 		url: "/dashboard?source=pwa",
-		// 		icons: [
-		// 			{
-		// 				src: "/icons/manifest-icon-96.png",
-		// 				sizes: "96x96",
-		// 				type: "image/png",
-		// 			},
-		// 		],
-		// 	},
-		// ],
 	};
 }
