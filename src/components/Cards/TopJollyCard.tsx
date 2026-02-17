@@ -5,33 +5,73 @@ import Picture from "../picture/Index";
 import React, { useEffect, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import GlobalLoader from "../reusables/GlobalLoader";
-import { getUserStatus } from "../utils/endpoints";
-import { useQuery } from "react-query";
+import {
+  getPodcastStatus,
+  getUserStatus,
+  subscribeToPodcast,
+  unsubscribeFromPodcast,
+} from "../utils/endpoints";
+import { useQuery, useQueryClient } from "react-query";
 import { APICall } from "../utils/extra";
 
 const TopJollyCard = ({ podcast }: { podcast: TopJollyPodcast }) => {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const [following, setFollowing] = React.useState(false);
+  const queryClient = useQueryClient();
+  const podcastId = podcast.id;
 
-  const { data: followStatus } = useQuery(
-    ["userStatus", podcast?.user_id],
+  const { data: podcastStatus } = useQuery(
+    ["podcastStatus", podcastId],
     async () => {
-      const response = await APICall(
-        getUserStatus,
-        podcast?.user_id,
-        false,
-        false,
-      );
+      const response = await APICall(getPodcastStatus, podcastId, false, false);
       return response?.data?.data?.data;
+    },
+    {
+      enabled: !!podcastId,
+      onSuccess: (data) => {
+        if (data && typeof data.is_subscribed === "boolean") {
+          setFollowing(data.is_subscribed);
+        }
+      },
     },
   );
 
-  useEffect(() => {
-    if (followStatus) {
-      setFollowing(followStatus?.is_following);
+  //  const newFollowing = !following;
+  //   setFollowing(newFollowing); // Optimistic update
+
+  //   try {
+  //     if (newFollowing) {
+  //       await APICall(subscribeToPodcast, [podcastId, {}], false, true);
+  //     } else {
+  //       await APICall(unsubscribeFromPodcast, [podcastId, {}], false, true);
+  //     }
+  //     queryClient.invalidateQueries(["podcastStatus", podcastId]);
+  //   } catch (err) {
+  //     setFollowing(!newFollowing); // Revert on error
+  //     console.log("Follow toggle failed", err);
+  //   }
+  // };
+
+  const toggleFollow = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!podcastId) return;
+
+    const newFollowing = !following;
+    setFollowing(newFollowing); // Optimistic update
+
+    try {
+      if (newFollowing) {
+        await APICall(subscribeToPodcast, [podcastId, {}], false, true);
+      } else {
+        await APICall(unsubscribeFromPodcast, [podcastId, {}], false, true);
+      }
+      queryClient.invalidateQueries(["podcastStatus", podcastId]);
+    } catch (err) {
+      setFollowing(!newFollowing); // Revert on error
+      console.log("Follow toggle failed", err);
     }
-  }, [followStatus]);
+  };
 
   const handleNativeShare = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -92,10 +132,11 @@ const TopJollyCard = ({ podcast }: { podcast: TopJollyPodcast }) => {
         {/* Actions */}
         <div className="flex items-center gap-2 mt-auto">
           <button
+            onClick={toggleFollow}
             className={`flex-1 flex items-center justify-center gap-2 h-9 rounded-full text-xs font-bold transition-all duration-200
             ${
               following ?
-                "bg-green_1-500 text-white"
+                "bg-primary-500 text-white"
               : "bg-white/10 text-gray-300 hover:bg-white/20"
             }`}>
             {following ?

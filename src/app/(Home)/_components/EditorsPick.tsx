@@ -25,7 +25,7 @@ const EditorsPick = () => {
     <div className="space-y-4 mb-10">
       {/* Header */}
       <div className="flex items-center gap-2 px-2">
-        <FaStar className="text-purple_1-100 text-2xl" />
+        <FaStar className="text-primary-500 text-2xl" />
         <h2 className="text-2xl font-bold text-white tracking-tight">
           Editor's pick
         </h2>

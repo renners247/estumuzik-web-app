@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useTransition } from "react";
+import React, { useState, useTransition } from "react";
 import { FaPlay, FaPause, FaPlus, FaCheck } from "react-icons/fa6";
 import { IoShareSocialOutline } from "react-icons/io5";
 import Picture from "../picture/Index";
@@ -9,8 +9,12 @@ import { playPause, setActiveSong } from "../Redux/playerOne";
 import { setIsEpisodeRegistered } from "../Redux/ToggleModal";
 import { useRouter } from "next/navigation";
 import GlobalLoader from "../reusables/GlobalLoader";
-import { useQuery } from "react-query";
-import { getUserStatus } from "../utils/endpoints";
+import { useQuery, useMutation, useQueryClient } from "react-query";
+import {
+  getPodcastStatus,
+  subscribeToPodcast,
+  unsubscribeFromPodcast,
+} from "../utils/endpoints";
 import { APICall } from "../utils/extra";
 
 interface EditorsPickCardProps {
@@ -25,26 +29,47 @@ const EditorsPickCard = ({ episode }: EditorsPickCardProps) => {
   const [following, setFollowing] = useState(false);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+  const queryClient = useQueryClient();
+
+  const podcastId = episode.podcast_id || episode.podcast?.id;
 
   // Fetch Follow Status
-  const { data: followStatus } = useQuery(
-    ["userStatus", episode.podcast?.user_id],
+  const { data: podcastStatus } = useQuery(
+    ["podcastStatus", podcastId],
     async () => {
-      const response = await APICall(
-        getUserStatus,
-        episode.podcast?.user_id,
-        false,
-        false,
-      );
+      const response = await APICall(getPodcastStatus, podcastId, false, false);
       return response?.data?.data?.data;
+    },
+    {
+      enabled: !!podcastId,
+      onSuccess: (data) => {
+        if (data && typeof data.is_subscribed === "boolean") {
+          setFollowing(data.is_subscribed);
+        }
+      },
     },
   );
 
-  useEffect(() => {
-    if (followStatus) {
-      setFollowing(followStatus?.is_following);
+  // Toggle Follow/Unfollow
+  const toggleFollow = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!podcastId) return;
+
+    const newFollowing = !following;
+    setFollowing(newFollowing); // Optimistic update
+
+    try {
+      if (newFollowing) {
+        await APICall(subscribeToPodcast, [podcastId, {}], false, true);
+      } else {
+        await APICall(unsubscribeFromPodcast, [podcastId, {}], false, true);
+      }
+      queryClient.invalidateQueries(["podcastStatus", podcastId]);
+    } catch (err) {
+      setFollowing(!newFollowing); // Revert on error
+      console.log("Follow toggle failed", err);
     }
-  }, [followStatus]);
+  };
 
   // Check if THIS specific card is the one playing
   const isCurrentActiveSong = activeSong?.id === episode.id;
@@ -175,10 +200,11 @@ const EditorsPickCard = ({ episode }: EditorsPickCardProps) => {
         {/* Action Buttons */}
         <div className="flex items-center gap-3 mt-1 md:mt-2">
           <button
+            onClick={toggleFollow}
             className={`flex items-center gap-2 px-4 py-2 md:px-5 md:py-2.5 rounded-full text-xs md:text-sm font-bold transition-all
               ${
                 following ?
-                  "bg-white/20 text-white"
+                  "bg-primary-500 text-white"
                 : "bg-white/10 text-gray-300 hover:bg-white/20"
               }`}>
             {following ?

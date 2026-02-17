@@ -115,7 +115,23 @@ export const updatePassword = async (data: {
 export const getUserStatus = async (userId: number) =>
   axios.get(`${API_URL}/users/${userId}/status`);
 
-// https://api.jollypodcast.net/api/podcasts/keywords
-
 export const getKeywords = async () =>
   axios.get(`${API_URL}/podcasts/keywords`);
+
+export const searchForPodcast = async (
+  search: string,
+  page: number = 1,
+  per_page: number = 100,
+) =>
+  axios.get(
+    `${API_URL}/podcasts/search?q=${search}&page=${page}&per_page=${per_page}`,
+  );
+
+export const getPodcastStatus = async (podcastId: number) =>
+  axios.get(`${API_URL}/podcasts/${podcastId}/status`);
+
+export const subscribeToPodcast = async (podcastId: number, data: any) =>
+  axios.post(`${API_URL}/podcasts/${podcastId}/subscriptions`, data);
+
+export const unsubscribeFromPodcast = async (podcastId: number, data: any) =>
+  axios.delete(`${API_URL}/podcasts/${podcastId}/subscriptions`, data);

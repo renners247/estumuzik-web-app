@@ -11,7 +11,7 @@ const Handpicked = () => {
   const { data: handpickedData, isLoading } = useQuery(
     ["handpicked"],
     async () => {
-      const response = await APICall(getHandPicked, [4], false, false); // Fetch 4 items
+      const response = await APICall(getHandPicked, [6], false, false); // Fetch 4 items
       return response?.data?.data?.data;
     },
     {

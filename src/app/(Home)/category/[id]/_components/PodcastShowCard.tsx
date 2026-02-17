@@ -7,6 +7,13 @@ import { IoShareSocialOutline } from "react-icons/io5";
 import { ndlShowFollow, ndlShowFollowing } from "../../../../../../public";
 import Picture from "@/components/picture/Index";
 import GlobalLoader from "@/components/reusables/GlobalLoader";
+import { useQuery, useQueryClient } from "react-query";
+import {
+  getPodcastStatus,
+  subscribeToPodcast,
+  unsubscribeFromPodcast,
+} from "@/components/utils/endpoints";
+import { APICall } from "@/components/utils/extra";
 
 export interface PodcastShow {
   id: number;
@@ -28,12 +35,48 @@ const PodcastShowCard = ({
   isFollowing = false,
 }: PodcastShowCardProps) => {
   const router = useRouter();
-  const [following, setFollowing] = useState(isFollowing);
-  const [isPending, startTransition] = useTransition();
 
-  const toggleFollow = (e: React.MouseEvent) => {
+  const [isPending, startTransition] = useTransition();
+  const [following, setFollowing] = useState(false);
+  const queryClient = useQueryClient();
+
+  const podcastId = podcast?.id;
+
+  const { data: podcastStatus } = useQuery(
+    ["podcastStatus", podcastId],
+    async () => {
+      const response = await APICall(getPodcastStatus, podcastId, false, false);
+      return response?.data?.data?.data;
+    },
+    {
+      enabled: !!podcastId,
+      onSuccess: (data) => {
+        if (data && typeof data.is_subscribed === "boolean") {
+          setFollowing(data.is_subscribed);
+        }
+      },
+    },
+  );
+
+  // Toggle Follow/Unfollow
+  const toggleFollow = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    setFollowing(!following);
+    if (!podcastId) return;
+
+    const newFollowing = !following;
+    setFollowing(newFollowing); // Optimistic update
+
+    try {
+      if (newFollowing) {
+        await APICall(subscribeToPodcast, [podcastId, {}], true, false);
+      } else {
+        await APICall(unsubscribeFromPodcast, [podcastId, {}], true, false);
+      }
+      queryClient.invalidateQueries(["podcastStatus", podcastId]);
+    } catch (err) {
+      setFollowing(!newFollowing); // Revert on error
+      console.log("Follow toggle failed", err);
+    }
   };
 
   const handleCardClick = () => {
@@ -99,7 +142,7 @@ const PodcastShowCard = ({
             className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200
             ${
               following ?
-                "bg-green_1-100 text-white"
+                "bg-primary-500 text-white"
               : "bg-white/10 text-gray-300 hover:bg-white/20"
             }`}>
             {following ?
