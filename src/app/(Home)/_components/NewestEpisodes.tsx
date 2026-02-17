@@ -1,26 +1,37 @@
 "use client";
 
 import React from "react";
-import { useQuery } from "react-query";
+import { useInfiniteQuery } from "react-query";
 import { APICall } from "@/components/utils/extra";
-import { getLatestEpisodes } from "@/components/utils/endpoints"; // Ensure this is exported
+import { getLatestEpisodes } from "@/components/utils/endpoints";
 import { Skeleton } from "@heroui/react";
 import NewestEpisodeCard from "@/components/Cards/NewestEpisodeCard";
 
 const NewestEpisodes = () => {
-	const { data: latestEpisodes, isLoading } = useQuery(
-		["latestEpisodes"],
-		async () => {
-			const response = await APICall(getLatestEpisodes, false, false);
+	const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+		useInfiniteQuery(
+			"latestEpisodes",
+			async ({ pageParam = 1 }) => {
+				const response = await APICall(
+					getLatestEpisodes,
+					[pageParam, 15],
+					false,
+					false,
+				);
+				return response.data;
+			},
+			{
+				getNextPageParam: (lastPage) => {
+					const currentPage = lastPage?.data?.data?.current_page;
+					const lastPageNum = lastPage?.data?.data?.last_page;
+					return currentPage < lastPageNum ? currentPage + 1 : undefined;
+				},
+				staleTime: 1000 * 60 * 5,
+			},
+		);
 
-			return response?.data?.data?.data;
-		},
-		{
-			staleTime: 1000 * 60 * 5,
-		},
-	);
-
-	const episodes: PodcastEpisode[] = latestEpisodes?.data || [];
+	const episodes: NewestEpisode[] =
+		data?.pages.flatMap((page) => page?.data?.data?.data) || [];
 
 	return (
 		<div className='space-y-6 mt-10'>
@@ -29,10 +40,6 @@ const NewestEpisodes = () => {
 				<h2 className='text-2xl font-bold text-white tracking-tight'>
 					Newest episodes
 				</h2>
-
-				<button className='px-5 py-1.5 border border-white/20 text-xs font-bold text-white rounded-full uppercase hover:bg-white/10 transition-all'>
-					See all
-				</button>
 			</div>
 
 			{/* Grid Layout */}
@@ -49,17 +56,28 @@ const NewestEpisodes = () => {
 								</div>
 							</div>
 						))
-					: episodes
-							.slice(0, 9)
-							.map((episode, index) => (
-								<NewestEpisodeCard
-									key={episode.id}
-									episode={episode}
-									index={index}
-									allEpisodes={episodes}
-								/>
-							))}
+					: episodes.map((episode, index) => (
+							<NewestEpisodeCard
+								key={`${episode.id}-${index}`}
+								episode={episode}
+								index={index}
+								allEpisodes={episodes}
+							/>
+						))}
 			</div>
+
+			{/* See More Button */}
+			{hasNextPage && (
+				<div className='flex justify-center mt-8'>
+					<button
+						onClick={() => fetchNextPage()}
+						disabled={isFetchingNextPage}
+						className='px-6 py-2.5 rounded-full bg-white/5 hover:bg-white/10 text-white font-medium text-sm transition-all border border-white/10 disabled:opacity-50 disabled:cursor-not-allowed'
+					>
+						{isFetchingNextPage ? "Loading..." : "See More"}
+					</button>
+				</div>
+			)}
 		</div>
 	);
 };

@@ -8,6 +8,7 @@ import TopJolly from "./(Home)/_components/TopJolly";
 import Handpicked from "./(Home)/_components/Handpicked";
 import EditorsPick from "./(Home)/_components/EditorsPick";
 import NewestEpisodes from "./(Home)/_components/NewestEpisodes";
+import SearchByPopularKeywords from "./(Home)/_components/SearchByPopularKeywords";
 
 const { description, keywords, title, url } = SEODATA.default;
 export const metadata: Metadata = {
@@ -46,6 +47,7 @@ const page = () => {
       <TopJolly />
       <NewestEpisodes />
       <Handpicked />
+      <SearchByPopularKeywords />
       {/* <AppMenu /> */}
     </Applayout>
   );
