@@ -14,6 +14,8 @@ import { useAppDispatch } from "@/components/Hooks";
 import { authLogin, resetAuth } from "@/components/Redux/auth";
 import { useRouter } from "next/navigation";
 import GlobalLoader from "@/components/reusables/GlobalLoader";
+import { FaApple, FaGooglePlay } from "react-icons/fa";
+import { AndriodButtons, AppleButtons } from "@/components/utils/buttons";
 
 interface FormValues {
 	phone_number: string;
@@ -64,29 +66,67 @@ const LoginForm: React.FC = () => {
 
 	return (
 		<>
-			<main className='min-h-screen w-full grid grid-cols-1 lg:grid-cols-10 bg-white lg:bg-[#0A0A0A]'>
+			<main className='h-[90vh] lg:min-h-screen w-full grid grid-cols-1 lg:grid-cols-10 bg-white lg:bg-[#0A0A0A]'>
 				{/* Left Column: Form Section */}
 				<section className='col-span-1 lg:col-span-4 flex flex-col relative'>
 					{/* MOBILE ONLY: Top Image and Overlapping Logo */}
+
 					<div className='block lg:hidden relative'>
+						<div className='block lg:hidden relative w-full h-[40vh] overflow-hidden'>
+							{/* 1. Background Image (Lowest Layer) */}
+							<div
+								className='absolute inset-0 bg-cover bg-center transition-transform duration-1000 scale-105'
+								style={{
+									backgroundImage: "url('/dev_images/onboarding_image.png')",
+								}}
+							/>
+
+							{/* 2. Dark Gradient Overlay (Middle Layer - for text readability) */}
+							<div className='absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/60 to-transparent z-10' />
+
+							{/* 3. Content Container (Top Layer) */}
+							<div className='relative z-20 h-full flex flex-col justify-end p-3 pt-2 pb-12'>
+								<div className='space-y-4'>
+									<h2 className='text-2xl font-black tracking-tight uppercase text-white leading-[1.1]'>
+										Enjoy access to <br />
+										Unlimited <span className='text-primary-500'>
+											Podcasts
+										</span>{" "}
+										<br />
+										Worldwide
+									</h2>
+
+									<span className='block text-[10px] font-black tracking-[0.3em] text-white/70 uppercase'>
+										Listen, learn, enjoy; anywhere, anytime!
+									</span>
+
+									{/* Store Buttons Grid */}
+									<div className='grid grid-cols-2 gap-3 mt-4'>
+										<AndriodButtons />
+										<AppleButtons />
+									</div>
+								</div>
+							</div>
+						</div>
 						<div
-							className='h-64 w-full bg-cover bg-center'
+							className='absolute inset-0 bg-cover bg-center transition-transform duration-1000 scale-105'
 							style={{
 								backgroundImage: "url('/dev_images/onboarding_image.png')",
 							}}
 						/>
+
 						<div className='absolute -bottom-10 left-1/2 -translate-x-1/2 w-48 h-auto flex items-center justify-center p-2 z-10'>
 							<div>
-								<EstuMuzikLogo />
+								<EstuMuzikLogo className='!w-10' />
 							</div>
 						</div>
 					</div>
 
 					{/* Form Container */}
-					<div className='w-full max-w-sm mx-auto flex flex-col justify-center flex-1 px-6 lg:px-0 mt-16 lg:mt-0'>
+					<div className='w-full max-w-sm mx-auto flex flex-col justify-center flex-1 px-6 lg:px-0 mt-6 lg:mt-0'>
 						<div className='space-y-8'>
 							{/* Header Text: Switches between Image-style and Original-style */}
-							<div className='space-y-2 text-center lg:text-left'>
+							<div className='space-y-2 text-center'>
 								<h1 className='text-3xl font-bold text-black lg:text-white tracking-tight'>
 									<span className='lg:hidden'>Login Account</span>
 									<span className='hidden lg:inline'>Welcome back</span>
@@ -145,7 +185,7 @@ const LoginForm: React.FC = () => {
 
 					{/* Bottom Copyright - Hidden on mobile if you want it exactly like the screenshot */}
 					<div className='mt-auto pt-8 pb-8 px-6 hidden lg:block'>
-						<p className='text-gray-500 text-xs'>© Jolly {currentYear}</p>
+						<p className='text-gray-500 text-xs'>© {currentYear}</p>
 					</div>
 				</section>
 
@@ -157,9 +197,9 @@ const LoginForm: React.FC = () => {
 							backgroundPosition: "center",
 							backgroundSize: "cover",
 						}}
-						className='w-full h-full flex items-center justify-center relative'
+						className='w-full h-full flex items-center aspect-square justify-center relative'
 					>
-						<div className='absolute inset-0 bg-black/40'></div>
+						<div className='absolute inset-0 bg-black-100/40'></div>
 
 						<div className='relative z-10 flex flex-col items-center text-center px-12'>
 							<div className='scale-150 mb-12'>
@@ -167,15 +207,17 @@ const LoginForm: React.FC = () => {
 							</div>
 
 							<div className='space-y-6'>
-								<h2 className='text-4xl xl:text-5xl font-black tracking-wider text-white leading-tight max-w-lg'>
-									PODCASTS FOR
-									<br />
-									AFRICA, BY AFRICANS
+								<h2 className='text-4xl xl:text-5xl font-black tracking-wider capitalize text-white leading-tight max-w-lg'>
+									Enjoy access to Unlimited <br /> Podcast Worldwide
 								</h2>
 
 								<span className='block text-sm font-bold tracking-[0.3em] text-white/90 uppercase mt-4'>
-									BECOME A PODCAST CREATOR
+									Listen, learn, enjoy; anywhere, anytime!
 								</span>
+							</div>
+							<div className='grid grid-cols-2 gap-x-2 mt-5'>
+								<AndriodButtons />
+								<AppleButtons />
 							</div>
 						</div>
 					</div>

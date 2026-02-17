@@ -17,7 +17,7 @@ export default function manifest(): MetadataRoute.Manifest {
 		orientation: "portrait",
 		lang: "en-US",
 		dir: "auto",
-		theme_color: "#00C27A",
+		theme_color: "#FFD552",
 		background_color: "#F8F8F8",
 		categories: ["productivity", "utilities"],
 		icons: [
@@ -51,15 +51,14 @@ export default function manifest(): MetadataRoute.Manifest {
 				src: "/pwa_images/apple-splash-1668-2224.jpg",
 				sizes: "1668x2224",
 				type: "image/png",
-				label: "LendoVerify Mobile App",
-				platform: "windows",
-				form_factor: "narrow",
+				form_factor: "wide",
+				label: "Homescreen of Estu Musik",
 			},
 			{
 				src: "/pwa_images/apple-splash-2388-1668.jpg",
 				sizes: "2388x1668",
 				type: "image/png",
-				label: "LendoVerify Tablet View",
+				label: "Homescreen of Estu Musik",
 				platform: "ipados",
 				form_factor: "wide",
 			},
@@ -67,24 +66,9 @@ export default function manifest(): MetadataRoute.Manifest {
 				src: "/pwa_images/apple-splash-2732-2048.jpg",
 				sizes: "2732x2048",
 				type: "image/png",
-				label: "LendoVerify Desktop Interface",
+				label: "Homescreen of Estu Musik",
 				form_factor: "wide",
 			},
 		],
-		// shortcuts: [
-		// 	{
-		// 		name: "Dashboard",
-		// 		short_name: "Dashboard",
-		// 		description: "View verification dashboard",
-		// 		url: "/dashboard?source=pwa",
-		// 		icons: [
-		// 			{
-		// 				src: "/icons/manifest-icon-96.png",
-		// 				sizes: "96x96",
-		// 				type: "image/png",
-		// 			},
-		// 		],
-		// 	},
-		// ],
 	};
 }

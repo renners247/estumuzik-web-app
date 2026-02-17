@@ -6,10 +6,10 @@ import { useQuery } from "react-query";
 import { setIsEpisodeRegistered, setIsSoftRefresh } from "../Redux/ToggleModal";
 import { RotatingLines } from "react-loader-spinner";
 import { APICall } from "../utils/extra";
-import { getEpisode } from "../utils/endpoints";
+import { episodePodcast, getEpisode } from "../utils/endpoints";
 
 interface PlayButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-	episode: any;
+	episode: PodcastEpisode;
 	children?: ReactNode;
 	className?: string;
 }
@@ -27,8 +27,13 @@ const PlayButton: React.FC<PlayButtonProps> = ({
 			["episodePodcast", episode?.podcast_id],
 			async () => {
 				if (episode?.podcast_id) {
-					const response = await APICall(getEpisode, [episode?.podcast_id]);
-					return response.data;
+					const response = await APICall(
+						episodePodcast,
+						[episode?.podcast_id, 1, 15, ""],
+						false,
+						false,
+					);
+					return response.data.data.data.data;
 				}
 			},
 			{
@@ -48,8 +53,12 @@ const PlayButton: React.FC<PlayButtonProps> = ({
 	const index = episode?.id;
 
 	const handlePlayClick = () => {
-		// dispatch(setActiveSong({ episode, EpisodePodcastsData, index }));
-		dispatch(setIsEpisodeRegistered(false));
+		(setActiveSong({
+			song: episode,
+			data: EpisodePodcastsData,
+			index: episode?.id,
+		}),
+			dispatch(setIsEpisodeRegistered(false)));
 		dispatch(playPause(true));
 		dispatch(setIsSoftRefresh());
 	};
@@ -76,9 +85,9 @@ const PlayButton: React.FC<PlayButtonProps> = ({
 			) : (
 				<>
 					{isPlaying && activeSong?.title === episode?.title ? (
-						<FaRegCirclePause size={20} />
+						<FaRegCirclePause size={30} />
 					) : (
-						<FaRegCirclePlay size={20} />
+						<FaRegCirclePlay size={30} />
 					)}
 				</>
 			)}
