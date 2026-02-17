@@ -25,9 +25,9 @@ const Header = () => {
 		<div className='w-full flex flex-col lg:flex-row lg:items-center justify-between px-4 py-4 lg:px-6 lg:py-5 bg-transparent gap-5 lg:gap-0'>
 			{/* Top Container: Discover Title + Profile (Profile moves to top right on mobile) */}
 			<div className='flex items-center justify-between lg:justify-start lg:flex-col lg:items-start lg:gap-6 w-full lg:w-auto'>
-				<h1 className='text-xl lg:text-2xl font-bold text-white tracking-tight'>
+				{/* <h1 className='text-xl lg:text-2xl font-bold text-white tracking-tight'>
 					{pathname === "/" ? "Discover" : null}
-				</h1>
+				</h1> */}
 
 				{/* Mobile-only Profile & Logout (hidden on Desktop because they are in the right section) */}
 				<div className='flex lg:hidden items-center gap-3'>
