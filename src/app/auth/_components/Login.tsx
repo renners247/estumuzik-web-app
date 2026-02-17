@@ -103,7 +103,7 @@ const LoginForm: React.FC = () => {
 									{/* Store Buttons Grid */}
 									<div className='grid grid-cols-2 gap-3 mt-4'>
 										<AndriodButtons />
-										<AppleButtons />
+										{/* <AppleButtons /> */}
 									</div>
 								</div>
 							</div>
