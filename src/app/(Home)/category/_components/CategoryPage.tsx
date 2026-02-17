@@ -33,8 +33,8 @@ const CategoryPage = () => {
       return response?.data?.data;
     },
     {
-      // staleTime: 30 * 1000, // Removed to allow refetch on mount/focus
-      // refetchOnWindowFocus: false,
+      staleTime: Infinity,
+      refetchOnWindowFocus: false,
     },
   );
 

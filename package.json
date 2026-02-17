@@ -40,6 +40,7 @@
     "framer-motion": "^12.12.1",
     "graphql": "^16.10.0",
     "gsap": "^3.13.0",
+    "hamburger-react": "^2.5.2",
     "highcharts": "^12.4.0",
     "highcharts-react-official": "^3.2.3",
     "init": "^0.1.2",
