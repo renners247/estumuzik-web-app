@@ -114,3 +114,8 @@ export const updatePassword = async (data: {
 
 export const getUserStatus = async (userId: number) =>
   axios.get(`${API_URL}/users/${userId}/status`);
+
+// https://api.jollypodcast.net/api/podcasts/keywords
+
+export const getKeywords = async () =>
+  axios.get(`${API_URL}/podcasts/keywords`);
