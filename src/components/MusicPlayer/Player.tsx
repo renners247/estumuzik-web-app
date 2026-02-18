@@ -1,16 +1,15 @@
 /* eslint-disable jsx-a11y/media-has-caption */
-import React, { useRef, useEffect, ChangeEvent } from "react";
+import React, { useRef, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../Hooks";
-import { playPause, setIsLoadingSong } from "../Redux/playerOne";
+import { setIsLoadingSong, playPause } from "../Redux/playerOne";
 import { loadingBarRef } from "@/app/redux-provider";
 
 interface PlayerProps {
 	seekTime: number;
 	onEnded: () => void;
-	onTimeUpdate: (event: ChangeEvent<HTMLAudioElement>) => void;
-	onLoadedData: (event: ChangeEvent<HTMLAudioElement>) => void;
+	onTimeUpdate: (event: React.SyntheticEvent<HTMLAudioElement>) => void;
+	onLoadedData: (event: React.SyntheticEvent<HTMLAudioElement>) => void;
 	repeat: boolean;
-	checkpoint?: number;
 }
 
 const Player: React.FC<PlayerProps> = ({
@@ -19,82 +18,87 @@ const Player: React.FC<PlayerProps> = ({
 	onTimeUpdate,
 	onLoadedData,
 	repeat,
-	checkpoint,
 }) => {
-	const { volume } = useAppSelector((state) => state.playerOne);
-	const ref = useRef<HTMLAudioElement>(null);
-	const { activeSong, isPlaying, isLoading } = useAppSelector(
+	const audioRef = useRef<HTMLAudioElement>(null);
+	const dispatch = useAppDispatch();
+	const { activeSong, isPlaying, volume } = useAppSelector(
 		(state) => state.playerOne,
 	);
-	const dispatch = useAppDispatch();
+
+	// 1. Handle Play/Pause logic correctly
 	useEffect(() => {
-		const episodeIsPlaying = localStorage.getItem("isEpisodePlaying");
+		if (!audioRef.current) return;
+
 		if (isPlaying) {
-			if (episodeIsPlaying) {
-				ref.current!.play();
+			// Browsers return a promise on .play(). We must catch errors to prevent crashes
+			// (e.g., if user hasn't interacted with the page yet)
+			const playPromise = audioRef.current.play();
+			if (playPromise !== undefined) {
+				playPromise.catch((error) => {
+					console.error("Autoplay prevented or error:", error);
+					// If autoplay is blocked, sync Redux state back to paused
+					dispatch(playPause(false));
+				});
 			}
 		} else {
-			dispatch(setIsLoadingSong(false));
-			ref.current!.pause();
+			audioRef.current.pause();
 		}
-	}, [isPlaying, activeSong, dispatch]);
+	}, [isPlaying, activeSong]); // Trigger when play state OR song changes
 
-	const playAudio = () => {
-		if (ref.current) {
-			ref.current.play();
-		}
-	};
-
+	// 2. Handle Source Change & initial Checkpoint
 	useEffect(() => {
-		if (isPlaying || isLoading) {
-			ref.current!.pause();
-		} else {
-			// dispatch(pause(false));
-		}
-		// dispatch(playPause(false));
-	}, []);
+		if (!audioRef.current) return;
 
+		// Reset loading bar on source change
+		loadingBarRef.current?.continuousStart();
+		dispatch(setIsLoadingSong(true));
+
+		// Load checkpoint only when the song actually changes
+		const checkPointTime = localStorage.getItem("checkpoint");
+		if (checkPointTime && activeSong) {
+			audioRef.current.currentTime = Number(checkPointTime);
+		}
+	}, [activeSong?.content_url]);
+
+	// 3. Sync Volume
 	useEffect(() => {
-		if (ref.current) {
-			ref.current.volume = volume;
+		if (audioRef.current) {
+			audioRef.current.volume = volume;
 		}
 	}, [volume]);
 
+	// 4. Manual Seek (Scrubbing)
 	useEffect(() => {
-		if (ref.current) {
-			ref.current.currentTime = seekTime;
+		if (
+			audioRef.current &&
+			Math.abs(audioRef.current.currentTime - seekTime) > 1
+		) {
+			audioRef.current.currentTime = seekTime;
 		}
 	}, [seekTime]);
 
-	useEffect(() => {
-		const checkPointTime = localStorage.getItem("checkpoint");
-		if (ref.current) {
-			if (checkPointTime) {
-				ref.current.currentTime = Number(checkPointTime);
-			}
-		}
-	}, []);
-
-	useEffect(() => {
-		if (ref.current) {
-			ref.current.loop = repeat;
-		}
-	}, [repeat]);
-
-	const handleLoadingClick = () => {
+	// 5. Handle Loading States
+	const handleLoadStart = () => {
 		dispatch(setIsLoadingSong(true));
 		loadingBarRef.current?.continuousStart();
+	};
+
+	const handleCanPlay = () => {
+		dispatch(setIsLoadingSong(false));
+		loadingBarRef.current?.complete();
 	};
 
 	return (
 		<audio
 			src={activeSong?.content_url}
-			ref={ref}
+			ref={audioRef}
 			loop={repeat}
 			onEnded={onEnded}
 			onTimeUpdate={onTimeUpdate}
 			onLoadedData={onLoadedData}
-			onLoadStart={handleLoadingClick}
+			onLoadStart={handleLoadStart}
+			onCanPlay={handleCanPlay}
+			preload='auto'
 		/>
 	);
 };

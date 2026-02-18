@@ -22,7 +22,7 @@ const EditorsPick = () => {
 	const episode = editorPickData;
 
 	return (
-		<div className='space-y-4 mb-5 sm:mb-10'>
+		<div className='space-y-4 mt-6 lg:mt-0 mb-5 sm:mb-10'>
 			{/* Header */}
 			<div className='flex items-center gap-2 px-2'>
 				<FaStar className='text-primary-500 text-2xl' />

@@ -126,7 +126,7 @@ const AddToPlaylistModal: React.FC<AddToPlaylistModalProps> = ({
 						<h2 className='text-xl font-bold text-white'>Add to playlist</h2>
 						<p className='text-zinc-500 text-xs mt-1 truncate max-w-[280px]'>
 							Adding:{" "}
-							<span className='text-indigo-400 font-medium'>
+							<span className='text-primary-400 font-medium'>
 								{episode.title}
 							</span>
 						</p>
