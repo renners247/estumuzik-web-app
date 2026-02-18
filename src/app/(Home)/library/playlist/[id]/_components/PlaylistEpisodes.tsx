@@ -4,8 +4,8 @@ import { useQuery } from "react-query";
 import { Skeleton } from "@heroui/react";
 import GoBack from "../../../_components/GoBack";
 import { APICall } from "@/components/utils/extra";
-import { getPlaylistsEpisodes } from "@/components/utils/endpoints"; // Ensure this is exported
 import NewestEpisodeCard from "@/components/Cards/NewestEpisodeCard";
+import { getPlaylist, getPlaylistsEpisodes } from "@/components/utils/endpoints"; // Ensure this is exported
 
 interface PlaylistIdProps {
 	playlistId: string;
@@ -28,6 +28,23 @@ const PlaylistEpisodes = ({ playlistId }: PlaylistIdProps) => {
 			staleTime: 1000 * 60 * 5,
 		},
 	);
+
+	// const { data: playlistData, isLoading:  playlistDataIsLoading} = useQuery(
+	// 	["playlistData", playlistId],
+	// 	async () => {
+	// 		const response = await APICall(
+	// 			getPlaylist,
+	// 			[playlistId],
+	// 			false,
+	// 			false,
+	// 		);
+
+	// 		return response?.data?.data?.data;
+	// 	},
+	// 	{
+	// 		staleTime: 1000 * 60 * 5,
+	// 	},
+	// );
 
 	const episodes: PodcastEpisode[] = playlistEpisodes?.data || [];
 
