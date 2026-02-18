@@ -210,6 +210,12 @@ const MusicPlayer: React.FC = () => {
 		dispatch(playPause(false));
 		dispatch(setIsEpisodeRegistered(false));
 
+		// --- RESET TIME LOGIC ---
+		setAppTime(0);
+		setSeekTime(0);
+		localStorage.setItem("checkpoint", "0"); // Clear the resume point for the next track
+		// -------------------------
+
 		if (!shuffle) {
 			dispatch(nextSong((currentIndex + 1) % currentSongs.length));
 		} else {
@@ -219,6 +225,13 @@ const MusicPlayer: React.FC = () => {
 
 	const handlePrevSong = () => {
 		dispatch(setIsEpisodeRegistered(false));
+
+		// --- RESET TIME LOGIC ---
+		setAppTime(0);
+		setSeekTime(0);
+		localStorage.setItem("checkpoint", "0");
+		// -------------------------
+
 		if (currentIndex === 0) {
 			dispatch(prevSong(currentSongs.length - 1));
 		} else if (shuffle) {
@@ -229,11 +242,16 @@ const MusicPlayer: React.FC = () => {
 	};
 
 	const onScrub = (value: number) => {
-		setAppTime(value);
-		setSeekTime(value);
+		// Just update the UI time
+		const newTime = (value / 100) * duration;
+		setAppTime(newTime);
 	};
 
-	const onScrubEnd = (value: number) => {};
+	const onScrubEnd = (value: number) => {
+		// Actually jump the audio engine
+		const newTime = (value / 100) * duration;
+		setSeekTime(newTime);
+	};
 	const rewind30Secs = () => {
 		setSeekTime(appTime - 30);
 	};
@@ -433,7 +451,6 @@ const MusicPlayer: React.FC = () => {
 													// Dimensions
 													width='w-full'
 													height='h-1' // Sleeker thin bar (standard for music apps)
-													circleRefTop='50%' // Centers the circle vertically perfectly
 												/>
 											</div>
 											<span className='w-7'>
@@ -706,7 +723,6 @@ const MusicPlayer: React.FC = () => {
 												sliderColor='#FFCC00'
 												width='w-full'
 												height='h-1'
-												circleRefTop='50%'
 											/>
 										</div>
 										<span className='w-7 flex items-center'>
@@ -839,27 +855,27 @@ const MusicPlayer: React.FC = () => {
 						seekTime={seekTime}
 						repeat={repeat}
 						onEnded={() => {
+							// --- RESET TIME LOGIC ---
+							setAppTime(0);
+							setSeekTime(0);
+							localStorage.setItem("checkpoint", "0");
+							// -------------------------
+
 							handleNextSong();
 							dispatch(setIsEpisodeRegistered(false));
 						}}
-						onTimeUpdate={(event: any) => {
-							const currentTime = event.target.currentTime;
-							setAppTime(currentTime);
-
-							// Save checkpoint to localStorage every update
-							if (currentTime > 5) {
-								localStorage.setItem("checkpoint", currentTime.toString());
-							}
-
-							// Register play at 15% (or your preferred 5s)
-							if (currentTime >= 5 && !isEpisodeRegistered) {
-								handleRegisterPlay(activeSong?.id);
+						onTimeUpdate={(e: any) => {
+							const time = e.target.currentTime;
+							setAppTime(time);
+							if (time > 5) localStorage.setItem("checkpoint", time.toString());
+							if (time >= duration * 0.15 && !isEpisodeRegistered) {
+								registerPlayMutation.mutate(activeSong?.id);
 								dispatch(setIsEpisodeRegistered(true));
 							}
 						}}
-						onLoadedData={(event: any) => {
-							setDuration(event.target.duration);
-							// Loading bar completion is now handled inside Player.tsx via onCanPlay
+						onLoadedData={(e: any) => {
+							setDuration(e.target.duration);
+							dispatch(setIsLoadingSong(false));
 						}}
 					/>
 

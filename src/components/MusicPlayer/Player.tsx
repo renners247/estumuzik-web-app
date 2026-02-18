@@ -46,18 +46,21 @@ const Player: React.FC<PlayerProps> = ({
 	}, [isPlaying, activeSong]); // Trigger when play state OR song changes
 
 	// 2. Handle Source Change & initial Checkpoint
+	// Inside Player.tsx
 	useEffect(() => {
 		if (!audioRef.current) return;
 
-		// Reset loading bar on source change
-		loadingBarRef.current?.continuousStart();
-		dispatch(setIsLoadingSong(true));
-
-		// Load checkpoint only when the song actually changes
+		// When the song URL changes...
 		const checkPointTime = localStorage.getItem("checkpoint");
-		if (checkPointTime && activeSong) {
+
+		// If checkpoint is "0", force the player to start at the beginning
+		if (checkPointTime === "0") {
+			audioRef.current.currentTime = 0;
+		} else if (checkPointTime && activeSong) {
 			audioRef.current.currentTime = Number(checkPointTime);
 		}
+
+		dispatch(setIsLoadingSong(true));
 	}, [activeSong?.content_url]);
 
 	// 3. Sync Volume
