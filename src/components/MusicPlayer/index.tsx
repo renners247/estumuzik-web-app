@@ -487,7 +487,7 @@ const MusicPlayer: React.FC = () => {
 											</>
 											<div className='flex flex-col gap-1'>
 												<Link
-													href={`/episode?id=${activeSong?.id}&title=${activeSong?.title}&picture_url=${activeSong?.picture_url}/`}
+													href={`/episode/${activeSong?.id}`}
 													title={activeSong?.title}
 													className='text-sm text-white/80 cursor-pointer tracking-wide w-[16rem] xl:w-[20rem] overflow-hidden overflow-ellipsis hover:text-[#1e2531] transition-[.4] truncate'
 													style={{
@@ -755,7 +755,7 @@ const MusicPlayer: React.FC = () => {
 										)}
 										<div className='flex flex-col gap-1 relative'>
 											<Link
-												href={`/episode?id=${activeSong?.id}&title=${activeSong?.title}&picture_url=${activeSong?.picture_url}/`}
+												href={`/episode/${activeSong?.id}`}
 												title={activeSong?.title}
 												className='text-xs text-white/80 cursor-pointer tracking-wide w-[40vw] xs:w-[45vw] sm:w-[55vw] overflow-hidden overflow-ellipsis hover:text-[#1e2531] transition-[.4] truncate'
 												style={{
