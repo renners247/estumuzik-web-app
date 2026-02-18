@@ -841,25 +841,29 @@ const MusicPlayer: React.FC = () => {
 						onEnded={() => {
 							handleNextSong();
 							dispatch(setIsEpisodeRegistered(false));
-							// setEpisodeRegistered(false);
 						}}
-						onTimeUpdate={(event: ChangeEvent<HTMLAudioElement>) => {
-							setAppTime(event.target.currentTime);
+						onTimeUpdate={(event: any) => {
+							const currentTime = event.target.currentTime;
+							setAppTime(currentTime);
 
-							if (event.target.currentTime >= 5 && !isEpisodeRegistered) {
+							// Save checkpoint to localStorage every update
+							if (currentTime > 5) {
+								localStorage.setItem("checkpoint", currentTime.toString());
+							}
+
+							// Register play at 15% (or your preferred 5s)
+							if (currentTime >= 5 && !isEpisodeRegistered) {
 								handleRegisterPlay(activeSong?.id);
 								dispatch(setIsEpisodeRegistered(true));
 							}
 						}}
-						onLoadedData={(event: ChangeEvent<HTMLAudioElement>) => {
-							dispatch(setIsLoadingSong(false));
+						onLoadedData={(event: any) => {
 							setDuration(event.target.duration);
-							loadingBarRef.current?.complete();
+							// Loading bar completion is now handled inside Player.tsx via onCanPlay
 						}}
-						checkpoint={checkpoint}
 					/>
 
-					{/* <Modal
+					<Modal
 						isOpen={isOpenAddToPlaylistModal}
 						onOpenChange={onOpenChangeAddToPlaylistModal}
 						size='md'
@@ -872,10 +876,10 @@ const MusicPlayer: React.FC = () => {
 					>
 						<ModalContent className='bg-black-500'>
 							{(onClose) => (
-								<AddToPlaylistModal episode={activeSong && activeSong} onClose={onClose} />
+								<AddToPlaylistModal episode={activeSong!} onClose={onClose} />
 							)}
 						</ModalContent>
-					</Modal> */}
+					</Modal>
 				</>
 			)}
 		</>

@@ -132,16 +132,16 @@ const MainDiscoverView = () => {
 					{(hasNextPage || isFetchingNextPage) && (
 						<div
 							ref={observerTarget}
-							className='shrink-0 w-[240px] lg:w-[280px] h-[380px] flex flex-col items-center justify-center bg-zinc-900/40 rounded-[32px] border border-white/5 backdrop-blur-md'
+							className='shrink-0 w-[200px] lg:w-[280px] h-[300px] lg:h-[380px] flex flex-col items-center justify-center bg-zinc-900/40 rounded-2xl lg:rounded-[32px] border border-white/5 backdrop-blur-md'
 						>
 							<div className='flex flex-col items-center gap-4'>
 								<Spinner size='lg' color='primary' />
 								<div className='text-center'>
-									<p className='text-white font-bold text-sm tracking-widest uppercase'>
+									<p className='text-white font-bold text-xs tracking-widest uppercase'>
 										Syncing
 									</p>
 									<p className='text-zinc-600 text-[10px] font-black uppercase tracking-[0.2em]'>
-										Data Stream
+										Loading...
 									</p>
 								</div>
 							</div>
