@@ -34,7 +34,7 @@ const SearchByPopularKeywords = () => {
   };
 
   return (
-    <div className="flex flex-col mt-10 mb-10 items-center justify-center">
+    <div className="flex flex-col mt-10 mb-20 items-center justify-center">
       <div className="flex flex-col items-center lg:items-start px-2">
         <SectionTitle name="Search by popular keywords" />
       </div>
