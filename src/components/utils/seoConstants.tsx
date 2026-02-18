@@ -3,7 +3,7 @@ export const shortName = "EstuMuzik";
 export const websiteUrl = "https://www.estumuzik.com";
 
 export const SEODATA = {
-	defaultOGImage: `${websiteUrl}/_next/static/media/afihan-openGraph.7b530df8.png`,
+	defaultOGImage: `${websiteUrl}/_next/static/media/og-image.f027735e.png`,
 	default: {
 		title: `${websiteName}`,
 		description: ``,
