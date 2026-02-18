@@ -12,7 +12,7 @@ import { TfiReload } from "react-icons/tfi";
 // } from "../../../public";
 import { FaChevronLeft } from "react-icons/fa";
 import { useRouter } from "next/navigation";
-import { logoImage } from "../../../public";
+import { logoImage, ogImage } from "../../../public";
 
 export const isValidImage = (url: string): Promise<boolean> => {
 	return new Promise((resolve) => {
@@ -431,7 +431,7 @@ export const EstuMuzikLogo = ({ className }: EstuMuzikLogoProps) => {
 	return (
 		<Link href='/'>
 			<Picture
-				src={logoImage}
+				src={ogImage}
 				alt='logo image'
 				className={`w-16 rounded-sm ${className}`}
 			/>

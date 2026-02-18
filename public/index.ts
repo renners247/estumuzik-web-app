@@ -13,10 +13,12 @@ import recentlyPlayed from "./dev_images/recently played.png";
 import playlist from "./dev_images/playlist.png";
 import podcastFollow from "./dev_images/podcast follow.png";
 import onboardingImage from "./dev_images/onboarding_image.png";
+import ogImage from "./dev_images/og-image.png";
 import flag from "./dev_images/nigerian-flag.svg";
 
 export {
 	favorites,
+	ogImage,
 	recentlyPlayed,
 	playlist,
 	podcastFollow,
