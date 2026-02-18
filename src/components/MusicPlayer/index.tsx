@@ -74,6 +74,10 @@ const MusicPlayer: React.FC = () => {
 		volume,
 		isLoading,
 	} = useAppSelector((state) => state.playerOne);
+	const { user } = useAppSelector((state: any) => state.auth);
+
+	hasSignedOut;
+	console.log("🚀 ~ MusicPlayer ~ hasSignedOut:");
 	const cookie = Cookies.get(AUTH_TOKEN_KEY);
 	const { likedEpisodes, isEpisodeRegistered, isMinimizedPlayer } =
 		useAppSelector((state) => state.toggleModal);
@@ -302,7 +306,7 @@ const MusicPlayer: React.FC = () => {
 
 	return (
 		<>
-			{cookie && (
+			{cookie && user && !hasSignedOut && (
 				<>
 					{isMinimizedPlayer ? (
 						<motion.div
