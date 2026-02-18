@@ -18,36 +18,36 @@ export const loadingBarRef = React.createRef<LoadingBarRef | null>();
 const queryClient = new QueryClient();
 
 export default function ReduxProvider({
-	children,
+  children,
 }: {
-	children: React.ReactNode;
+  children: React.ReactNode;
 }) {
-	useEffect(() => {
-		if ("serviceWorker" in navigator && process.env.NODE_ENV === "production") {
-			window.addEventListener("load", () => {
-				navigator.serviceWorker
-					.register("/sw.js")
-					.then((reg) => console.log("Service Worker registered:", reg))
-					.catch((err) =>
-						console.error("Service Worker registration failed:", err),
-					);
-			});
-		}
-	}, []);
+  useEffect(() => {
+    if ("serviceWorker" in navigator && process.env.NODE_ENV === "production") {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("/sw.js")
+          .then((reg) => console.log("Service Worker registered:", reg))
+          .catch((err) =>
+            console.error("Service Worker registration failed:", err),
+          );
+      });
+    }
+  }, []);
 
-	return (
-		<HeroUIProvider>
-			<LoadingBar
-				color='#FFC71F'
-				ref={loadingBarRef as React.RefObject<LoadingBarRef>}
-				height={5}
-			/>
-			<QueryClientProvider client={queryClient}>
-				<ToastContainer position='top-right' hideProgressBar />
-				<Provider store={store}>
-					{children} <MusicPlayer />
-				</Provider>
-			</QueryClientProvider>
-		</HeroUIProvider>
-	);
+  return (
+    <HeroUIProvider>
+      <LoadingBar
+        color="#FFC71F"
+        ref={loadingBarRef as React.RefObject<LoadingBarRef>}
+        height={5}
+      />
+      <QueryClientProvider client={queryClient}>
+        <ToastContainer position="top-right" hideProgressBar />
+        <Provider store={store}>
+          {children} <MusicPlayer />
+        </Provider>
+      </QueryClientProvider>
+    </HeroUIProvider>
+  );
 }
