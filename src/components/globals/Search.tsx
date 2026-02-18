@@ -35,8 +35,8 @@ export default function Search({ className }: SearchProps) {
         <input
           type="text"
           placeholder="Search by Podcast Name"
-          className="w-full bg-[#111111] text-gray-300 text-sm py-3 px-5 lg:py-3.5 lg:px-6 pr-12 rounded-full 
-                   outline-none border border-transparent focus:border-[#FFCC00]/50 
+          className="w-full bg-black-700 text-gray-300 text-sm py-3 px-5 lg:py-3.5 lg:px-6 pr-12 rounded-full 
+                   outline-none border border-transparent focus:border-primary-500/50 
                    transition-all duration-300 placeholder:text-gray-500"
           value={searchValue}
           onChange={handleInputChange}
