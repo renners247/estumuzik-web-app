@@ -73,7 +73,6 @@ const LoginForm: React.FC = () => {
 
 					<div className='block lg:hidden relative'>
 						<div className='block lg:hidden relative w-full h-[40vh] overflow-hidden'>
-							{/* 1. Background Image (Lowest Layer) */}
 							<div
 								className='absolute inset-0 bg-cover bg-center transition-transform duration-1000 scale-105'
 								style={{
@@ -81,13 +80,11 @@ const LoginForm: React.FC = () => {
 								}}
 							/>
 
-							{/* 2. Dark Gradient Overlay (Middle Layer - for text readability) */}
 							<div className='absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/60 to-transparent z-10' />
 
-							{/* 3. Content Container (Top Layer) */}
-							<div className='relative z-20 h-full flex flex-col justify-end p-3 pt-2 pb-12'>
-								<div className='space-y-4'>
-									<h2 className='text-2xl font-black tracking-tight uppercase text-white leading-[1.1]'>
+							<div className='relative z-20 h-full flex flex-col justify-end p-3 pt-2 pb-8'>
+								<div className='space-y-3'>
+									<h2 className='text-xl font-black tracking-wide uppercase text-white leading-[1.4]'>
 										Enjoy access to <br />
 										Unlimited <span className='text-primary-500'>
 											Podcasts
@@ -100,16 +97,14 @@ const LoginForm: React.FC = () => {
 										Listen, learn, enjoy; anywhere, anytime!
 									</span>
 
-									{/* Store Buttons Grid */}
-									<div className='grid grid-cols-2 gap-3 mt-4'>
+									<div className='grid grid-cols-2 gap-3 mt-3'>
 										<AndriodButtons />
-										{/* <AppleButtons /> */}
 									</div>
 								</div>
 							</div>
 						</div>
 						<div
-							className='absolute inset-0 bg-cover bg-center transition-transform duration-1000 scale-105'
+							className='absolute inset-0 w-[96%] mx-auto bg-cover bg-center transition-transform duration-1000 scale-105'
 							style={{
 								backgroundImage: "url('/dev_images/onboarding_image.png')",
 							}}
@@ -117,7 +112,7 @@ const LoginForm: React.FC = () => {
 
 						<div className='absolute -bottom-10 left-1/2 -translate-x-1/2 w-48 h-auto flex items-center justify-center p-2 z-10'>
 							<div>
-								<EstuMuzikLogo className='!w-10' />
+								<EstuMuzikLogo className='!w-12' />
 							</div>
 						</div>
 					</div>
