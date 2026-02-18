@@ -178,3 +178,12 @@ export const addEpisodeToPlaylist = async (playlistId: number, data: any) =>
 
 export const createPlaylist = async (data: any) =>
   axios.post(`${API_URL}/playlists`, data);
+
+export const getPlaylist = async (playlistId: number, data: any) =>
+  axios.get(`${API_URL}/playlists/${playlistId}`, data);
+
+export const updatePlaylist = async (playlistId: number, data: any) =>
+  axios.put(`${API_URL}/playlists/${playlistId}`, data);
+
+export const deletePlaylist = async (playlistId: number) =>
+  axios.delete(`${API_URL}/playlists/${playlistId}`);
