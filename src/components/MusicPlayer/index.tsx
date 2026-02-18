@@ -306,7 +306,7 @@ const MusicPlayer: React.FC = () => {
 
 	return (
 		<>
-			{cookie && user && !hasSignedOut && (
+			{!pathName.startsWith("/auth/") && (
 				<>
 					{isMinimizedPlayer ? (
 						<motion.div
