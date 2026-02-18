@@ -106,7 +106,7 @@ const MainDiscoverView = () => {
 					offset={5}
 					orientation='horizontal'
 					size={40}
-					className='flex lg:items-center gap-6 pb-12 px-4 scroll-smooth'
+					className='flex lg:items-center sm:gap-6 pb-0 lg:pb-12 px-4 scroll-smooth'
 				>
 					{/* 1. LOADING SKELETONS */}
 					{isLoading &&
@@ -137,7 +137,7 @@ const MainDiscoverView = () => {
 							<div className='flex flex-col items-center gap-4'>
 								<Spinner size='lg' color='primary' />
 								<div className='text-center'>
-									<p className='text-white font-bold text-sm tracking-widest uppercase italic'>
+									<p className='text-white font-bold text-sm tracking-widest uppercase'>
 										Syncing
 									</p>
 									<p className='text-zinc-600 text-[10px] font-black uppercase tracking-[0.2em]'>

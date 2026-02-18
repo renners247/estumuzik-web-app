@@ -16,6 +16,9 @@ import EpisodeQueueListAdd from "./EpisodeQueueListAdd";
 import { Tooltip } from "@heroui/react";
 import EpisodePlayListAdd from "./EpisodePlayListAdd";
 
+import { Modal, ModalContent, useDisclosure } from "@heroui/react";
+import AddToPlaylistModal from "@/components/Modal/AddToPlaylistModal";
+
 // ... (PodcastEpisode interface remains the same)
 
 interface PodcastProps {
@@ -40,6 +43,12 @@ const PodcastCard = ({ data, index, allEpisodes }: PodcastProps) => {
 
 	// Check if THIS specific card is the one playing
 	const isCurrentActiveSong = activeSong?.id === data?.id;
+
+	const {
+		isOpen: isOpenAddToPlaylistModal,
+		onOpen: onOpenAddToPlaylistModal,
+		onOpenChange: onOpenChangeAddToPlaylistModal,
+	} = useDisclosure();
 
 	const handlePauseClick = () => {
 		dispatch(playPause(false));
@@ -76,9 +85,10 @@ const PodcastCard = ({ data, index, allEpisodes }: PodcastProps) => {
 			}
 		}
 	};
+
 	return (
 		<>
-			<div className='relative w-full max-w-[340px] bg-mtn-dark-gradient rounded-2xl overflow-hidden shadow-2xl group transition-all duration-300 hover:scale-[1.02] border border-white/5'>
+			<div className='relative w-[220px] sm:w-full max-w-[340px] bg-mtn-dark-gradient rounded-2xl overflow-hidden shadow-2xl group transition-all duration-300 hover:scale-[1.02] border border-white/5'>
 				{/* 1. Background Image Overlay */}
 				<div className='absolute top-0 left-0 w-full h-3/5 opacity-50 z-0'>
 					<Picture
@@ -89,9 +99,8 @@ const PodcastCard = ({ data, index, allEpisodes }: PodcastProps) => {
 					<div className='absolute inset-0 bg-gradient-to-b from-transparent via-[#FFCC00]/20 to-[#050505]'></div>
 				</div>
 
-				<div className='relative z-10 p-5 flex flex-col justify-between lg:h-[370px]'>
-					{/* 3. Overlapping Thumbnail with Play/Pause Button */}
-					<div className='relative size-32 mx-auto lg:mx-0 mb-6 mt-4 shadow-2xl'>
+				<div className='relative z-10 px-2 py-5 lg:p-5 flex flex-col justify-between h-fit lg:h-[370px]'>
+					<div className='relative size-28 lg:size-32 mx-auto lg:mx-0 sm:mb-6 sm:mt-4 shadow-2xl'>
 						<Picture
 							src={episodeThumbnail}
 							alt={data?.title}
@@ -99,7 +108,6 @@ const PodcastCard = ({ data, index, allEpisodes }: PodcastProps) => {
 						/>
 
 						<div className='absolute inset-0 flex items-center justify-center'>
-							{/* Show Spinner if this song is loading, else show Play/Pause */}
 							{isLoading && isCurrentActiveSong ? (
 								<div className='size-12 rounded-full border-4 border-white/20 border-t-primary-500 animate-spin' />
 							) : (
@@ -151,7 +159,10 @@ const PodcastCard = ({ data, index, allEpisodes }: PodcastProps) => {
 					{/* 5. Action Buttons */}
 					<div className='flex items-center gap-3.5'>
 						<EpisodeFavouriteFunc episodeData={data} />
-						<EpisodePlayListAdd episodeData={data} />
+						<EpisodePlayListAdd
+							episodeData={data}
+							onOpenAddToPlaylistModal={onOpenAddToPlaylistModal}
+						/>
 						<EpisodeQueueListAdd episodeData={data} />
 
 						<Tooltip
@@ -159,9 +170,8 @@ const PodcastCard = ({ data, index, allEpisodes }: PodcastProps) => {
 							placement='top'
 							showArrow
 							closeDelay={0}
-							// Technical styling (Zinc + Industrial Typography)
 							classNames={{
-								base: ["before:bg-zinc-800"], // Arrow color
+								base: ["before:bg-zinc-800"],
 								content: [
 									"py-1.5 px-3 shadow-xl",
 									"text-[10px] font-black uppercase tracking-widest",
@@ -169,7 +179,6 @@ const PodcastCard = ({ data, index, allEpisodes }: PodcastProps) => {
 									"border border-white/10 rounded-lg",
 								],
 							}}
-							// Snappy spring animation
 							motionProps={{
 								variants: {
 									exit: { opacity: 0, transition: { duration: 0.1 } },
@@ -179,23 +188,29 @@ const PodcastCard = ({ data, index, allEpisodes }: PodcastProps) => {
 						>
 							<button
 								onClick={handleNativeShare}
-								className='relative size-11 flex items-center justify-center rounded-full border border-white/40 hover:bg-white/10 text-white/60 hover:text-white hover:border-white/50 transition-all shrink-0 active:scale-95'
+								className='relative size-9 sm:size-11 flex items-center justify-center rounded-full border border-white/40 text-white/60 hover:text-white/80 hover:border-white/50 transition-[.4] shrink-0 active:scale-95'
 							>
-								{/* The Icon */}
 								<RiShareLine className='text-xl transition-transform ' />
-
-								{/* Hardware Reflection Effect */}
-
-								{/* Subtle Hover Glow */}
 							</button>
 						</Tooltip>
-						{/* <button className='size-11 flex items-center justify-center rounded-full text-zinc-500 hover:text-zinc-300 border border-gray-500/40  hover:bg-white/10 transition-all'>
-							<AiOutlinePlus size={20} />
-						</button> */}
 					</div>
 				</div>
 			</div>
-
+			<Modal
+				isOpen={isOpenAddToPlaylistModal}
+				onOpenChange={onOpenChangeAddToPlaylistModal}
+				size='md'
+				backdrop='opaque'
+				// isDismissable={false}
+				// hideCloseButton={true}
+				classNames={{
+					closeButton: "z-50",
+				}}
+			>
+				<ModalContent className='bg-black-500'>
+					{(onClose) => <AddToPlaylistModal episode={data} onClose={onClose} />}
+				</ModalContent>
+			</Modal>
 			<GlobalLoader isPending={isPending} />
 		</>
 	);

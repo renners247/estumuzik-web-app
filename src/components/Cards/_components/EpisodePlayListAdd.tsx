@@ -21,11 +21,13 @@ import {
 interface EpisodePlayListAddProps {
 	episodeData: PodcastEpisode;
 	className?: string;
+	onOpenAddToPlaylistModal?: () => void;
 }
 
 const EpisodePlayListAdd = ({
 	episodeData,
 	className,
+	onOpenAddToPlaylistModal,
 }: EpisodePlayListAddProps) => {
 	const [isInPlaylist, setIsInPlaylist] = useState(false);
 	const queryClient = useQueryClient();
@@ -142,19 +144,19 @@ const EpisodePlayListAdd = ({
 				}}
 			>
 				<button
-					onClick={togglePlaylist}
+					onClick={onOpenAddToPlaylistModal}
 					aria-label={isInPlaylist ? "Remove from playlist" : "Add to playlist"}
-					className='group relative outline-none flex items-center justify-center shrink-0'
+					className='relative outline-none flex items-center justify-center shrink-0'
 				>
 					{/* Socket Container */}
 
 					<div
 						className={`
-                        relative size-11 flex items-center justify-center rounded-full border transition-all duration-500
+                        relative size-9 sm:size-11 flex items-center justify-center rounded-full border transition-all duration-500
                         ${
 													isInPlaylist
 														? "border-primary-500/40 shadow-[0_0_20px_rgba(59,130,246,0.15)] bg-primary-500/5"
-														: "border-white/20 hover:border-white/50 bg-zinc-900/50"
+														: "border-white/60 hover:border-white/20"
 												} ${className}
                     `}
 					>
@@ -175,15 +177,12 @@ const EpisodePlayListAdd = ({
 									initial={{ scale: 0.8, opacity: 0 }}
 									animate={{ scale: 1, opacity: 1 }}
 									exit={{ scale: 0.8, opacity: 0 }}
-									className='text-white/60 group-hover:text-white'
+									className='text-white/60'
 								>
 									<RiPlayListAddLine className='text-xl' />
 								</motion.div>
 							)}
 						</AnimatePresence>
-
-						{/* Hardware Shine Effect */}
-						<div className='absolute inset-0 bg-gradient-to-br from-white/10 to-transparent rounded-full pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity' />
 					</div>
 				</button>
 			</Tooltip>

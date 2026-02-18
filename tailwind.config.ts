@@ -63,6 +63,7 @@ const config: Config = {
           400: "#121212", // Dark background for music apps
           500: "#212121",
           600: "#141414",
+          700: "#111111",
         },
         bg: {
           100: "#F8F8F8",

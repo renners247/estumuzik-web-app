@@ -21,29 +21,6 @@ export default function Search({ className }: SearchProps) {
     dispatch(setSearchValue(event.target.value));
   };
 
-  // Debounce search effect: triggers handleSearch 500ms after user stops typing
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      // Only search if there is actual input, matching handleSearch's condition
-      if (searchValue.trim().length > 0) {
-        startTransition(() => {
-          // If we are already on the search page, replace rather than push to avoid history spam
-          if (window.location.pathname.startsWith("/search")) {
-            router.replace(`/search?${searchValue}`);
-          } else {
-            router.push(`/search?${searchValue}`);
-          }
-        });
-      } else if (
-        window.location.pathname.startsWith("/search") &&
-        searchValue.length === 0
-      ) {
-      }
-    }, 500);
-
-    return () => clearTimeout(delayDebounceFn);
-  }, [searchValue, router]);
-
   const handleSearch = () => {
     if (searchValue.length > 0) {
       startTransition(() => {
@@ -57,9 +34,9 @@ export default function Search({ className }: SearchProps) {
       <div className={`relative w-full group ${className}`}>
         <input
           type="text"
-          placeholder="Search by Podcast Name, Host name, Categories, Tags..."
-          className="w-full bg-[#111111] text-gray-300 text-sm py-3 px-5 lg:py-3.5 lg:px-6 pr-12 rounded-full 
-                   outline-none border border-transparent focus:border-[#FFCC00]/50 
+          placeholder="Search by Podcast Name"
+          className="w-full bg-black-700 text-gray-300 text-sm py-3 px-5 lg:py-3.5 lg:px-6 pr-12 rounded-full 
+                   outline-none border border-transparent focus:border-primary-500/50 
                    transition-all duration-300 placeholder:text-gray-500"
           value={searchValue}
           onChange={handleInputChange}

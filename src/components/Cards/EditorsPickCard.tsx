@@ -130,9 +130,9 @@ const EditorsPickCard = ({ episode }: EditorsPickCardProps) => {
 	};
 
 	return (
-		<div className='w-full bg-bg-500 rounded-2xl p-4 sm:p-6 flex flex-row gap-4 md:gap-8 items-center md:items-start group transition-colors border border-white/5'>
+		<div className='w-full bg-bg-500 rounded-2xl px-2 py-4 sm:p-6 flex flex-row gap-2 md:gap-8 items-start group transition-colors border border-white/5'>
 			{/* Image Section */}
-			<div className='relative shrink-0 w-[120px] sm:w-[180px] md:w-[220px] aspect-square rounded-xl overflow-hidden shadow-lg'>
+			<div className='relative shrink-0 w-[100px] sm:w-[180px] md:w-[220px] aspect-square rounded-xl overflow-hidden shadow-lg'>
 				<Picture
 					src={
 						episode.picture_url ||
@@ -243,7 +243,7 @@ const EditorsPickCard = ({ episode }: EditorsPickCardProps) => {
 					>
 						<button
 							onClick={handleNativeShare}
-							className='relative size-11 flex items-center justify-center rounded-full border border-white/40 hover:bg-white/10 text-white/60 hover:text-white hover:border-white/50 transition-all shrink-0 active:scale-95'
+							className='relative size-9 sm:size-11 flex items-center justify-center rounded-full border border-white/40 hover:bg-white/10 text-white/60 hover:text-white hover:border-white/50 transition-all shrink-0 active:scale-95'
 						>
 							{/* The Icon */}
 							<RiShareLine className='text-xl transition-transform ' />
