@@ -110,12 +110,12 @@ const EpisodeQueueListAdd = ({
 			<button
 				onClick={toggleQueue}
 				aria-label={isQueued ? "Remove from playlist" : "Add to playlist"}
-				className='group relative outline-none flex items-center justify-center shrink-0'
+				className='relative outline-none flex items-center justify-center shrink-0'
 			>
 				{/* Socket Container */}
 				<div
 					className={`
-				relative size-11 flex items-center justify-center rounded-full border transition-all duration-500
+				relative size-9 sm:size-11 flex items-center justify-center rounded-full border transition-all duration-500
 				${
 					isQueued
 						? "border-primary-500/40 shadow-[0_0_20px_rgba(59,130,246,0.15)] bg-primary-500/5"
@@ -141,7 +141,7 @@ const EpisodeQueueListAdd = ({
 								initial={{ scale: 0.8, opacity: 0 }}
 								animate={{ scale: 1, opacity: 1 }}
 								exit={{ scale: 0.8, opacity: 0 }}
-								className='text-white/60 group-hover:text-white'
+								className='text-white/60 hover:text-white/80'
 							>
 								{/* --- THE INACTIVE QUEUE ICON --- */}
 								<MdRemoveFromQueue className='text-xl' />

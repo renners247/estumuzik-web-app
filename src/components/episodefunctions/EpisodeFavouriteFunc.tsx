@@ -112,7 +112,7 @@ const EpisodeFavouriteFunc = ({
 				{/* Socket Container */}
 				<div
 					className={`
-				relative size-11 flex items-center justify-center rounded-full border  transition-all duration-500
+				relative size-9 sm:size-11 flex items-center justify-center rounded-full border  transition-all duration-500
 			${className}	${
 				isFavourite
 					? "border-red-500/40 shadow-[0_0_20px_rgba(239,68,68,0.15)]"

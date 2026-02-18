@@ -60,7 +60,9 @@ import EpisodeFavouriteFunc from "../episodefunctions/EpisodeFavouriteFunc";
 import EpisodeQueueListAdd from "../Cards/_components/EpisodeQueueListAdd";
 import { BaseUrl, registerPlayEpisode } from "../utils/endpoints";
 import { RiShareLine } from "react-icons/ri";
-import { Tooltip } from "@heroui/react";
+import { Modal, ModalContent, Tooltip, useDisclosure } from "@heroui/react";
+import EpisodePlayListAdd from "../Cards/_components/EpisodePlayListAdd";
+import AddToPlaylistModal from "../Modal/AddToPlaylistModal";
 
 const MusicPlayer: React.FC = () => {
 	const {
@@ -85,7 +87,11 @@ const MusicPlayer: React.FC = () => {
 	const dispatch = useDispatch();
 	const getTime = (time: any) =>
 		`${Math.floor(time / 60)}:${`0${Math.floor(time % 60)}`.slice(-2)}`;
-
+	const {
+		isOpen: isOpenAddToPlaylistModal,
+		onOpen: onOpenAddToPlaylistModal,
+		onOpenChange: onOpenChangeAddToPlaylistModal,
+	} = useDisclosure();
 	//   my code begins here
 
 	useEffect(() => {
@@ -598,9 +604,17 @@ const MusicPlayer: React.FC = () => {
 															episodeData={activeSong}
 															className='size-9'
 														/>
+
 														<EpisodeQueueListAdd
 															episodeData={activeSong}
 															className='size-9'
+														/>
+
+														<EpisodePlayListAdd
+															episodeData={activeSong}
+															onOpenAddToPlaylistModal={
+																onOpenAddToPlaylistModal
+															}
 														/>
 													</>
 												)}
@@ -844,6 +858,24 @@ const MusicPlayer: React.FC = () => {
 						}}
 						checkpoint={checkpoint}
 					/>
+
+					{/* <Modal
+						isOpen={isOpenAddToPlaylistModal}
+						onOpenChange={onOpenChangeAddToPlaylistModal}
+						size='md'
+						backdrop='opaque'
+						// isDismissable={false}
+						// hideCloseButton={true}
+						classNames={{
+							closeButton: "z-50",
+						}}
+					>
+						<ModalContent className='bg-black-500'>
+							{(onClose) => (
+								<AddToPlaylistModal episode={activeSong && activeSong} onClose={onClose} />
+							)}
+						</ModalContent>
+					</Modal> */}
 				</>
 			)}
 		</>
