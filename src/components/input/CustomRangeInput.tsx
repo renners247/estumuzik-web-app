@@ -1,8 +1,8 @@
 "use client";
-import React, { useState, useRef, useEffect, MouseEvent } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 
 interface CustomRangeInputProps {
-	sliderValue: number | undefined;
+	sliderValue: number; // 0 to 100
 	onChange?: (value: number) => void;
 	onAfterChange?: (value: number) => void;
 	minValue?: number;
@@ -10,7 +10,6 @@ interface CustomRangeInputProps {
 	backgroundColor?: string;
 	sliderColor?: string;
 	circleColor?: string;
-	circleRefTop?: string;
 	width?: string;
 	height?: string;
 }
@@ -21,111 +20,111 @@ const CustomRangeInput: React.FC<CustomRangeInputProps> = ({
 	onAfterChange,
 	minValue = 0,
 	maxValue = 100,
-	backgroundColor = "#333333", // Dark MTN track
-	sliderColor = "#FFCC00", // Official MTN Yellow
-	circleColor = "#FFCC00", // Official MTN Yellow seeker
-	circleRefTop = "50%", // Perfect centering
+	backgroundColor = "#2D2D2D",
+	sliderColor = "#FFCC00",
+	circleColor = "#FFCC00",
 	width = "w-full",
-	height = "h-1", // Sleek thin line
+	height = "h-1",
 }) => {
 	const [isDragging, setIsDragging] = useState(false);
+	const [localValue, setLocalValue] = useState(sliderValue);
 	const sliderRef = useRef<HTMLDivElement>(null);
-	const circleRef = useRef<HTMLDivElement>(null);
 
+	// Sync local value with prop value when NOT dragging
 	useEffect(() => {
-		const handleMouseMove = (event: any) => {
-			if (isDragging && sliderRef.current && circleRef.current) {
-				const sliderRect = sliderRef.current.getBoundingClientRect();
-				const percentage =
-					((event.clientX - sliderRect.left) / sliderRect.width) * maxValue;
-				const clampedPercentage = Math.max(
-					minValue,
-					Math.min(maxValue, percentage),
-				);
-				if (onChange) {
-					onChange(clampedPercentage);
-				}
+		if (!isDragging) {
+			setLocalValue(sliderValue);
+		}
+	}, [sliderValue, isDragging]);
 
-				const circleLeft = (clampedPercentage / maxValue) * sliderRect.width;
-				circleRef.current.style.left = `${circleLeft}px`;
+	// Unified calculation logic for Mouse and Touch
+	const calculateValue = useCallback(
+		(clientX: number) => {
+			if (!sliderRef.current) return 0;
+			const rect = sliderRef.current.getBoundingClientRect();
+			const x = clientX - rect.left;
+			const percentage = (x / rect.width) * maxValue;
+			return Math.min(maxValue, Math.max(minValue, percentage));
+		},
+		[maxValue, minValue],
+	);
+
+	const handleMove = useCallback(
+		(clientX: number) => {
+			if (isDragging) {
+				const newValue = calculateValue(clientX);
+				setLocalValue(newValue); // Update visual immediately
+				if (onChange) onChange(newValue); // Update parent (MusicPlayer)
 			}
-		};
+		},
+		[isDragging, calculateValue, onChange],
+	);
 
-		const handleMouseUp = () => {
+	const handleEnd = useCallback(() => {
+		if (isDragging) {
 			setIsDragging(false);
-			if (onAfterChange) {
-				onAfterChange(sliderValue!);
-			}
-			window.removeEventListener("mousemove", handleMouseMove);
-			window.removeEventListener("mouseup", handleMouseUp);
-		};
+			if (onAfterChange) onAfterChange(localValue);
+		}
+	}, [isDragging, localValue, onAfterChange]);
+
+	// Window listeners for smooth dragging outside the bar
+	useEffect(() => {
+		const onMouseMove = (e: MouseEvent) => handleMove(e.clientX);
+		const onTouchMove = (e: TouchEvent) => handleMove(e.touches[0].clientX);
+		const onMouseUp = () => handleEnd();
+		const onTouchEnd = () => handleEnd();
 
 		if (isDragging) {
-			window.addEventListener("mousemove", handleMouseMove);
-			window.addEventListener("mouseup", handleMouseUp);
+			window.addEventListener("mousemove", onMouseMove);
+			window.addEventListener("mouseup", onMouseUp);
+			window.addEventListener("touchmove", onTouchMove);
+			window.addEventListener("touchend", onTouchEnd);
 		}
 
 		return () => {
-			window.removeEventListener("mousemove", handleMouseMove);
-			window.removeEventListener("mouseup", handleMouseUp);
+			window.removeEventListener("mousemove", onMouseMove);
+			window.removeEventListener("mouseup", onMouseUp);
+			window.removeEventListener("touchmove", onTouchMove);
+			window.removeEventListener("touchend", onTouchEnd);
 		};
-	}, [isDragging, sliderValue, minValue, maxValue, onChange, onAfterChange]);
+	}, [isDragging, handleMove, handleEnd]);
 
-	const handleMouseDown = (event: MouseEvent) => {
+	const handleStart = (clientX: number) => {
 		setIsDragging(true);
-		if (isDragging && sliderRef.current && circleRef.current) {
-			const sliderRect = sliderRef.current.getBoundingClientRect();
-			const percentage =
-				((event.clientX - sliderRect.left) / sliderRect.width) * maxValue;
-			const clampedPercentage = Math.max(
-				minValue,
-				Math.min(maxValue, percentage),
-			);
-			if (onChange) {
-				onChange(clampedPercentage);
-			}
-
-			const circleLeft = (clampedPercentage / maxValue) * sliderRect.width;
-			circleRef.current.style.left = `${circleLeft}px`;
-		}
+		const newValue = calculateValue(clientX);
+		setLocalValue(newValue);
+		if (onChange) onChange(newValue);
 	};
 
 	return (
-		<div className={`relative flex items-center group ${width} ${height}`}>
+		<div
+			className={`relative flex items-center group ${width} h-6 cursor-pointer`}
+		>
 			<div
 				ref={sliderRef}
-				className={`w-full ${height} rounded-full cursor-pointer transition-all duration-300 group-hover:h-1.5`}
-				onMouseDown={handleMouseDown}
-				style={{
-					position: "relative",
-					background: backgroundColor,
-				}}
+				className={`w-full ${height} rounded-full transition-all duration-300 group-hover:h-1.5 relative`}
+				style={{ background: backgroundColor }}
+				onMouseDown={(e) => handleStart(e.clientX)}
+				onTouchStart={(e) => handleStart(e.touches[0].clientX)}
 			>
 				{/* Progress Fill */}
 				<div
-					className={`absolute top-0 left-0 h-full rounded-full`}
+					className='absolute top-0 left-0 h-full rounded-full pointer-events-none'
 					style={{
-						width: `${sliderValue}%`,
+						width: `${localValue}%`,
 						background: sliderColor,
-						boxShadow: isDragging ? `0 0 8px ${sliderColor}80` : "none",
+						boxShadow: isDragging ? `0 0 12px ${sliderColor}` : "none",
 					}}
 				/>
 
-				{/* Seeker Circle */}
+				{/* Seeker Circle (The Nut/Bolt) */}
 				<div
-					ref={circleRef}
-					className={`absolute size-3 rounded-full cursor-pointer transition-all duration-150 
-						${isDragging ? "scale-125 shadow-lg" : "scale-0 group-hover:scale-100"}
-						flex items-center justify-center`}
+					className={`absolute top-1/2 -translate-y-1/2 -translate-x-1/2 rounded-full border-2 border-white transition-transform duration-150 shadow-md pointer-events-none
+            ${isDragging ? "size-4 scale-110" : "size-3 scale-0 group-hover:scale-100"}`}
 					style={{
-						top: circleRefTop,
-						left: `${sliderValue}%`,
-						transform: "translate(-50%, -50%)",
+						left: `${localValue}%`,
 						background: circleColor,
-						border: "2px solid white", // Adds a premium border to the seeker
-						boxShadow: "0 2px 4px rgba(0,0,0,0.3)",
 					}}
-					onMouseDown={handleMouseDown}
 				/>
 			</div>
 		</div>
