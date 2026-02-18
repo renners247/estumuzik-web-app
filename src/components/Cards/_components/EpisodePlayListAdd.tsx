@@ -21,7 +21,7 @@ import {
 interface EpisodePlayListAddProps {
   episodeData: PodcastEpisode;
   className?: string;
-  onOpenAddToPlaylistModal: () => void;
+  onOpenAddToPlaylistModal?: () => void;
 }
 
 const EpisodePlayListAdd = ({
