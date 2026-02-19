@@ -103,6 +103,15 @@ export const getEpisode = async (episodeId: number) =>
 export const getEpisodeComments = async (episodeId: number) =>
   axios.get(`${API_URL}/episodes/${episodeId}/comments`);
 
+export const createComment = async (episodeId: number, data: any) =>
+  axios.post(`${API_URL}/episodes/${episodeId}/comments`, data);
+
+export const updateComment = async (commentId: number, data: any) =>
+  axios.put(`${API_URL}/comments/${commentId}`, data);
+
+export const deleteComment = async (commentId: number) =>
+  axios.delete(`${API_URL}/comments/${commentId}`);
+
 export const getPodcast = async (podcastId: number) =>
   axios.get(`${API_URL}/podcasts/${podcastId}`);
 

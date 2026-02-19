@@ -41,8 +41,8 @@ export const PlaylistFormModal = ({
         {(onClose) => (
           <ModalBody className="py-6">
             <div className="text-center">
-              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-indigo-100 mb-4">
-                <ListMusic className="h-6 w-6 text-indigo-600" />
+              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-primary-400 mb-4">
+                <ListMusic className="h-6 w-6 text-white" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-1">
                 {mode === "create" ? "New Playlist" : "Edit Playlist"}
@@ -77,7 +77,7 @@ export const PlaylistFormModal = ({
                   type="button"
                   onClick={handleSubmit}
                   disabled={!name.trim() || isLoading}
-                  className="px-4 py-2 w-32 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                  className="px-4 py-2 w-32 text-sm font-medium text-white bg-primary-500 hover:bg-primary-500/90 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                 >
                   {isLoading ? (
                     <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
