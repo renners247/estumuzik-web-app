@@ -119,130 +119,120 @@ const EpisodeContent = ({ episodeId }: EpisodeContentProps) => {
 
 	return (
 		<>
-			<main className='min-h-screen text-white overflow-x-hidden space-y-4'>
+			<main className='min-h-screen bg-[#050505] text-white overflow-x-hidden'>
 				{EpisodeData?.id && (
 					<div className='relative w-full'>
-						{/* 1. CINEMATIC BACKGROUND LAYER */}
-						<div className='absolute top-0 left-0 w-full h-[70vh] overflow-hidden'>
+						{/* 1. CINEMATIC HEADER (Adaptive Height) */}
+						<div className='absolute top-0 left-0 w-full h-[50vh] lg:h-[70vh] overflow-hidden'>
 							<div
-								className='w-full h-full bg-cover bg-center scale-110 blur-2xl opacity-30 transition-all duration-1000'
+								className='w-full h-full bg-cover bg-center scale-110 blur-3xl opacity-40 transition-all duration-1000'
 								style={{ backgroundImage: `url(${EpisodeData?.picture_url})` }}
 							/>
-							<div className='absolute inset-0 bg-gradient-to-b from-transparent via-[#050505]/80 to-[#050505]' />
+							{/* Deeper gradient for mobile readability */}
+							<div className='absolute inset-0 bg-gradient-to-b from-black/60 via-[#050505]/90 to-[#050505]' />
 						</div>
 
-						<div className='relative z-10 max-w-[1440px] mx-auto px-6 lg:px-12 pt-8 pb-20'>
-							{/* 2. HERO CONTENT GRID */}
-							<div className='grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 '>
-								{/* LEFT: THE COMPONENT (IMAGE) */}
-								<div className='lg:col-span-4 sticky top-32'>
+						<div className='relative z-10 max-w-[1440px] mx-auto px-5 lg:px-12 pt-6 lg:pt-8 pb-20'>
+							{/* TOP NAVIGATION BAR */}
+							<div className='flex items-center justify-between mb-3'>
+								<BackButton className='bg-zinc-900/80 border border-white/10 backdrop-blur-md rounded-xl p-2.5 hover:bg-zinc-800 transition-all' />
+							</div>
+
+							<div className='grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16'>
+								{/* 2. THE COMPONENT IMAGE (Mobile: Centered & Elevated) */}
+								<div className='lg:col-span-4 lg:sticky lg:top-32'>
 									<motion.div
-										initial={{ opacity: 0, y: 20 }}
-										animate={{ opacity: 1, y: 0 }}
-										className='relative group aspect-square lg:max-w-[400px] mx-auto'
+										initial={{ opacity: 0, scale: 0.9 }}
+										animate={{ opacity: 1, scale: 1 }}
+										className='relative group aspect-square w-64 lg:w-full max-w-[400px] mx-auto'
 									>
-										<div className='absolute inset-0 bg-blue-600/20 blur-[60px] rounded-full group-hover:bg-blue-600/30 transition-all duration-700' />
+										<div className='absolute inset-0 bg-primary-600/20 blur-[50px] rounded-full' />
 										<Picture
 											src={EpisodeData?.picture_url || ""}
 											alt={EpisodeData?.title}
-											className='relative z-10 w-full h-full object-cover rounded-[2.5rem] border border-white/10 shadow-2xl transition-transform duration-500 group-hover:scale-[1.02]'
+											className='relative z-10 w-full h-full object-cover rounded-[2rem] lg:rounded-[2.5rem] border border-white/10 shadow-2xl transition-transform duration-500'
 										/>
 									</motion.div>
 								</div>
 
-								{/* RIGHT: THE SPECS (METADATA) */}
-								<div className='lg:col-span-8 flex flex-col space-y-8'>
-									{/* TITLE & AUTHOR */}
-									<div className='space-y-4'>
-										<div className='flex gap-x-2 items-center'>
-											<BackButton className='bg-zinc-900/50 border border-white/10 backdrop-blur-md rounded-xl p-2 hover:bg-zinc-800 transition-all' />
-											<div className='inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-600/10 border border-primary-500/20 text-primary-200 text-[10px] font-black uppercase tracking-widest'>
-												{EpisodeData?.podcast?.category_name}
-											</div>
+								{/* 3. TECHNICAL SPECS SECTION */}
+								<div className='lg:col-span-8 flex flex-col space-y-6 lg:space-y-8'>
+									<div className='space-y-4 text-center lg:text-left'>
+										<div className='inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-600/10 border border-primary-500/20 text-primary-400 text-[10px] font-black uppercase tracking-widest mx-auto lg:mx-0'>
+											{EpisodeData?.podcast?.category_name}
 										</div>
-										<h1 className='text-4xl lg:text-6xl font-black leading-[1.1] tracking-tight text-white uppercase'>
+
+										<h1 className='text-3xl lg:text-6xl font-black leading-tight tracking-tighter text-white'>
 											{EpisodeData?.title}
 										</h1>
-										<div className='flex items-center gap-3 group'>
-											<p className='text-zinc-400 font-bold uppercase tracking-widest text-xs lg:text-sm'>
+
+										<div className='flex items-center justify-center lg:justify-start gap-3'>
+											<div className='h-px w-8 bg-zinc-800 hidden lg:block' />
+											<p className='text-zinc-500 font-bold uppercase tracking-widest text-[11px] lg:text-sm'>
 												By:{" "}
 												<span className='text-white'>
-													{EpisodeData?.podcast?.author}
+													{/* {EpisodeData?.podcast?.author} */}
+													Estumuzik
 												</span>
 											</p>
 										</div>
 									</div>
 
-									{/* DATA SOCKETS (Metadata Grid) */}
-									<div className='grid grid-cols-2 sm:grid-cols-3 gap-4'>
-										<div className='bg-zinc-900/50 border border-white/5 p-4 rounded-2xl'>
-											<div className='text-white font-mono text-sm'>
+									{/* METADATA SOCKETS */}
+									<div className='grid grid-cols-2 gap-3 max-w-sm mx-auto lg:mx-0 w-full'>
+										<div className='bg-zinc-900/50 border border-white/5 p-4 rounded-2xl flex flex-col items-center lg:items-start'>
+											<span className='text-[9px] text-zinc-500 uppercase font-black tracking-widest mb-1'>
+												Deployment
+											</span>
+											<div className='text-white font-mono text-xs text-center lg:text-start'>
 												{formatDateYMD(EpisodeData?.created_at)}
 											</div>
 										</div>
-										<div className='bg-zinc-900/50 border border-white/5 p-4 rounded-2xl'>
-											<div className='text-white font-mono text-sm'>
+										<div className='bg-zinc-900/50 border border-white/5 p-4 rounded-2xl flex flex-col items-center lg:items-start'>
+											<span className='text-[9px] text-zinc-500 uppercase font-black tracking-widest mb-1'>
+												Runtime
+											</span>
+											<div className='text-white font-mono text-xs text-center lg:text-start'>
 												{formatDuration(EpisodeData?.duration)}
 											</div>
 										</div>
 									</div>
 
-									{/* MASTER PLAY ACTION */}
-									<div className='pt-6 flex flex-col sm:flex-row items-center gap-6'>
-										<PlayButton
-											episode={EpisodeData && EpisodeData}
-											className='grid place-items-center text-white bg-primary-700 rounded-full p-2 size-fit'
-										/>
+									{/* 4. MASTER CONTROL CONSOLE (Mobile Optimized) */}
+									<div className='lg:pt-4 flex flex-col items-center lg:items-start gap-8'>
+										{/* Utility Sockets */}
+										<div className='flex items-center justify-center gap-3 w-full lg:w-auto border-y border-white/5 py-6 lg:border-none lg:py-0'>
+											<PlayButton
+												episode={EpisodeData && EpisodeData}
+												className='grid place-items-center text-white bg-primary-700 rounded-full p-2 size-fit'
+											/>
+											<EpisodeFavouriteFunc episodeData={EpisodeData} />
+											<EpisodeQueueListAdd episodeData={EpisodeData} />
+											<EpisodePlayListAdd
+												episodeData={EpisodeData}
+												onOpenAddToPlaylistModal={onOpenAddToPlaylistModal}
+											/>
 
-										<EpisodeFavouriteFunc episodeData={EpisodeData} />
-										<EpisodeQueueListAdd episodeData={EpisodeData} />
-										<EpisodePlayListAdd
-											episodeData={EpisodeData}
-											onOpenAddToPlaylistModal={onOpenAddToPlaylistModal}
-										/>
-										<Tooltip
-											content='Share Episode'
-											placement='top'
-											showArrow
-											closeDelay={0}
-											// Technical styling (Zinc + Industrial Typography)
-											classNames={{
-												base: ["before:bg-zinc-800"], // Arrow color
-												content: [
-													"py-1.5 px-3 shadow-xl",
-													"text-[10px] font-black uppercase tracking-widest",
-													"text-white bg-zinc-900",
-													"border border-white/10 rounded-lg",
-												],
-											}}
-											// Snappy spring animation
-											motionProps={{
-												variants: {
-													exit: { opacity: 0, transition: { duration: 0.1 } },
-													enter: { opacity: 1, transition: { duration: 0.1 } },
-												},
-											}}
-										>
 											<button
 												onClick={handleNativeShare}
-												className='relative size-11 flex items-center justify-center rounded-full border border-white/40 hover:bg-white/10 text-white/60 hover:text-white hover:border-white/50 transition-all shrink-0 active:scale-95'
+												className='size-11 flex items-center justify-center rounded-2xl border border-white/10 bg-zinc-900/50 text-white/60 hover:text-white transition-all active:scale-95 shadow-sm'
 											>
-												{/* The Icon */}
-												<RiShareLine className='text-xl transition-transform ' />
-
-												{/* Hardware Reflection Effect */}
-
-												{/* Subtle Hover Glow */}
+												<RiShareLine className='text-xl' />
 											</button>
-										</Tooltip>
+										</div>
 									</div>
 
-									{/* DESCRIPTION BOX */}
-									<div className='mt-8 p-6 bg-zinc-900/30 rounded-[2rem] border border-white/5 text-zinc-400 text-sm leading-relaxed'>
-										<h4 className='text-white font-bold mb-3 uppercase text-[10px] tracking-[0.2em]'>
+									{/* SUMMARY BLOCK */}
+									<div className='mt-4 p-6 bg-zinc-900/20 rounded-[2rem] border border-white/5 text-zinc-400 text-sm leading-relaxed relative overflow-hidden group'>
+										<div className='absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-[0.07] transition-opacity'>
+											<RiShareLine size={80} />
+										</div>
+										<h4 className='text-white font-black mb-4 uppercase text-[10px] tracking-[0.3em] flex items-center gap-2'>
+											<div className='w-1 h-3 bg-primary-500' />
 											Summary
 										</h4>
 										<div
+											className='font-medium'
 											dangerouslySetInnerHTML={{
 												__html:
 													EpisodeData?.description ||
@@ -256,16 +246,30 @@ const EpisodeContent = ({ episodeId }: EpisodeContentProps) => {
 					</div>
 				)}
 
-				<div className='space-y-4'>
-					{episodeCommentsIsLoading ? (
-						<p className='text-white'>Loading...</p>
-					) : EpisodeCommentsData && EpisodeCommentsData?.length > 0 ? (
-						EpisodeCommentsData?.map((comment) => (
-							<Comment user={comment?.user} comment={comment} />
-						))
-					) : (
-						<p className='text-white'>No comments found</p>
-					)}
+				{/* COMMENTS SECTION (Industrial List) */}
+				<div className='max-w-[1440px] mx-auto px-5 lg:px-12 pb-20'>
+					<h3 className='text-xl font-black tracking-tighter mb-8 flex items-center gap-3'>
+						Comment{" "}
+						<span className='text-primary-500 text-xs not-italic tracking-normal'>
+							[{EpisodeCommentsData?.length || 0}]
+						</span>
+					</h3>
+
+					<div className='space-y-4'>
+						{episodeCommentsIsLoading ? (
+							<div className='w-full h-20 bg-zinc-900/50 animate-pulse rounded-2xl border border-white/5' />
+						) : EpisodeCommentsData && EpisodeCommentsData?.length > 0 ? (
+							EpisodeCommentsData?.map((comment, i) => (
+								<Comment key={i} user={comment?.user} comment={comment} />
+							))
+						) : (
+							<div className='py-10 text-center border-2 border-dashed border-zinc-900 rounded-[2rem]'>
+								<p className='text-zinc-600 font-bold uppercase tracking-widest text-xs'>
+									No Comment Available
+								</p>
+							</div>
+						)}
+					</div>
 				</div>
 			</main>
 
@@ -274,8 +278,6 @@ const EpisodeContent = ({ episodeId }: EpisodeContentProps) => {
 				onOpenChange={onOpenChangeAddToPlaylistModal}
 				size='md'
 				backdrop='opaque'
-				// isDismissable={false}
-				// hideCloseButton={true}
 				classNames={{
 					closeButton: "z-50",
 				}}
