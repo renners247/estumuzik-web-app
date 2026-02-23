@@ -33,7 +33,11 @@ const Header = () => {
 		.slice(0, 2);
 
 	const mobileNavItems = [
-		{ href: "/", label: "Discover", icon: <MdOutlinePodcasts size={22} /> },
+		{
+			href: "/loggedIn",
+			label: "Discover",
+			icon: <MdOutlinePodcasts size={22} />,
+		},
 		{
 			href: "/category",
 			label: "Categories",
