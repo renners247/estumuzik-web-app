@@ -6,6 +6,7 @@ import {
   MdOutlinePodcasts,
   MdOutlineGridView,
   MdOutlineLibraryMusic,
+  MdPhone,
 } from "react-icons/md";
 import { signOut } from "../utils/data";
 import { useAppSelector } from "../Hooks";
@@ -47,6 +48,11 @@ const Header = () => {
 			href: "/library",
 			label: "Library",
 			icon: <MdOutlineLibraryMusic size={22} />,
+		},
+		{
+			href: "/contact-us",
+			label: "Contact",
+			icon: <MdPhone size={22} />,
 		},
 	];
 
