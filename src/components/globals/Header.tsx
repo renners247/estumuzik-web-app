@@ -32,23 +32,23 @@ const Header = () => {
     ?.join("")
     .slice(0, 2);
 
-  const mobileNavItems = [
-    {
-      href: "/loggedIn",
-      label: "Discover",
-      icon: <MdOutlinePodcasts size={22} />,
-    },
-    {
-      href: "/category",
-      label: "Categories",
-      icon: <MdOutlineGridView size={22} />,
-    },
-    {
-      href: "/library",
-      label: "Library",
-      icon: <MdOutlineLibraryMusic size={22} />,
-    },
-  ];
+	const mobileNavItems = [
+		{
+			href: "/loggedIn",
+			label: "Discover",
+			icon: <MdOutlinePodcasts size={22} />,
+		},
+		{
+			href: "/category",
+			label: "Categories",
+			icon: <MdOutlineGridView size={22} />,
+		},
+		{
+			href: "/library",
+			label: "Library",
+			icon: <MdOutlineLibraryMusic size={22} />,
+		},
+	];
 
   const handleMobileNavigate = (href: string) => {
     startTransition(() => {

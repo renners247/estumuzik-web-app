@@ -429,7 +429,7 @@ interface EstuMuzikLogoProps {
 }
 export const EstuMuzikLogo = ({ className }: EstuMuzikLogoProps) => {
 	return (
-		<Link href='/'>
+		<Link href='/loggedIn'>
 			<Picture
 				src={logoImage}
 				alt='logo image'
