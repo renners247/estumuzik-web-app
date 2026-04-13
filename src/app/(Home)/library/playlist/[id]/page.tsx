@@ -9,7 +9,7 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
   return (
     <Applayout>
       <PlaylistEpisodes playlistId={id} />
-      <AppMenu />
+      {/* <AppMenu /> */}
     </Applayout>
   );
 };

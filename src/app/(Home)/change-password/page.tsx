@@ -6,7 +6,7 @@ const page = () => {
   return (
     <Applayout>
       <ChangePassword />
-      <AppMenu />
+      {/* <AppMenu /> */}
     </Applayout>
   );
 };
