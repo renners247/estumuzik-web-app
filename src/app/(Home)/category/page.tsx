@@ -7,7 +7,7 @@ const page = () => {
   return (
     <Applayout>
       <CategoryPage />
-      <AppMenu />
+      {/* <AppMenu /> */}
     </Applayout>
   );
 };

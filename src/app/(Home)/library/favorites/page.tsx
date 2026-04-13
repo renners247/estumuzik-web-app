@@ -6,7 +6,7 @@ const page = () => {
   return (
     <Applayout>
       <Favorites />
-      <AppMenu />
+      {/* <AppMenu /> */}
     </Applayout>
   );
 };

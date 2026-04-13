@@ -14,7 +14,7 @@ const page = async ({ params }: PageProps) => {
   return (
     <Applayout>
       <CategoryDetail categoryId={id} />
-      <AppMenu />
+      {/* <AppMenu /> */}
     </Applayout>
   );
 };
