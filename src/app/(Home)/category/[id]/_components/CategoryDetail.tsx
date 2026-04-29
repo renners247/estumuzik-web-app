@@ -49,8 +49,9 @@ const CategoryDetail = ({ categoryId }: CategoryDetailProps) => {
     },
   );
 
-  const allCategories: ApiCategory[] =
-    Array.isArray(categoriesData?.data) ? categoriesData.data : [];
+  const allCategories: ApiCategory[] = Array.isArray(categoriesData?.data)
+    ? categoriesData.data
+    : [];
 
   const currentCategory = useMemo(() => {
     return allCategories.find(
@@ -91,7 +92,8 @@ const CategoryDetail = ({ categoryId }: CategoryDetailProps) => {
       <div className="flex flex-col gap-6 mb-8">
         <button
           onClick={() => router.back()}
-          className="flex items-center gap-2 text-white hover:text-primary-500 transition-colors w-fit group">
+          className="flex items-center gap-2 text-white hover:text-primary-500 transition-colors w-fit group"
+        >
           <div className="p-1 rounded-full border border-gray-600 group-hover:border-primary-500 transition-colors">
             <IoChevronBack size={16} />
           </div>
@@ -124,7 +126,7 @@ const CategoryDetail = ({ categoryId }: CategoryDetailProps) => {
           <p className="text-gray-500 text-sm">Based on popular listening</p>
         </div>
 
-        {episodesIsLoading ?
+        {episodesIsLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
             {Array.from({ length: 4 }).map((_, i) => (
               <Skeleton
@@ -133,7 +135,8 @@ const CategoryDetail = ({ categoryId }: CategoryDetailProps) => {
               />
             ))}
           </div>
-        : <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
             {episodes.map((episode) => (
               <TrendingEpisodeCard
                 key={episode.id}
@@ -155,7 +158,7 @@ const CategoryDetail = ({ categoryId }: CategoryDetailProps) => {
               </div>
             )}
           </div>
-        }
+        )}
 
         {/* Pagination */}
         {totalPages && totalPages > perPage && (

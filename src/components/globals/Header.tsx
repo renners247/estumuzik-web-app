@@ -17,10 +17,13 @@ import Search from "./Search";
 import { Squash as Hamburger } from "hamburger-react";
 import { EstuMuzikLogo } from "../utils/function";
 import GlobalLoader from "../reusables/GlobalLoader";
+import LogoutModal from "../Modal/LogoutModal"; // I
 
 const Header = () => {
   const { user } = useAppSelector((state: any) => state.auth);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -33,35 +36,58 @@ const Header = () => {
     ?.join("")
     .slice(0, 2);
 
-	const mobileNavItems = [
-		{
-			href: "/loggedIn",
-			label: "Discover",
-			icon: <MdOutlinePodcasts size={22} />,
-		},
-		{
-			href: "/category",
-			label: "Categories",
-			icon: <MdOutlineGridView size={22} />,
-		},
-		{
-			href: "/library",
-			label: "Library",
-			icon: <MdOutlineLibraryMusic size={22} />,
-		},
-		{
-			href: "/contact-us",
-			label: "Contact",
-			icon: <MdPhone size={22} />,
-		},
-	];
+  const mobileNavItems = [
+    {
+      href: "/loggedIn",
+      label: "Discover",
+      icon: <MdOutlinePodcasts size={22} />,
+    },
+    {
+      href: "/category",
+      label: "Categories",
+      icon: <MdOutlineGridView size={22} />,
+    },
+    {
+      href: "/library",
+      label: "Library",
+      icon: <MdOutlineLibraryMusic size={22} />,
+    },
+    {
+      href: "/contact-us",
+      label: "Contact",
+      icon: <MdPhone size={22} />,
+    },
+  ];
 
   const handleMobileNavigate = (href: string) => {
     startTransition(() => {
       router.push(href);
     });
-
     setIsMobileMenuOpen(false);
+  };
+
+  const handleLogoutClick = () => {
+    setShowLogoutModal(true);
+    // Close mobile menu if open
+    if (isMobileMenuOpen) {
+      setIsMobileMenuOpen(false);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setShowLogoutModal(false);
+  };
+
+  const handleConfirmLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await signOut();
+    } catch (error) {
+      console.error("Logout failed:", error);
+    } finally {
+      setIsLoggingOut(false);
+      setShowLogoutModal(false);
+    }
   };
 
   const getHeaderTitle = () => {
@@ -97,13 +123,7 @@ const Header = () => {
                 <EstuMuzikLogo />
               </div>
 
-              {/* Title (Hidden on mobile if Logo is present? Or present? User didn't specify, but space might be tight. 
-                  Let's keep it but maybe smaller or hidden if it clashes. 
-                  Original code had it visible on mobile. 
-                  With Logo + Hamburger + Title + Profile, it might be crowded.
-                  I'll hide title on mobile since we have the logo now, or keep it if space permits.
-                  Let's keep it hidden on mobile as Logo acts as title/brand.
-              */}
+              {/* Title */}
               <h1 className="hidden lg:block text-xl lg:text-2xl font-bold text-white tracking-tight ml-2 lg:ml-0">
                 {getHeaderTitle()}
               </h1>
@@ -143,46 +163,9 @@ const Header = () => {
             >
               {initials}
             </button>
-            {/* <Menu as="div" className="relative menu inline-block text-left">
-              <div>
-                <Menu.Button className="menu-button w-8 h-8 rounded-full bg-amber-400 flex items-center justify-center text-black font-bold text-lg text-white cursor-pointer focus:outline-none p-1 hover:scale-110 transition-transform duration-200 active:scale-95">
-                  {initials}
-                </Menu.Button>
-              </div>
-
-              <Transition
-                as={Fragment}
-                enter="transition ease-out duration-200"
-                enterFrom="transform opacity-0 scale-95 -translate-y-2"
-                enterTo="transform opacity-100 scale-100 translate-y-0"
-                leave="transition ease-in duration-150"
-                leaveFrom="transform opacity-100 scale-100 translate-y-0"
-                leaveTo="transform opacity-0 scale-95 -translate-y-2">
-                <Menu.Items className="menu-items absolute right-0 mt-2 w-72 origin-top-right rounded-lg bg-black-100 shadow-xl backdrop-blur-sm focus:outline-none p-2 z-50 overflow-hidden">
-                  <div className="absolute inset-0 overflow-hidden">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-white/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  </div>
-
-                  <Menu.Item>
-                    {({ active }) => (
-                      <a
-                        href={"/profile"}
-                        className={`relative font-light group flex w-full items-center rounded-md px-3 py-2 text-sm transition-all duration-200`}>
-                        <span className="text-lg mr-3 transition-transform duration-200 group-hover:scale-110">
-                          <FiUser color="white" />
-                        </span>
-                        <span className="transition-all text-white duration-200 group-hover:translate-x-1">
-                          Profile
-                        </span>
-                      </a>
-                    )}
-                  </Menu.Item>
-                </Menu.Items>
-              </Transition>
-            </Menu> */}
 
             <button
-              onClick={() => signOut()}
+              onClick={handleLogoutClick}
               className="text-gray-400 hover:text-white transition-colors p-2"
             >
               <RiLogoutBoxLine size={24} />
@@ -224,16 +207,6 @@ const Header = () => {
               {/* Drawer Header */}
               <div className="flex items-center justify-between mb-8">
                 <EstuMuzikLogo />
-                {/* Close button is handled by Hamburger in header, or we can add another one here if needed. 
-                    But typically clicking outside or the hamburger again closes it.
-                    The Hamburger in the header is z-50 so it remains visible/clickable? 
-                    Ah, the header is sticky z-40. The drawer is z-50.
-                    So the header Hamburger might be covered by the backdrop/drawer if they are z-50.
-                    I should make sure the Hamburger in header is clickable or add a close button inside the drawer.
-                    Header is z-40. Drawer is z-50. Drawer covers header.
-                    So original Hamburger is covered.
-                    I should add a close button or header inside the drawer.
-                */}
               </div>
 
               {/* Nav Items */}
@@ -263,7 +236,7 @@ const Header = () => {
               {/* Mobile Logout (Bottom) */}
               <div className="pt-6 border-t border-white/10">
                 <button
-                  onClick={() => signOut()}
+                  onClick={handleLogoutClick}
                   className="flex items-center gap-4 w-full px-4 py-3 rounded-xl text-base font-medium text-red-400 hover:text-red-300 hover:bg-white/5 transition-all duration-200"
                 >
                   <RiLogoutBoxLine size={24} />
@@ -274,6 +247,25 @@ const Header = () => {
           </Transition.Child>
         </div>
       </Transition>
+
+      {/* Logout Modal */}
+      {showLogoutModal && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+          onClick={handleCloseModal}
+        >
+          <div
+            className="w-full max-w-sm mx-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <LogoutModal
+              onClose={handleCloseModal}
+              onLogout={handleConfirmLogout}
+              isLoading={isLoggingOut}
+            />
+          </div>
+        </div>
+      )}
 
       <GlobalLoader isPending={isPending} />
     </>

@@ -2,7 +2,6 @@
 
 import React, { useState, useMemo, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { RiSearchLine } from "react-icons/ri";
 
 import Picture from "@/components/picture/Index";
@@ -25,6 +24,8 @@ interface ApiCategory {
 
 const CategoryPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  // STATE ADDED: Track which card was clicked
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   const { data: categoriesData, isLoading: categoriesIsLoading } = useQuery(
     ["categories"],
@@ -42,6 +43,9 @@ const CategoryPage = () => {
   const [isPending, startTransition] = useTransition();
 
   const handleCategoryClick = (categoryName: string) => {
+    // Set the clicked category to active immediately so it turns yellow
+    setActiveCategory(categoryName);
+
     startTransition(() => {
       router.push(`/category/${categoryName.toLowerCase()}`);
     });
@@ -92,19 +96,27 @@ const CategoryPage = () => {
         {!categoriesIsLoading && (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-5 pb-24 sm:pb-8">
             {filteredCategories.map((category, index) => {
-              // Use the first image from the 'images' array, fallback to null/placeholder if empty
               const categoryImage =
-                category.images && category.images.length > 0 ?
-                  category.images[0]
-                : "";
+                category.images && category.images.length > 0
+                  ? category.images[0]
+                  : "";
+
+              // Check if THIS card is the one that was clicked
+              const isActive = activeCategory === category.name;
 
               return (
                 <div
                   key={index}
                   onClick={() => handleCategoryClick(category.name)}
-                  className="group rounded-xl overflow-hidden bg-[#1A1A1A] cursor-pointer 
-                          transition-transform duration-300 hover:scale-[1.03] 
-                          focus:outline-none focus:ring-2 focus:ring-[#FFCC00]/50">
+                  // Added border highlight state for active card as well for extra polish
+                  className={`group rounded-xl overflow-hidden bg-[#1A1A1A] cursor-pointer 
+                          transition-all duration-300 hover:scale-[1.03] 
+                          focus:outline-none focus:ring-2 focus:ring-[#FFCC00]/50 border ${
+                            isActive
+                              ? "border-[#FFCC00]/50"
+                              : "border-transparent"
+                          }`}
+                >
                   {/* Image Container */}
                   <div className="relative aspect-square w-full overflow-hidden">
                     <Picture
@@ -116,7 +128,12 @@ const CategoryPage = () => {
 
                   {/* Category Label Footer */}
                   <div className="w-full px-3 py-2.5 sm:px-4 sm:py-3 text-left bg-[#1A1A1A]">
-                    <span className="text-white text-xs sm:text-sm font-bold tracking-wide">
+                    {/* DYNAMIC TEXT COLOR: Turns yellow if clicked or hovered */}
+                    <span
+                      className={`text-xs sm:text-sm font-bold tracking-wide transition-colors duration-300 group-hover:text-[#FFCC00] ${
+                        isActive ? "text-[#FFCC00]" : "text-white"
+                      }`}
+                    >
                       {category.name}
                     </span>
                   </div>

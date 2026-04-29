@@ -20,6 +20,15 @@ export const updateUser = async (data: any) =>
     },
   });
 
+// Add to your endpoints file
+export const searchPodcasts = async (query: string) => {
+  return `/search/podcasts?q=${query}`;
+};
+
+export const searchEpisodes = async (query: string) => {
+  return `/search/episodes?q=${query}`;
+};
+
 export const categories = async () => axios.get(`${API_URL}/categories`);
 
 export const subCategories = async (
