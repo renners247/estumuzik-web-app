@@ -48,9 +48,9 @@ const CategoryPodcasts = ({
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2 text-white font-medium">
           <span className="text-sm">
-            {subCategoryParam ?
-              `${subCategoryParam} Podcast${totalPodcasts !== 1 ? "s" : ""}`
-            : `Available Podcast${totalPodcasts !== 1 ? "s" : ""}`}
+            {subCategoryParam
+              ? `${subCategoryParam} Podcast${totalPodcasts !== 1 ? "s" : ""}`
+              : `Available Podcast${totalPodcasts !== 1 ? "s" : ""}`}
             <span className="text-gray-400 ml-2">({totalPodcasts})</span>
           </span>
         </div>
@@ -58,24 +58,23 @@ const CategoryPodcasts = ({
 
       {/* Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-4 gap-y-8">
-        {isLoading ?
-          Array.from({ length: 10 }).map((_, i) => (
-            <div key={i} className="flex flex-col gap-3">
-              <Skeleton className="aspect-square w-full rounded-xl bg-white/5" />
-              <div className="flex flex-col gap-2">
-                <Skeleton className="h-4 w-3/4 rounded bg-white/5" />
-                <Skeleton className="h-3 w-1/2 rounded bg-white/5" />
+        {isLoading
+          ? Array.from({ length: 10 }).map((_, i) => (
+              <div key={i} className="flex flex-col gap-3">
+                <Skeleton className="aspect-square w-full rounded-xl bg-white/5" />
+                <div className="flex flex-col gap-2">
+                  <Skeleton className="h-4 w-3/4 rounded bg-white/5" />
+                  <Skeleton className="h-3 w-1/2 rounded bg-white/5" />
+                </div>
               </div>
-            </div>
-          ))
-        : podcasts.map((podcast) => (
-            <PodcastShowCard
-              key={podcast.id}
-              podcast={podcast}
-              isFollowing={false}
-            />
-          ))
-        }
+            ))
+          : podcasts.map((podcast) => (
+              <PodcastShowCard
+                key={podcast.id}
+                podcast={podcast}
+                isFollowing={false}
+              />
+            ))}
       </div>
 
       {!isLoading && podcasts.length === 0 && (

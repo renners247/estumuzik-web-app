@@ -63,18 +63,22 @@ const TrendingEpisodeCard = ({
       {/* Thumbnail with Play Button Overlay */}
       <div
         onClick={handlePlay}
-        className="relative min-w-[100px] w-[100px] h-[100px] rounded-lg overflow-hidden shrink-0 group/image">
+        className="relative min-w-[100px] w-[100px] h-[100px] rounded-lg overflow-hidden shrink-0 group/image"
+      >
         <Picture
           src={image}
           alt={title}
           className="object-cover h-full w-full"
         />
         <div
-          className={`absolute inset-0 bg-black/30 flex items-center justify-center ${isNowPlaying ? "opacity-100" : " group-hover/image:opacity-100"} transition-opacity`}>
+          className={`absolute inset-0 bg-black/30 flex items-center justify-center ${isNowPlaying ? "opacity-100" : " group-hover/image:opacity-100"} transition-opacity`}
+        >
           <div className="w-10 h-10 rounded-full border-2 border-white bg-primary-500 flex items-center justify-center transform group-hover/image:scale-110 transition-transform">
-            {isNowPlaying ?
+            {isNowPlaying ? (
               <FaPause className="text-white text-sm" />
-            : <FaPlay className="text-white ml-1 text-sm " />}
+            ) : (
+              <FaPlay className="text-white ml-1 text-sm " />
+            )}
           </div>
         </div>
       </div>
@@ -84,7 +88,8 @@ const TrendingEpisodeCard = ({
         <div className="flex items-start justify-between">
           <h3
             onClick={handleTitleClick}
-            className="text-white font-bold text-base line-clamp-1 mb-1 hover:text-[#FFCC00] transition-colors cursor-pointer">
+            className="text-white font-bold text-base line-clamp-1 mb-1 hover:text-[#FFCC00] transition-colors cursor-pointer"
+          >
             {title}
           </h3>
           <button className="text-gray-400 hover:text-white p-1">
