@@ -17,10 +17,11 @@ import GlobalLoader from "@/components/reusables/GlobalLoader";
 import { AndriodButtons, AppleButtons } from "@/components/utils/buttons";
 import { ImSpinner2 } from "react-icons/im";
 import * as Yup from "yup";
+import MyPhoneInput from "@/components/reusables/MyPhoneInput";
+import { toast } from "react-toastify";
 
 interface FormValues {
   phone_number: string;
-  password: string; // Keep for API but hidden from UI
 }
 
 // Phone number validation schema - digits only, must start with 234
@@ -33,7 +34,6 @@ const phoneValidationSchema = Yup.object({
     )
     .min(13, "Phone number must be at least 13 digits (including 234)")
     .max(15, "Phone number must not exceed 15 digits (including 234)"),
-  password: Yup.string(), // No validation needed since it's hidden/default
 });
 
 const LoginForm: React.FC = () => {
@@ -43,7 +43,6 @@ const LoginForm: React.FC = () => {
 
   const initialValues: FormValues = {
     phone_number: "234", // Pre-filled with country code
-    password: "Development@101", // Default password for API
   };
 
   const loginMutation = useMutation(
@@ -52,17 +51,34 @@ const LoginForm: React.FC = () => {
       onSuccess: (data) => {
         const Token = data?.data?.data?.token;
         const User = data?.data?.data?.user;
+        const Subscription = data?.data?.data?.subscription;
+
+        // 1. Check if subscription ID exists (adjust based on your API structure)
+        const hasActiveSubscription = Subscription?.id;
+
+        if (!hasActiveSubscription) {
+          // Option: Save minimal user info but redirect to Pricing
+          toast.error("User has no active subscription.");
+
+          return;
+        }
+
+        // toast.success("User has active subscription.");
+
+        // 2. If subscription exists, proceed with normal login flow
         Cookies.set(AUTH_TOKEN_KEY as string, Token as string, {
           expires: 7,
           secure: true,
           sameSite: "strict",
         });
+
         dispatch(resetAuth());
         dispatch(authLogin({ token: Token, user: User }));
-        hasSignedOut === false;
+
         startTransition(() => {
-          router.push("/loggedIn");
+          router.push("/loggedIn"); // Redirect to your protected area
         });
+
         formik.resetForm();
       },
     },
@@ -76,7 +92,6 @@ const LoginForm: React.FC = () => {
     onSubmit: async (values) => {
       const data = {
         phone_number: values.phone_number,
-        password: values.password, // Using the default password
       };
       await loginMutation.mutateAsync(data);
     },
@@ -180,16 +195,9 @@ const LoginForm: React.FC = () => {
                   onSubmit={formik.handleSubmit}
                   className="space-y-5 lg:pb-8"
                 >
-                  {/* Hidden password field - satisfies backend requirement */}
-                  <input
-                    type="hidden"
-                    name="password"
-                    value={formik.values.password}
-                  />
-
                   <div className="space-y-2">
                     {/* Phone Number Label */}
-                    <label className="text-sm font-medium mb-1 block text-black-200">
+                    <label className="text-sm font-medium mb-1 block text-slate-300">
                       Phone Number
                     </label>
 
@@ -201,16 +209,10 @@ const LoginForm: React.FC = () => {
                           className="w-6 h-auto rounded-sm"
                         />
                       </div>
-                      <input
+
+                      <MyPhoneInput
                         name="phone_number"
-                        type="tel"
-                        inputMode="numeric"
-                        pattern="\d*"
-                        value={formik.values.phone_number}
-                        onChange={handlePhoneNumberChange}
-                        onBlur={formik.handleBlur}
-                        placeholder="234XXXXXXXXX"
-                        className={`w-full h-14 pl-16 pr-4 bg-[#F3F4F6] lg:bg-white rounded-xl lg:rounded-full text-black text-base font-medium outline-none border-2 transition-all placeholder:text-gray-400 ${
+                        containerClassName={`w-full pr-4 bg-[#F3F4F6] lg:bg-white rounded-xl lg:rounded-full text-black text-base font-medium outline-none border-2 transition-all placeholder:text-gray-400 ${
                           formik.touched.phone_number &&
                           formik.errors.phone_number
                             ? "border-red-500 focus:border-red-500"
@@ -218,22 +220,15 @@ const LoginForm: React.FC = () => {
                         }`}
                       />
                     </div>
-                    {/* Error message */}
-                    {formik.touched.phone_number &&
-                      formik.errors.phone_number && (
-                        <p className="text-red-500 text-xs mt-1 ml-1">
-                          {formik.errors.phone_number}
-                        </p>
-                      )}
                   </div>
 
                   <button
                     type="submit"
                     disabled={!formik.isValid || loginMutation.isLoading}
-                    className={`w-full h-14 text-white font-bold text-lg rounded-xl lg:rounded-full transition-all duration-200 flex items-center justify-center ${
+                    className={`w-full h-14 text-white font-bold text-sm rounded-xl lg:rounded-full transition-all duration-200 flex items-center justify-center ${
                       formik.isValid && !loginMutation.isLoading
                         ? "bg-primary-300 hover:bg-primary-600 active:scale-95"
-                        : "bg-gray-300 cursor-not-allowed"
+                        : "bg-primary-200/60 cursor-not-allowed"
                     }`}
                   >
                     {loginMutation.isLoading ? (
