@@ -9,9 +9,8 @@ import { getFavorites } from "@/components/utils/endpoints";
 import FavoritesCard from "@/components/Cards/FavoritesCard";
 
 const Favorites = () => {
-	const [perPage, setPerPage] = useState(8);
+	const [perPage, setPerPage] = useState(12);
 	const [currentPage, setCurrentPage] = useState(1);
-	const [totalFavorites, setTotalFavorites] = useState(null);
 
 	const { data: favoritesData, isLoading } = useQuery(
 		["favorites", currentPage, perPage],
@@ -33,11 +32,9 @@ const Favorites = () => {
 	);
 
 	const favoriteEpisodes: PodcastEpisode[] = favoritesData?.data;
+	const totalFavorites = favoritesData?.total
+	
 
-	useEffect(() => {
-		setTotalFavorites(favoritesData?.total);
-		console.log("total favorites: ", totalFavorites);
-	}, []);
 
 	return (
 		<div className='space-y-6 mt-10'>
@@ -46,7 +43,7 @@ const Favorites = () => {
 				<GoBack />
 				<div className='flex flex-col gap-1 px-2'>
 					<h2 className='text-2xl font-bold text-white tracking-tight flex items-center gap-2'>
-						<span>❤️</span> Your Favorite Episodes
+						<span>❤️</span> Your Favorite Episodes <span className="text-primary-400 text-xs tracking-wider">(60)</span>
 					</h2>
 					<p className='text-gray-400 text-sm'>Episodes you love</p>
 				</div>
