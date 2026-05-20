@@ -77,7 +77,7 @@ const LibraryPage = () => {
     {
       id: "recently-played",
       title: "Recently played",
-      subtitle: `${totalPlaylists && totalPlaylists !== null ? totalPlaylists : ""} Episodes`,
+      subtitle: `${totalRecentlyPlayed && totalRecentlyPlayed !== null ? totalRecentlyPlayed : ""} Episodes`,
       image: recentlyPlayed,
       href: "/library/recently-played",
     },
